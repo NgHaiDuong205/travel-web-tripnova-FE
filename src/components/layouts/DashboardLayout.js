@@ -1,8 +1,17 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import NavigationMenu from "../client/NavigationMenu";
+import UserAvatar from "../common/UserAvatar";
+import { useAuth } from "../../context/AuthContext";
 
 function DashboardLayout({ children }) {
     const location = useLocation();
+    const navigate = useNavigate();
+    const { user, logout } = useAuth();
+
+    const handleSignOut = async () => {
+        await logout();
+        navigate("/", { replace: true });
+    };
 
     return (
         <div className="bg-surface font-body text-on-surface antialiased min-h-screen">
@@ -21,9 +30,9 @@ function DashboardLayout({ children }) {
                         <button className="p-2 text-on-surface-variant hover:text-primary transition-colors">
                             <span className="material-symbols-outlined">notifications</span>
                         </button>
-                        <div className="w-10 h-10 rounded-lg overflow-hidden bg-surface-container">
-                            <img alt="User profile" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEjBxUulnzYst6plIj4x_sHZAQLrEA7P-MTI60oFnqoqr1XjhZ7UhpCyfyiqvY1Wcpn2S_LHOFwWvY0KOTKmk8KyBeGmiffuyujtJ0uvTrpxiYRNJCV5KiNPJ_4EKutYYUr6cap0yQKvgWVQozGzdT6ZHV8huUH6T_bxnRlWGzdQmirjShuhmG5MPAmQv_LefR4t-v5WtxZKx6i-B_buQ5GYOuzO3YEV2rrp14Rn_2lTpp-maL8UaCY50k8XbVTSjjGDvpOtFCKZ4"/>
-                        </div>
+                        <Link to="/account-settings" className="overflow-hidden">
+                            <UserAvatar user={user} />
+                        </Link>
                     </div>
                 </div>
             </header>
@@ -33,12 +42,12 @@ function DashboardLayout({ children }) {
                 <aside className="hidden lg:flex flex-col gap-2 px-6 h-[calc(100vh-5rem)] w-72 fixed left-0 top-20 pt-8 pb-8 bg-surface-container-low">
                     <div className="mb-10 px-2">
                         <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center text-on-primary">
-                                <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>diamond</span>
-                            </div>
-                            <div>
-                                <h3 className="font-headline font-bold text-on-surface">Alex Morgan</h3>
-                                <p className="text-xs text-on-surface-variant tracking-wide">ELITE VOYAGER</p>
+                            <UserAvatar user={user} size="w-12 h-12" rounded="rounded-xl" />
+                            <div className="min-w-0">
+                                <h3 className="font-headline font-bold text-on-surface truncate">{user?.fullName}</h3>
+                                <p className="text-xs text-on-surface-variant tracking-wide">
+                                    {(user?.loyaltyPoints ?? 0).toLocaleString()} POINTS
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -73,10 +82,10 @@ function DashboardLayout({ children }) {
                             <span className="material-symbols-outlined text-[20px]">help</span>
                             Help Center
                         </span>
-                        <Link to="/" className="flex items-center gap-3 px-4 py-2 rounded-lg text-error hover:bg-error-container/10 text-sm">
+                        <button type="button" onClick={handleSignOut} className="flex items-center gap-3 px-4 py-2 rounded-lg text-error hover:bg-error-container/10 text-sm text-left">
                             <span className="material-symbols-outlined text-[20px]">logout</span>
                             Sign Out
-                        </Link>
+                        </button>
                     </div>
                 </aside>
 
