@@ -97,7 +97,7 @@ export function buildHotelQueryParams(filters = {}) {
 export async function fetchHotels(filters = {}) {
     const params = buildHotelQueryParams(filters);
 
-    const { data } = await apiClient.get("/api/hotels/", {
+    const { data, headers } = await apiClient.get("/api/hotels/", {
         params,
         paramsSerializer: {
             indexes: null,
@@ -105,6 +105,14 @@ export async function fetchHotels(filters = {}) {
     });
 
     const meta = unwrapListResponse(data);
+    // Backend trả tổng số bản ghi qua header X-Total-Count (body là mảng thuần).
+    const headerTotal = Number(headers?.["x-total-count"]);
+    if (Array.isArray(data) && !Number.isNaN(headerTotal)) {
+        meta.total = headerTotal;
+        meta.page = params.page;
+        meta.limit = params.limit;
+        meta.totalPages = Math.max(1, Math.ceil(headerTotal / params.limit));
+    }
     return {
         ...meta,
         items: meta.items.map(normalizeHotel),

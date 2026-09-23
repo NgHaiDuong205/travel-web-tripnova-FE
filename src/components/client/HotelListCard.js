@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import FavoriteButton from "../common/FavoriteButton";
 
 const PLACEHOLDER_IMAGE =
     "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80";
@@ -46,6 +47,9 @@ function HotelListCard({ hotel }) {
                         </span>
                     </div>
                 )}
+                <div className="absolute bottom-4 right-4">
+                    <FavoriteButton itemType="hotel" itemId={hotel.id} />
+                </div>
             </Link>
             <div className="p-8 flex flex-col flex-grow">
                 <div className="flex justify-between items-start mb-2 gap-4">

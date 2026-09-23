@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import RoomSearchPanel from "../../../components/client/RoomSearchPanel";
 import RoomCard from "../../../components/client/RoomCard";
+import FavoriteButton from "../../../components/common/FavoriteButton";
 import { filterRooms } from "../../../constants/rooms";
 import { fetchHotelById } from "../../../services/hotelService";
 import { fetchRooms } from "../../../services/roomService";
@@ -105,6 +106,9 @@ function HotelDetail() {
                     <div className="col-span-12 md:col-span-8 overflow-hidden rounded-xl relative group h-full">
                         <img className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={hotelName} src={imageSrc}/>
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                        <div className="absolute top-6 right-6">
+                            <FavoriteButton itemType="hotel" itemId={hotelId} className="w-12 h-12" />
+                        </div>
                         <div className="absolute bottom-8 left-8">
                             <span className="editorial-gradient text-white text-[10px] px-3 py-1 rounded-full tracking-[0.2em] font-bold uppercase mb-4 inline-block shadow-md">Iconic Landmark</span>
                             <h1 className="text-4xl md:text-6xl lg:text-7xl font-headline font-bold text-white tracking-tighter drop-shadow-lg">{hotelName}</h1>

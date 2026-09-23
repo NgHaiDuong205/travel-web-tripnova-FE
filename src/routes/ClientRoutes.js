@@ -15,6 +15,7 @@ import PaymentHistory from "../pages/client/PaymentHistory/index";
 import SavedTrips from "../pages/client/SavedTrips/index";
 import AccountSettings from "../pages/client/AccountSettings/index";
 import Checkout from "../pages/client/Checkout/index";
+import Contact from "../pages/client/Contact/index";
 import Payment from "../pages/client/Payment/index";
 import BookingDetail from "../pages/client/BookingDetail/index";
 
@@ -35,6 +36,7 @@ function ClientRoutes() {
                 <Route path="/destinations" element={<Destinations />} />
                 <Route path="/destinations/:id" element={<DestinationDetail />} />
                 <Route path="/abouts" element={<About />} />
+                <Route path="/contacts" element={<Contact />} />
                 <Route path="/hotel/:id" element={<HotelDetail />} />
                 <Route path="/rooms" element={<Rooms />} />
                 <Route path="/hotel/:hotelId/room/:roomId" element={<RoomDetail />} />

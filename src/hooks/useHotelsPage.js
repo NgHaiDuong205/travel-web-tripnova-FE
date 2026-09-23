@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { fetchHotels } from "../services/hotelService";
 import { useCountryDestinationOptions } from "./useCountryDestinationOptions";
-import { collectAmenitiesFromHotels } from "../utils/hotelUtils";
+import { fetchAmenities } from "../services/lookupService";
 
 const DEFAULT_LIMIT = 10;
 
@@ -57,30 +57,10 @@ export function useHotelsPage() {
             const result = await fetchHotels(filters);
             setHotels(result.items);
             
-            const reqPage = filters.page ?? 1;
-            const reqLimit = filters.limit ?? DEFAULT_LIMIT;
-            
-            // Check if the backend returned a flat array without pagination metadata
-            const isFlatArray = !result.totalPages || (result.totalPages === 1 && result.total === result.items.length);
-            
-            if (isFlatArray) {
-                setPage(reqPage);
-                if (result.items.length === reqLimit) {
-                    setTotalPages((prev) => Math.max(reqPage + 1, prev));
-                    setTotal((reqPage - 1) * reqLimit + result.items.length + 1);
-                } else {
-                    setTotalPages(reqPage);
-                    setTotal((reqPage - 1) * reqLimit + result.items.length);
-                }
-            } else {
-                setTotal(result.total);
-                setTotalPages(result.totalPages);
-                setPage(result.page);
-            }
-
-            setAmenityOptions((prev) =>
-                collectAmenitiesFromHotels(result.items, prev)
-            );
+            // fetchHotels đọc tổng số từ header X-Total-Count nên total/totalPages luôn chính xác.
+            setTotal(result.total);
+            setTotalPages(result.totalPages);
+            setPage(result.page ?? filters.page ?? 1);
         } catch (err) {
             setHotels([]);
             setTotal(0);
@@ -94,6 +74,13 @@ export function useHotelsPage() {
     useEffect(() => {
         loadHotels(applied);
     }, [applied, loadHotels]);
+
+    // Danh sách tiện nghi cấp khách sạn (bỏ nhóm "room" — tiện nghi trong phòng).
+    useEffect(() => {
+        fetchAmenities()
+            .then((list) => setAmenityOptions(list.filter((a) => a.category !== "room").map((a) => a.name)))
+            .catch(() => setAmenityOptions([]));
+    }, []);
 
     const applySearch = useCallback(() => {
         const hasDateRange = draft.checkIn && draft.checkOut;
