@@ -1,14 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import NavigationMenu from "./NavigationMenu";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 function Header(){
-    const { isLoggedIn, logout } = useContext(AuthContext);
+    const { isLoggedIn, user, hasRole, logout } = useAuth();
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        logout();
+    const handleLogout = async () => {
+        await logout();
         navigate("/");
     };
 
@@ -28,11 +27,16 @@ function Header(){
                 <div className="flex items-center space-x-6">
                     {isLoggedIn ? (
                         <div className="flex items-center space-x-4">
+                            {hasRole("ADMIN") && (
+                                <Link to="/admin" className="text-[#434651] font-bold tracking-tight hover:text-[#003580] transition-colors">
+                                    Admin
+                                </Link>
+                            )}
                             <Link to="/profile" className="flex items-center gap-2 cursor-pointer font-bold text-[#003580] hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors">
                                 <div className="w-8 h-8 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center border border-blue-200">
                                     <span className="material-symbols-outlined text-[18px]">person</span>
                                 </div>
-                                <span>My Profile</span>
+                                <span>{user?.fullName || "My Profile"}</span>
                             </Link>
                             <button onClick={handleLogout} className="text-[#434651] font-bold tracking-tight hover:text-red-600 transition-colors px-4">
                                 Logout

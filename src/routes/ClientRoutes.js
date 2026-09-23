@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import ClientLayout from "../components/layouts/ClientLayout";
+import PrivateRoute from "./PrivateRoute";
 import Home from "../pages/client/Home/index";
 import Hotels from "../pages/client/Hotels/index";
 import Destinations from "../pages/client/Destinations/index";
@@ -17,11 +18,14 @@ import AccountSettings from "../pages/client/AccountSettings/index";
 function ClientRoutes() {
     return (
         <Routes>
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/booking-history" element={<BookingHistory />} />
-            <Route path="/payment-history" element={<PaymentHistory />} />
-            <Route path="/saved-trips" element={<SavedTrips />} />
-            <Route path="/account-settings" element={<AccountSettings />} />
+            {/* Trang cá nhân — bắt buộc đăng nhập */}
+            <Route element={<PrivateRoute />}>
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/booking-history" element={<BookingHistory />} />
+                <Route path="/payment-history" element={<PaymentHistory />} />
+                <Route path="/saved-trips" element={<SavedTrips />} />
+                <Route path="/account-settings" element={<AccountSettings />} />
+            </Route>
             <Route element={<ClientLayout />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/hotels" element={<Hotels />} />
