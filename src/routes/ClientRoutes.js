@@ -14,6 +14,9 @@ import BookingHistory from "../pages/client/BookingHistory/index";
 import PaymentHistory from "../pages/client/PaymentHistory/index";
 import SavedTrips from "../pages/client/SavedTrips/index";
 import AccountSettings from "../pages/client/AccountSettings/index";
+import Checkout from "../pages/client/Checkout/index";
+import Payment from "../pages/client/Payment/index";
+import BookingDetail from "../pages/client/BookingDetail/index";
 
 function ClientRoutes() {
     return (
@@ -35,6 +38,13 @@ function ClientRoutes() {
                 <Route path="/hotel/:id" element={<HotelDetail />} />
                 <Route path="/rooms" element={<Rooms />} />
                 <Route path="/hotel/:hotelId/room/:roomId" element={<RoomDetail />} />
+
+                {/* Đặt phòng & thanh toán — bắt buộc đăng nhập */}
+                <Route element={<PrivateRoute />}>
+                    <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/payment/:paymentId" element={<Payment />} />
+                    <Route path="/bookings/:bookingId" element={<BookingDetail />} />
+                </Route>
 
                 
                 {/* Lưới hứng dự phòng khi khách truy cập nhầm trang */}

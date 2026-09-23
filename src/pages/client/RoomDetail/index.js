@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { fetchRoomDetails } from "../../../services/roomService";
 import { fetchHotelById } from "../../../services/hotelService";
+import { formatMoney, isoDateFromToday, nightsBetween } from "../../../utils/formatters";
 
 const PLACEHOLDER_IMAGE =
     "https://images.unsplash.com/photo-1631049301164-da64c29e0a5a?w=1200&q=80";
@@ -25,14 +26,15 @@ function getAmenityIcon(name) {
 
 function RoomDetail() {
     const { hotelId, roomId } = useParams();
+    const navigate = useNavigate();
     const [room, setRoom] = useState(null);
     const [hotel, setHotel] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     // Form booking state
-    const [checkIn, setCheckIn] = useState("2026-10-12");
-    const [checkOut, setCheckOut] = useState("2026-10-17");
+    const [checkIn, setCheckIn] = useState(() => isoDateFromToday(7));
+    const [checkOut, setCheckOut] = useState(() => isoDateFromToday(10));
     const [guests, setGuests] = useState(2);
 
     const loadData = useCallback(async () => {
@@ -58,23 +60,22 @@ function RoomDetail() {
         }
     }, [hotelId, roomId, loadData]);
 
-    const nights = useMemo(() => {
-        if (!checkIn || !checkOut) return 0;
-        const start = new Date(checkIn);
-        const end = new Date(checkOut);
-        const diff = end - start;
-        if (diff <= 0) return 0;
-        return Math.ceil(diff / (1000 * 60 * 60 * 24));
-    }, [checkIn, checkOut]);
+    const nights = useMemo(() => nightsBetween(checkIn, checkOut), [checkIn, checkOut]);
 
-    const priceCalculation = useMemo(() => {
-        if (!room) return { base: 0, tax: 0, total: 0 };
-        const pricePerNight = room.price ?? 0;
-        const base = pricePerNight * (nights || 1);
-        const tax = Math.round(base * 0.08); // 8% VAT & Service fees
-        const total = base + tax;
-        return { base, tax, total };
-    }, [room, nights]);
+    // Tổng tiền tạm tính; giá chính thức do backend tính ở bước Checkout.
+    const total = useMemo(() => (room?.price ?? 0) * nights, [room, nights]);
+
+    const handleReserve = () => {
+        const params = new URLSearchParams({
+            hotelId,
+            roomTypeId: room.roomTypeId,
+            roomId,
+            checkIn,
+            checkOut,
+            guests: String(guests),
+        });
+        navigate(`/checkout?${params.toString()}`);
+    };
 
     if (loading) {
         return (
@@ -110,7 +111,7 @@ function RoomDetail() {
 
     const roomName = room.roomTypeName || room.name || "Superior Room";
     const displayPrice = room.price ?? 0;
-    const currency = room.currency || "€";
+    const currency = "USD";
     const maxOccupancy = room.maxGuests || 2;
 
     return (
@@ -278,8 +279,7 @@ function RoomDetail() {
                         <div className="flex justify-between items-baseline mb-8">
                             <div className="flex flex-col">
                                 <span className="text-3xl font-display font-extrabold text-primary">
-                                    {currency}
-                                    {displayPrice}
+                                    {formatMoney(displayPrice, currency)}
                                 </span>
                                 <span className="text-on-surface-variant text-sm font-medium uppercase tracking-wider">
                                     Per Night
@@ -301,6 +301,7 @@ function RoomDetail() {
                                     <input
                                         className="w-full bg-transparent border-none p-0 text-sm font-semibold focus:ring-0 cursor-pointer"
                                         type="date"
+                                        min={isoDateFromToday(0)}
                                         value={checkIn}
                                         onChange={(e) => setCheckIn(e.target.value)}
                                     />
@@ -336,6 +337,7 @@ function RoomDetail() {
                             </div>
                         </div>
                         <button
+                            onClick={handleReserve}
                             disabled={room.status !== "available" || nights <= 0}
                             className={`w-full py-4 rounded-lg font-bold text-sm tracking-wide shadow-lg transition-all duration-300 ${
                                 room.status === "available" && nights > 0
@@ -346,35 +348,19 @@ function RoomDetail() {
                             {room.status === "available" ? "Reserve Your Stay" : "Room Unavailable"}
                         </button>
                         <p className="text-center text-xs text-on-surface-variant mt-6">
-                            You won't be charged yet. Free cancelation up to 24 hours prior.
+                            You won't be charged yet. Free cancellation follows the hotel's policy.
                         </p>
                         {nights > 0 && (
                             <div className="mt-8 pt-8 border-t border-outline-variant/15 space-y-4">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-on-surface-variant underline cursor-help">
-                                        {nights} Night{nights > 1 ? "s" : ""} × {currency}
-                                        {displayPrice}
+                                    <span className="text-on-surface-variant">
+                                        {nights} Night{nights > 1 ? "s" : ""} × {formatMoney(displayPrice, currency)}
                                     </span>
-                                    <span className="font-semibold">
-                                        {currency}
-                                        {priceCalculation.base}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-on-surface-variant underline cursor-help">
-                                        Taxes & Fees (8%)
-                                    </span>
-                                    <span className="font-semibold">
-                                        {currency}
-                                        {priceCalculation.tax}
-                                    </span>
+                                    <span className="font-semibold">{formatMoney(total, currency)}</span>
                                 </div>
                                 <div className="flex justify-between text-lg font-display font-bold text-primary pt-2 border-t border-outline-variant/10">
                                     <span>Total</span>
-                                    <span>
-                                        {currency}
-                                        {priceCalculation.total}
-                                    </span>
+                                    <span>{formatMoney(total, currency)}</span>
                                 </div>
                             </div>
                         )}
