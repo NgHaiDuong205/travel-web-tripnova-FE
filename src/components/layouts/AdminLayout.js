@@ -4,7 +4,8 @@ import UserAvatar from "../common/UserAvatar";
 
 const NAV_ITEMS = [
     { to: "/admin", label: "Dashboard", icon: "dashboard", end: true },
-    { to: "/admin/bookings", label: "Bookings", icon: "hotel" },
+    { to: "/admin/hotels", label: "Hotels", icon: "apartment" },
+    { to: "/admin/bookings", label: "Bookings", icon: "book_online" },
     { to: "/admin/users", label: "Users", icon: "group" },
     { to: "/admin/payments", label: "Payments", icon: "payments" },
     { to: "/admin/messages", label: "Messages", icon: "mail" },
