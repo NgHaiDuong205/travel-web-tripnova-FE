@@ -140,3 +140,24 @@ export function roomTypeToPayload(roomType) {
         isActive: roomType.isActive,
     };
 }
+
+// ---- Amenities (master data) ----
+
+export async function fetchAdminAmenities(category) {
+    const { data } = await apiClient.get("/api/admin/amenities/", { params: { category: category || undefined } });
+    return data;
+}
+
+export async function saveAdminAmenity(amenityId, payload) {
+    const { data } = amenityId
+        ? await apiClient.put(`/api/admin/amenities/${amenityId}/`, payload)
+        : await apiClient.post("/api/admin/amenities/", payload);
+    return data;
+}
+
+/** force = true: xoá cả khi đang được dùng (gỡ khỏi mọi khách sạn / hạng phòng). */
+export async function deleteAdminAmenity(amenityId, force = false) {
+    await apiClient.delete(`/api/admin/amenities/${amenityId}/`, { params: { force: force || undefined } });
+}
+
+export const AMENITY_CATEGORIES = ["room", "internet", "food", "service", "wellness", "fitness", "recreation", "transport", "security"];
