@@ -1,24 +1,22 @@
-import { Route, Routes, Outlet } from "react-router-dom";
-// import AdminLayout from "../components/layouts/AdminLayout";
+import { Route, Routes } from "react-router-dom";
+import AdminLayout from "../components/layouts/AdminLayout";
+import AdminDashboard from "../pages/admin/Dashboard";
+import AdminBookings from "../pages/admin/Bookings";
+import AdminUsers from "../pages/admin/Users";
+import AdminPayments from "../pages/admin/Payments";
+import AdminMessages from "../pages/admin/Messages";
 
-function AdminLayoutShell() {
-    return (
-        <div className="bg-gray-100 min-h-screen p-5 border-l-4 border-red-500">
-            <h1 className="font-bold text-red-500 mb-4">GIAO DIỆN QUẢN TRỊ ADMIN (Khung tạm)</h1>
-            <hr />
-            <br />
-            <Outlet />
-        </div>
-    );
-}
-
+/** Đã được bọc bởi <PrivateRoute role="ADMIN"> trong AppRouter. */
 function AdminRoutes() {
     return (
         <Routes>
-            <Route element={<AdminLayoutShell />}>
-                <Route path="/" element={<h2>Trang Thống kê (Dashboard)</h2>} />
-                <Route path="/users" element={<h2>Màn hình Quản lý Người dùng</h2>} />
-                <Route path="*" element={<h2>404 - Admin không có trang này</h2>} />
+            <Route element={<AdminLayout />}>
+                <Route path="/" element={<AdminDashboard />} />
+                <Route path="/bookings" element={<AdminBookings />} />
+                <Route path="/users" element={<AdminUsers />} />
+                <Route path="/payments" element={<AdminPayments />} />
+                <Route path="/messages" element={<AdminMessages />} />
+                <Route path="*" element={<h2 className="text-xl font-bold text-gray-500">404 - Admin không có trang này</h2>} />
             </Route>
         </Routes>
     );
