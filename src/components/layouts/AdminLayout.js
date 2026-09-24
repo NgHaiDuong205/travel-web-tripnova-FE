@@ -6,6 +6,7 @@ const NAV_ITEMS = [
     { to: "/admin", label: "Dashboard", icon: "dashboard", end: true },
     { to: "/admin/hotels", label: "Hotels", icon: "apartment" },
     { to: "/admin/amenities", label: "Amenities", icon: "room_service" },
+    { to: "/admin/geography", label: "Geography", icon: "public" },
     { to: "/admin/bookings", label: "Bookings", icon: "book_online" },
     { to: "/admin/users", label: "Users", icon: "group" },
     { to: "/admin/payments", label: "Payments", icon: "payments" },
