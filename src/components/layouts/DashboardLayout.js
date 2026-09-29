@@ -72,6 +72,10 @@ function DashboardLayout({ children }) {
                             <span className="material-symbols-outlined">map</span>
                             <span className="font-medium text-sm tracking-wide">My Itineraries</span>
                         </Link>
+                        <Link to="/my-reviews" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/my-reviews' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
+                            <span className="material-symbols-outlined">rate_review</span>
+                            <span className="font-medium text-sm tracking-wide">My Reviews</span>
+                        </Link>
                         <Link to="/account-settings" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/account-settings' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">settings</span>
                             <span className="font-medium text-sm tracking-wide">Account Settings</span>

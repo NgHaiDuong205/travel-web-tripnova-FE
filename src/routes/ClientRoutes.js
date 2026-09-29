@@ -15,6 +15,7 @@ import PaymentHistory from "../pages/client/PaymentHistory/index";
 import SavedTrips from "../pages/client/SavedTrips/index";
 import Itineraries from "../pages/client/Itineraries/index";
 import ItineraryDetail from "../pages/client/ItineraryDetail/index";
+import MyReviews from "../pages/client/MyReviews/index";
 import AccountSettings from "../pages/client/AccountSettings/index";
 import Checkout from "../pages/client/Checkout/index";
 import Cart from "../pages/client/Cart/index";
@@ -33,6 +34,7 @@ function ClientRoutes() {
                 <Route path="/saved-trips" element={<SavedTrips />} />
                 <Route path="/itineraries" element={<Itineraries />} />
                 <Route path="/itineraries/:id" element={<ItineraryDetail />} />
+                <Route path="/my-reviews" element={<MyReviews />} />
                 <Route path="/account-settings" element={<AccountSettings />} />
             </Route>
             <Route element={<ClientLayout />}>

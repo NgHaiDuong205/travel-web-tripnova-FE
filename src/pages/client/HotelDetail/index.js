@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import RoomSearchPanel from "../../../components/client/RoomSearchPanel";
 import RoomCard from "../../../components/client/RoomCard";
 import FavoriteButton from "../../../components/common/FavoriteButton";
+import ReviewSection from "../../../components/client/ReviewSection";
 import { filterRooms } from "../../../constants/rooms";
 import { fetchHotelById } from "../../../services/hotelService";
 import { fetchRooms } from "../../../services/roomService";
@@ -241,63 +242,8 @@ function HotelDetail() {
                 </RoomSearchPanel>
             </section>
             
-            {/* Guest Chronicles */}
-            <section className="max-w-screen-xl mx-auto px-8 mb-24">
-                <h2 className="text-3xl font-headline font-bold mb-14">Guest Chronicles</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                    <div className="space-y-6">
-                        <div className="flex gap-1 text-tertiary-fixed-dim">
-                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
-                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
-                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
-                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
-                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
-                        </div>
-                        <p className="text-on-surface-variant italic leading-relaxed">"The service at this hotel is choreography in motion. We were greeted like old family and left with memories that will last a lifetime."</p>
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-surface-container-high"></div>
-                            <div>
-                                <p className="font-bold text-sm">Alexandra Sterling</p>
-                                <p className="text-xs text-on-surface-variant">London, UK</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="space-y-6">
-                        <div className="flex gap-1 text-tertiary-fixed-dim">
-                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
-                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
-                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
-                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
-                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
-                        </div>
-                        <p className="text-on-surface-variant italic leading-relaxed">"Waking up to the beautiful views from our room was spiritual. Worth every single cent."</p>
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-surface-container-high"></div>
-                            <div>
-                                <p className="font-bold text-sm">James Van der Bilt</p>
-                                <p className="text-xs text-on-surface-variant">New York, USA</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="space-y-6">
-                        <div className="flex gap-1 text-tertiary-fixed-dim">
-                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
-                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
-                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
-                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
-                            <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
-                        </div>
-                        <p className="text-on-surface-variant italic leading-relaxed">"Easily the best meal I've had in a long time. The sommelier’s knowledge is unparalleled."</p>
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-surface-container-high"></div>
-                            <div>
-                                <p className="font-bold text-sm">Elena Rossi</p>
-                                <p className="text-xs text-on-surface-variant">Milan, Italy</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            {/* Guest reviews */}
+            <ReviewSection entityType="hotel" entityId={hotelId} title="Guest Chronicles" />
         </main>
     );
 }

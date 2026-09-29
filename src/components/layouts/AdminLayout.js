@@ -12,6 +12,7 @@ const NAV_ITEMS = [
     { to: "/admin/roles", label: "Roles", icon: "admin_panel_settings" },
     { to: "/admin/payments", label: "Payments", icon: "payments" },
     { to: "/admin/messages", label: "Messages", icon: "mail" },
+    { to: "/admin/posts", label: "Reviews", icon: "reviews" },
 ];
 
 function AdminLayout() {
