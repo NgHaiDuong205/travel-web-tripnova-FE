@@ -38,7 +38,7 @@ function DashboardLayout({ children }) {
 
             <div className="flex pt-20">
                 {/* Sidebar Navigation */}
-                <aside className="hidden lg:flex flex-col gap-2 px-6 h-[calc(100vh-5rem)] w-72 fixed left-0 top-20 pt-8 pb-8 bg-surface-container-low">
+                <aside className="hidden lg:flex flex-col gap-2 px-6 h-[calc(100vh-5rem)] overflow-y-auto w-72 fixed left-0 top-20 pt-8 pb-8 bg-surface-container-low">
                     <div className="mb-10 px-2">
                         <div className="flex items-center gap-3">
                             <UserAvatar user={user} size="w-12 h-12" rounded="rounded-xl" />
@@ -74,6 +74,10 @@ function DashboardLayout({ children }) {
                         <Link to="/saved-trips" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/saved-trips' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">favorite</span>
                             <span className="font-medium text-sm tracking-wide">Saved Trips</span>
+                        </Link>
+                        <Link to="/trip-cart" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/trip-cart' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
+                            <span className="material-symbols-outlined">shopping_bag</span>
+                            <span className="font-medium text-sm tracking-wide">Trip Cart</span>
                         </Link>
                         <Link to="/itineraries" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname.startsWith('/itineraries') ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">map</span>

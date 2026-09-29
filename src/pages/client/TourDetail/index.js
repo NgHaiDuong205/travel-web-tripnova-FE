@@ -3,6 +3,9 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import BookingSummaryCard from "../../../components/catalog/BookingSummaryCard";
 import FormAlert from "../../../components/common/FormAlert";
+import FavoriteButton from "../../../components/common/FavoriteButton";
+import AddToTripCartButton from "../../../components/catalog/AddToTripCartButton";
+import ReviewSection from "../../../components/client/ReviewSection";
 import { PAYMENT_METHODS } from "../../../services/bookingService";
 import {
     createTourBooking,
@@ -207,9 +210,12 @@ function TourDetail() {
                     </Link>
                     <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
                         <div className="max-w-3xl">
-                            <span className="inline-block bg-tertiary-fixed text-on-tertiary-fixed text-[10px] px-3 py-1 rounded font-bold tracking-widest uppercase mb-4">
-                                {tour.durationDays}-Day Journey
-                            </span>
+                            <div className="flex items-center gap-3 mb-4">
+                                <span className="inline-block bg-tertiary-fixed text-on-tertiary-fixed text-[10px] px-3 py-1 rounded font-bold tracking-widest uppercase">
+                                    {tour.durationDays}-Day Journey
+                                </span>
+                                <FavoriteButton itemType="tour" itemId={id} />
+                            </div>
                             <h1 className="font-headline text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight mb-4">
                                 {tour.name}
                             </h1>
@@ -311,7 +317,11 @@ function TourDetail() {
                                         className="flex flex-col md:flex-row gap-6 bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all"
                                     >
                                         <div className="md:w-72 h-52 shrink-0 bg-surface-container-high">
-                                            <img src={h.imageUrl || PLACEHOLDER_IMAGE} alt={h.name} className="w-full h-full object-cover" />
+                                            <img
+                                                src={h.imageUrl || PLACEHOLDER_IMAGE}
+                                                alt={h.name}
+                                                className="w-full h-full object-cover"
+                                            />
                                         </div>
                                         <div className="p-6">
                                             <span className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
@@ -425,6 +435,8 @@ function TourDetail() {
                             )}
                         </section>
                     )}
+
+                    <ReviewSection entityType="tour" entityId={id} title="Traveller Reviews" />
                 </div>
 
                 {/* Booking summary */}
@@ -514,6 +526,23 @@ function TourDetail() {
                             ))}
                         </select>
                         <FormAlert>{formError}</FormAlert>
+                        <AddToTripCartButton
+                            itemType="tour"
+                            disabled={notEnough || !date}
+                            build={() => {
+                                if (!contact.name.trim()) throw new Error("Please enter the contact name.");
+                                return {
+                                    tourId: id,
+                                    departureDate: date,
+                                    numAdults: adults,
+                                    numChildren: children,
+                                    contactName: contact.name.trim(),
+                                    contactPhone: contact.phone.trim() || null,
+                                    contactEmail: contact.email.trim() || null,
+                                    specialRequests: contact.requests.trim() || null,
+                                };
+                            }}
+                        />
                     </BookingSummaryCard>
                 </div>
             </div>

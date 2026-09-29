@@ -6,6 +6,9 @@ import DetailBackLink from "../../../components/catalog/DetailBackLink";
 import InfoRow from "../../../components/catalog/InfoRow";
 import SpecTile from "../../../components/catalog/SpecTile";
 import FormAlert from "../../../components/common/FormAlert";
+import FavoriteButton from "../../../components/common/FavoriteButton";
+import AddToTripCartButton from "../../../components/catalog/AddToTripCartButton";
+import ReviewSection from "../../../components/client/ReviewSection";
 import { PAYMENT_METHODS } from "../../../services/bookingService";
 import { CAR_TYPE_LABELS, createCarBooking, fetchCar, fetchCarAvailability } from "../../../services/carService";
 import { formatDateTime, formatMoney } from "../../../utils/formatters";
@@ -13,7 +16,8 @@ import { localDateTimeFromToday, rentalDaysBetween, withSeconds } from "../../..
 
 const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1600&q=80";
 const FREE_CANCELLATION_HOURS = 48;
-const inputClass = "w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm font-medium focus:ring-2 focus:ring-primary-fixed-dim";
+const inputClass =
+    "w-full bg-surface-container-low border-none rounded-lg px-4 py-3 text-sm font-medium focus:ring-2 focus:ring-primary-fixed-dim";
 const capitalize = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "—");
 
 /** Chi tiết xe + khung đặt xe (theo CAR_DETAIL.HTML). Đặt xong chuyển tới trang thanh toán chung /trip-payment/:id. */
@@ -139,13 +143,17 @@ function CarDetail() {
                         <span className="material-symbols-outlined text-4xl">{car.withDriver ? "person_pin" : "key"}</span>
                         <div>
                             <p className="text-[10px] font-bold uppercase tracking-widest text-white/70 mb-1">Rental mode</p>
-                            <p className="font-headline text-2xl font-bold">{car.withDriver ? "Chauffeur included" : "Self-drive"}</p>
+                            <p className="font-headline text-2xl font-bold">
+                                {car.withDriver ? "Chauffeur included" : "Self-drive"}
+                            </p>
                         </div>
                     </div>
                     <div className="flex-1 rounded-xl bg-surface-container-low p-8 flex flex-col justify-between">
                         <span className="material-symbols-outlined text-4xl text-primary">location_on</span>
                         <div>
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">Based in</p>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">
+                                Based in
+                            </p>
                             <p className="font-headline text-2xl font-bold text-on-surface">
                                 {[car.destinationName, car.countryName].filter(Boolean).join(", ") || "Ask our team"}
                             </p>
@@ -167,9 +175,16 @@ function CarDetail() {
                                 </span>
                             )}
                         </div>
-                        <h1 className="text-5xl font-extrabold text-on-surface font-headline tracking-tighter mb-4 leading-tight">{car.name}</h1>
+                        <div className="flex items-start justify-between gap-4 mb-4">
+                            <h1 className="text-5xl font-extrabold text-on-surface font-headline tracking-tighter leading-tight">
+                                {car.name}
+                            </h1>
+                            <FavoriteButton itemType="car" itemId={car.id} className="shrink-0 mt-2" />
+                        </div>
                         {car.description && (
-                            <p className="text-on-surface-variant text-lg max-w-2xl leading-relaxed whitespace-pre-line">{car.description}</p>
+                            <p className="text-on-surface-variant text-lg max-w-2xl leading-relaxed whitespace-pre-line">
+                                {car.description}
+                            </p>
                         )}
                     </header>
 
@@ -177,7 +192,11 @@ function CarDetail() {
                         <SpecTile icon="settings_input_component" label="Transmission" value={capitalize(car.transmission)} />
                         <SpecTile icon="chair" label="Capacity" value={`${car.seats} Seats`} />
                         <SpecTile icon="ev_station" label="Fuel Type" value={capitalize(car.fuelType)} />
-                        <SpecTile icon={car.withDriver ? "person" : "badge"} label="Driver" value={car.withDriver ? "Included" : "Self-drive"} />
+                        <SpecTile
+                            icon={car.withDriver ? "person" : "badge"}
+                            label="Driver"
+                            value={car.withDriver ? "Included" : "Self-drive"}
+                        />
                     </section>
 
                     <section className="space-y-8">
@@ -202,12 +221,14 @@ function CarDetail() {
                                     <span className="text-xs font-bold text-primary">FULL REFUND</span>
                                 </div>
                                 <p className="text-on-surface-variant text-sm leading-relaxed">
-                                    Cancel up to {FREE_CANCELLATION_HOURS} hours before pick-up for a 100% refund. Unpaid reservations are held for
-                                    15 minutes.
+                                    Cancel up to {FREE_CANCELLATION_HOURS} hours before pick-up for a 100% refund. Unpaid
+                                    reservations are held for 15 minutes.
                                 </p>
                             </div>
                         </div>
                     </section>
+
+                    <ReviewSection entityType="car" entityId={car.id} title="Renter Reviews" />
                 </div>
 
                 <BookingSummaryCard
@@ -216,7 +237,12 @@ function CarDetail() {
                     priceSuffix="/ day"
                     rows={
                         days > 0
-                            ? [{ label: `${days} Day${days === 1 ? "" : "s"} Rental`, value: formatMoney(total, car.currencyCode) }]
+                            ? [
+                                  {
+                                      label: `${days} Day${days === 1 ? "" : "s"} Rental`,
+                                      value: formatMoney(total, car.currencyCode),
+                                  },
+                              ]
                             : []
                     }
                     total={days > 0 ? formatMoney(total, car.currencyCode) : null}
@@ -228,19 +254,34 @@ function CarDetail() {
                     footnoteIcon="flash_on"
                 >
                     <label className="block">
-                        <span className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1.5 ml-1">Pick-up</span>
+                        <span className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1.5 ml-1">
+                            Pick-up
+                        </span>
                         <input type="datetime-local" className={inputClass} value={form.pickup} onChange={set("pickup")} />
                     </label>
                     <label className="block">
-                        <span className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1.5 ml-1">Drop-off</span>
-                        <input type="datetime-local" className={inputClass} min={form.pickup} value={form.dropoff} onChange={set("dropoff")} />
+                        <span className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1.5 ml-1">
+                            Drop-off
+                        </span>
+                        <input
+                            type="datetime-local"
+                            className={inputClass}
+                            min={form.pickup}
+                            value={form.dropoff}
+                            onChange={set("dropoff")}
+                        />
                     </label>
                     {!car.withDriver && (
                         <label className="block">
                             <span className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1.5 ml-1">
                                 Driving licence no. *
                             </span>
-                            <input className={inputClass} maxLength={50} value={form.driverLicenseNo} onChange={set("driverLicenseNo")} />
+                            <input
+                                className={inputClass}
+                                maxLength={50}
+                                value={form.driverLicenseNo}
+                                onChange={set("driverLicenseNo")}
+                            />
                         </label>
                     )}
                     <label className="block">
@@ -256,7 +297,9 @@ function CarDetail() {
                         />
                     </label>
                     <label className="block">
-                        <span className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1.5 ml-1">Payment</span>
+                        <span className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1.5 ml-1">
+                            Payment
+                        </span>
                         <select className={inputClass} value={form.paymentMethod} onChange={set("paymentMethod")}>
                             {PAYMENT_METHODS.map((method) => (
                                 <option key={method.value} value={method.value}>
@@ -284,6 +327,22 @@ function CarDetail() {
                         </p>
                     )}
                     <FormAlert>{formError}</FormAlert>
+                    <AddToTripCartButton
+                        itemType="car"
+                        disabled={Boolean(periodError) || unavailable || checking}
+                        build={() => {
+                            if (!car.withDriver && !form.driverLicenseNo.trim())
+                                throw new Error("Please enter your driving licence number.");
+                            return {
+                                carId: car.id,
+                                pickupDate: withSeconds(form.pickup),
+                                returnDate: withSeconds(form.dropoff),
+                                pickupLocation: form.pickupLocation.trim() || null,
+                                driverLicenseNo: form.driverLicenseNo.trim() || null,
+                                specialRequests: form.specialRequests.trim() || null,
+                            };
+                        }}
+                    />
                 </BookingSummaryCard>
             </div>
         </main>

@@ -3,6 +3,9 @@ import { Link, useLocation, useNavigate, useParams, useSearchParams } from "reac
 import { useAuth } from "../../../context/AuthContext";
 import DetailBackLink from "../../../components/catalog/DetailBackLink";
 import FormAlert from "../../../components/common/FormAlert";
+import FavoriteButton from "../../../components/common/FavoriteButton";
+import AddToTripCartButton from "../../../components/catalog/AddToTripCartButton";
+import ReviewSection from "../../../components/client/ReviewSection";
 import { PAYMENT_METHODS } from "../../../services/bookingService";
 import {
     SEAT_CLASS_LABELS,
@@ -16,7 +19,8 @@ import { formatMoney } from "../../../utils/formatters";
 import { AirlineLogo, FlightTimeline } from "../../../components/catalog/FlightTimeline";
 
 const MAX_PASSENGERS = 9;
-const inputClass = "w-full bg-surface-container-low border-none rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-fixed-dim";
+const inputClass =
+    "w-full bg-surface-container-low border-none rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-fixed-dim";
 const rowOf = (seatNumber) => Number(String(seatNumber).replace(/\D/g, "")) || 0;
 const letterOf = (seatNumber) => String(seatNumber).replace(/\d/g, "");
 
@@ -50,7 +54,10 @@ function SeatMap({ seats, selected, onToggle, maxReached }) {
                     columns.map((col) => {
                         if (col === "aisle") {
                             return (
-                                <div key={`${row}-aisle`} className="flex items-center justify-center text-[10px] font-bold text-outline">
+                                <div
+                                    key={`${row}-aisle`}
+                                    className="flex items-center justify-center text-[10px] font-bold text-outline"
+                                >
                                     {row}
                                 </div>
                             );
@@ -75,10 +82,16 @@ function SeatMap({ seats, selected, onToggle, maxReached }) {
                                           : "bg-surface-container-high text-outline cursor-not-allowed"
                                 }`}
                             >
-                                {isSelected ? seat.seatNumber : free ? "" : <span className="material-symbols-outlined text-sm">close</span>}
+                                {isSelected ? (
+                                    seat.seatNumber
+                                ) : free ? (
+                                    ""
+                                ) : (
+                                    <span className="material-symbols-outlined text-sm">close</span>
+                                )}
                             </button>
                         );
-                    })
+                    }),
                 )}
             </div>
         </div>
@@ -110,7 +123,9 @@ function FlightDetail() {
         fetchFlight(id)
             .then((data) => {
                 setFlight(data);
-                setCabin((current) => (current && data.cabinClasses.includes(current) ? current : data.cabinClasses[0] || "economy"));
+                setCabin((current) =>
+                    current && data.cabinClasses.includes(current) ? current : data.cabinClasses[0] || "economy",
+                );
                 return fetchFlights({
                     from: data.departureAirportCode,
                     to: data.arrivalAirportCode,
@@ -122,7 +137,10 @@ function FlightDetail() {
             .catch((err) => setError(err.status === 404 ? "This flight is no longer on sale." : err.message));
     }, [id]);
 
-    const loadSeats = () => fetchFlightSeats(id).then(setSeats).catch((err) => setError(err.message));
+    const loadSeats = () =>
+        fetchFlightSeats(id)
+            .then(setSeats)
+            .catch((err) => setError(err.message));
     useEffect(() => {
         loadSeats();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -133,7 +151,13 @@ function FlightDetail() {
 
     const toggleSeat = (seat) => {
         setFormError("");
-        setSelected((prev) => (prev.some((s) => s.id === seat.id) ? prev.filter((s) => s.id !== seat.id) : prev.length < pax ? [...prev, seat] : prev));
+        setSelected((prev) =>
+            prev.some((s) => s.id === seat.id)
+                ? prev.filter((s) => s.id !== seat.id)
+                : prev.length < pax
+                  ? [...prev, seat]
+                  : prev,
+        );
     };
     const changePax = (delta) => {
         const next = Math.min(Math.max(pax + delta, 1), MAX_PASSENGERS);
@@ -148,33 +172,42 @@ function FlightDetail() {
     const setPassenger = (seatId, field, value) =>
         setPassengers((prev) => ({ ...prev, [seatId]: { ...prev[seatId], [field]: value } }));
 
+    /** Body đặt vé (chưa có paymentMethod); ném Error nếu chưa chọn đủ ghế hoặc thiếu tên hành khách. */
+    const buildBooking = () => {
+        if (selected.length !== pax) {
+            throw new Error(`Please choose ${pax} seat${pax > 1 ? "s" : ""} on the map.`);
+        }
+        const missing = selected.find((s, index) => !nameOf(s, index).trim());
+        if (missing) {
+            throw new Error(`Enter the passenger name for seat ${missing.seatNumber}.`);
+        }
+        return {
+            flightId: id,
+            passengers: selected.map((seat, index) => ({
+                seatId: seat.id,
+                passengerName: nameOf(seat, index).trim(),
+                passengerEmail: passengers[seat.id]?.passengerEmail?.trim() || null,
+                passportNo: passengers[seat.id]?.passportNo?.trim() || null,
+            })),
+        };
+    };
+
     const handleBook = async () => {
         if (!isLoggedIn) {
             navigate(`/login?redirect=${encodeURIComponent(location.pathname + location.search)}`);
             return;
         }
-        if (selected.length !== pax) {
-            setFormError(`Please choose ${pax} seat${pax > 1 ? "s" : ""} on the map.`);
-            return;
-        }
-        const missing = selected.find((s, index) => !nameOf(s, index).trim());
-        if (missing) {
-            setFormError(`Enter the passenger name for seat ${missing.seatNumber}.`);
+        let booking;
+        try {
+            booking = buildBooking();
+        } catch (err) {
+            setFormError(err.message);
             return;
         }
         setSubmitting(true);
         setFormError("");
         try {
-            const order = await createFlightBooking({
-                flightId: id,
-                paymentMethod,
-                passengers: selected.map((seat, index) => ({
-                    seatId: seat.id,
-                    passengerName: nameOf(seat, index).trim(),
-                    passengerEmail: passengers[seat.id]?.passengerEmail?.trim() || null,
-                    passportNo: passengers[seat.id]?.passportNo?.trim() || null,
-                })),
-            });
+            const order = await createFlightBooking({ ...booking, paymentMethod });
             navigate(`/trip-payment/${order.paymentId}`);
         } catch (err) {
             setFormError(err.details?.length ? err.details.join(" · ") : err.message);
@@ -207,7 +240,11 @@ function FlightDetail() {
         );
     }
 
-    const dateLabel = new Date(flight.departureTime).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+    const dateLabel = new Date(flight.departureTime).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    });
     const keepQuery = (flightId) => `/flights/${flightId}?${new URLSearchParams({ class: cabin, pax: String(pax) })}`;
 
     return (
@@ -215,19 +252,22 @@ function FlightDetail() {
             {/* Action bar */}
             <div className="flex flex-wrap items-center justify-between gap-6 mb-10">
                 <DetailBackLink to="/flights" label="Back to Flights" />
-                <div className="flex items-center gap-6 bg-surface-container-low rounded-xl px-6 py-3">
-                    <div>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Route</p>
-                        <p className="font-headline font-bold text-on-surface">
-                            {flight.departureCity || flight.departureAirportCode} ({flight.departureAirportCode}) →{" "}
-                            {flight.arrivalCity || flight.arrivalAirportCode} ({flight.arrivalAirportCode})
-                        </p>
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-6 bg-surface-container-low rounded-xl px-6 py-3">
+                        <div>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Route</p>
+                            <p className="font-headline font-bold text-on-surface">
+                                {flight.departureCity || flight.departureAirportCode} ({flight.departureAirportCode}) →{" "}
+                                {flight.arrivalCity || flight.arrivalAirportCode} ({flight.arrivalAirportCode})
+                            </p>
+                        </div>
+                        <div className="w-px h-8 bg-outline-variant/40" />
+                        <div>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Date</p>
+                            <p className="font-headline font-bold text-on-surface">{dateLabel}</p>
+                        </div>
                     </div>
-                    <div className="w-px h-8 bg-outline-variant/40" />
-                    <div>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Date</p>
-                        <p className="font-headline font-bold text-on-surface">{dateLabel}</p>
-                    </div>
+                    <FavoriteButton itemType="flight" itemId={flight.id} />
                 </div>
             </div>
 
@@ -242,7 +282,9 @@ function FlightDetail() {
                                 key={alt.id}
                                 to={keepQuery(alt.id)}
                                 className={`block rounded-xl p-5 transition-all ${
-                                    active ? "bg-surface-container-lowest border-2 border-primary shadow-lg" : "bg-surface-container-low hover:bg-surface-container"
+                                    active
+                                        ? "bg-surface-container-lowest border-2 border-primary shadow-lg"
+                                        : "bg-surface-container-low hover:bg-surface-container"
                                 }`}
                             >
                                 <div className="flex items-center gap-3 mb-4">
@@ -258,7 +300,9 @@ function FlightDetail() {
                                 <FlightTimeline flight={alt} compact />
                                 <div className="flex justify-between items-baseline mt-4">
                                     <span className="text-xs text-on-surface-variant">From</span>
-                                    <span className="font-headline font-black text-primary">{formatMoney(alt.fromPrice, alt.currencyCode)}</span>
+                                    <span className="font-headline font-black text-primary">
+                                        {formatMoney(alt.fromPrice, alt.currencyCode)}
+                                    </span>
                                 </div>
                             </Link>
                         );
@@ -269,19 +313,30 @@ function FlightDetail() {
                 <div className="lg:col-span-6 bg-surface-container-lowest rounded-xl p-8 shadow-sm">
                     <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
                         <div>
-                            <h3 className="font-headline text-2xl font-bold text-on-surface">{flight.aircraftType || "Cabin map"}</h3>
+                            <h3 className="font-headline text-2xl font-bold text-on-surface">
+                                {flight.aircraftType || "Cabin map"}
+                            </h3>
                             <p className="text-sm text-on-surface-variant">
-                                {flight.airline} {flight.flightNumber} · {formatDuration(flight.durationMinutes)} · {flight.availableSeats} seats left
+                                {flight.airline} {flight.flightNumber} · {formatDuration(flight.durationMinutes)} ·{" "}
+                                {flight.availableSeats} seats left
                             </p>
                         </div>
                         <div className="flex items-center gap-2 bg-surface-container-low rounded-full px-2 py-1">
-                            <button type="button" onClick={() => changePax(-1)} className="w-8 h-8 rounded-full hover:bg-surface-container-high font-bold">
+                            <button
+                                type="button"
+                                onClick={() => changePax(-1)}
+                                className="w-8 h-8 rounded-full hover:bg-surface-container-high font-bold"
+                            >
                                 −
                             </button>
                             <span className="text-sm font-bold px-1">
                                 {pax} passenger{pax > 1 ? "s" : ""}
                             </span>
-                            <button type="button" onClick={() => changePax(1)} className="w-8 h-8 rounded-full hover:bg-surface-container-high font-bold">
+                            <button
+                                type="button"
+                                onClick={() => changePax(1)}
+                                className="w-8 h-8 rounded-full hover:bg-surface-container-high font-bold"
+                            >
                                 +
                             </button>
                         </div>
@@ -296,17 +351,22 @@ function FlightDetail() {
                                     setSelected([]);
                                 }}
                                 className={`px-4 py-2 rounded-full border text-sm font-bold transition-all ${
-                                    cabin === cls ? "border-primary text-primary bg-primary-fixed/40" : "border-outline-variant hover:border-primary"
+                                    cabin === cls
+                                        ? "border-primary text-primary bg-primary-fixed/40"
+                                        : "border-outline-variant hover:border-primary"
                                 }`}
                             >
                                 {SEAT_CLASS_LABELS[cls] || cls}
                             </button>
                         ))}
-                        {flight.cabinClasses.length === 0 && <p className="text-sm text-error font-bold">This flight is sold out.</p>}
+                        {flight.cabinClasses.length === 0 && (
+                            <p className="text-sm text-error font-bold">This flight is sold out.</p>
+                        )}
                     </div>
                     <div className="flex flex-wrap gap-6 mb-8 text-xs font-bold text-on-surface-variant">
                         <span className="flex items-center gap-2">
-                            <span className="w-5 h-5 rounded border border-outline-variant bg-surface-container-lowest" /> Available
+                            <span className="w-5 h-5 rounded border border-outline-variant bg-surface-container-lowest" />{" "}
+                            Available
                         </span>
                         <span className="flex items-center gap-2">
                             <span className="w-5 h-5 rounded bg-surface-container-high flex items-center justify-center">
@@ -340,7 +400,9 @@ function FlightDetail() {
                                             <p className="text-sm font-bold">
                                                 Seat {seat.seatNumber} · {SEAT_CLASS_LABELS[seat.seatClass]}
                                             </p>
-                                            <span className="text-sm font-bold text-primary">{formatMoney(seat.price, flight.currencyCode)}</span>
+                                            <span className="text-sm font-bold text-primary">
+                                                {formatMoney(seat.price, flight.currencyCode)}
+                                            </span>
                                         </div>
                                         <input
                                             className={inputClass}
@@ -372,9 +434,7 @@ function FlightDetail() {
                         )}
                         <div className="space-y-3 text-sm">
                             <div className="flex justify-between">
-                                <span className="text-on-surface-variant">
-                                    Flight fare × {selected.length || pax}
-                                </span>
+                                <span className="text-on-surface-variant">Flight fare × {selected.length || pax}</span>
                                 <span className="font-bold">{formatMoney(total, flight.currencyCode)}</span>
                             </div>
                             <div className="flex justify-between">
@@ -382,8 +442,14 @@ function FlightDetail() {
                                 <span className="font-bold">Included</span>
                             </div>
                             <label className="block">
-                                <span className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Payment</span>
-                                <select className={inputClass} value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
+                                <span className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">
+                                    Payment
+                                </span>
+                                <select
+                                    className={inputClass}
+                                    value={paymentMethod}
+                                    onChange={(e) => setPaymentMethod(e.target.value)}
+                                >
                                     {PAYMENT_METHODS.map((m) => (
                                         <option key={m.value} value={m.value}>
                                             {m.label}
@@ -393,7 +459,9 @@ function FlightDetail() {
                             </label>
                             <div className="pt-4 border-t border-outline-variant/20 flex justify-between items-baseline">
                                 <span className="font-bold text-on-surface">Total</span>
-                                <span className="text-2xl font-black text-primary font-headline">{formatMoney(total, flight.currencyCode)}</span>
+                                <span className="text-2xl font-black text-primary font-headline">
+                                    {formatMoney(total, flight.currencyCode)}
+                                </span>
                             </div>
                         </div>
                         <FormAlert>{formError}</FormAlert>
@@ -405,6 +473,13 @@ function FlightDetail() {
                         >
                             {submitting ? "Processing..." : "Continue to Payment"}
                         </button>
+                        <div className="mt-3">
+                            <AddToTripCartButton
+                                itemType="flight"
+                                disabled={flight.cabinClasses.length === 0}
+                                build={buildBooking}
+                            />
+                        </div>
                         <p className="text-center text-[10px] text-on-surface-variant font-medium uppercase tracking-tighter mt-4">
                             <span className="material-symbols-outlined text-[14px] align-text-top mr-1">verified_user</span>
                             Free cancellation until 24h before departure
@@ -420,6 +495,10 @@ function FlightDetail() {
                         </p>
                     </div>
                 </div>
+            </div>
+
+            <div className="max-w-4xl mt-16">
+                <ReviewSection entityType="flight" entityId={flight.id} title="Passenger Reviews" />
             </div>
         </main>
     );

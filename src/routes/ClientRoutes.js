@@ -24,6 +24,7 @@ import FlightDetail from "../pages/client/FlightDetail/index";
 import Tours from "../pages/client/Tours/index";
 import TourDetail from "../pages/client/TourDetail/index";
 import TripPayment from "../pages/client/TripPayment/index";
+import TripCart from "../pages/client/TripCart/index";
 import MyReviews from "../pages/client/MyReviews/index";
 import AccountSettings from "../pages/client/AccountSettings/index";
 import Checkout from "../pages/client/Checkout/index";
@@ -77,6 +78,7 @@ function ClientRoutes() {
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/payment/:paymentId" element={<Payment />} />
                     <Route path="/trip-payment/:paymentId" element={<TripPayment />} />
+                    <Route path="/trip-cart" element={<TripCart />} />
                     <Route path="/bookings/:bookingId" element={<BookingDetail />} />
                 </Route>
 

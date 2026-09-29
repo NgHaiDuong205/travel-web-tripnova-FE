@@ -49,7 +49,7 @@ export function notificationStyle(type = "") {
     if (type.startsWith("payment_failed")) return { icon: "error", className: "bg-red-50 text-red-600" };
     if (type === "refund" || type === "payment_refunded" || type === "booking_refunded")
         return { icon: "currency_exchange", className: "bg-amber-50 text-amber-700" };
-    if (type.startsWith("booking_cancelled") || type === "booking_no_show")
+    if (type.startsWith("booking_cancelled") || type === "booking_no_show" || type === "booking_expired")
         return { icon: "event_busy", className: "bg-red-50 text-red-600" };
     if (type.startsWith("booking_")) return { icon: "event_available", className: "bg-blue-50 text-blue-700" };
     if (type === "post_approved") return { icon: "verified", className: "bg-green-50 text-green-700" };

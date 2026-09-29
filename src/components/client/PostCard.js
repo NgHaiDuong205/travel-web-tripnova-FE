@@ -12,7 +12,11 @@ import { formatDate } from "../../utils/formatters";
 // Trang DestinationDetail hiện dùng dữ liệu tĩnh (id không phải UUID) nên chưa liên kết destination.
 const ENTITY_LINKS = {
     hotel: (id) => `/hotel/${id}`,
+    tour: (id) => `/tours/${id}`,
+    car: (id) => `/cars/${id}`,
+    flight: (id) => `/flights/${id}`,
 };
+const VERIFIED_LABELS = { hotel: "Verified stay", tour: "Verified traveller", car: "Verified rental", flight: "Verified flyer" };
 
 /**
  * Một bài đánh giá: điểm, nội dung, ảnh, like/dislike, bình luận; tác giả được sửa / xoá.
@@ -94,7 +98,7 @@ function PostCard({ post, showEntity = false, onChange, onDeleted }) {
                         {post.isVerifiedBooking && (
                             <span className="inline-flex items-center gap-1 text-[11px] font-bold text-green-700">
                                 <span className="material-symbols-outlined text-[14px]">verified</span>
-                                Verified stay
+                                {VERIFIED_LABELS[post.entityType] || "Verified booking"}
                             </span>
                         )}
                         {!approved && <StatusBadge status={post.status} labels={POST_STATUS_LABELS} />}

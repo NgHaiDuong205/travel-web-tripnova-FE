@@ -17,7 +17,7 @@ import {
 import { formatDateTime } from "../../../utils/formatters";
 
 const PAGE_SIZE = 20;
-const ENTITY_TYPES = ["hotel", "destination", "landmark"];
+const ENTITY_TYPES = ["hotel", "destination", "landmark", "tour", "car", "flight"];
 const buttonClass = "px-3 py-1 rounded-lg text-xs font-bold border disabled:opacity-50";
 
 /** Hàng thao tác cho một bình luận (ẩn / hiện / xoá hẳn), dùng chung cho 2 tab. */
@@ -176,7 +176,7 @@ function PostsTab() {
                                     <p className="text-sm text-gray-500">
                                         {p.authorName} · {formatDateTime(p.createdAt)} · {p.entityType}:{" "}
                                         <span className="font-semibold text-gray-700">{p.entityName || "(deleted)"}</span>
-                                        {p.isVerifiedBooking && " · verified stay"}
+                                        {p.isVerifiedBooking && " · verified booking"}
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-3">
