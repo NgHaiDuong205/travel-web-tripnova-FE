@@ -52,6 +52,45 @@ export async function updateAdminUserRoles(userId, roles) {
     return data;
 }
 
+/** @param {{fullName, phone?, dateOfBirth?, gender?, avatarUrl?}} profile ghi đè toàn bộ các trường hồ sơ */
+export async function updateAdminUser(userId, profile) {
+    const { data } = await apiClient.put(`/api/admin/users/${userId}/`, profile);
+    return data;
+}
+
+/** Xoá mềm; 409 nếu user còn đặt phòng chưa kết thúc. */
+export async function deleteAdminUser(userId) {
+    await apiClient.delete(`/api/admin/users/${userId}/`);
+}
+
+export async function fetchAdminRoles() {
+    const { data } = await apiClient.get("/api/admin/roles/");
+    return data;
+}
+
+/** Tạo mới nếu không có id. */
+export async function saveAdminRole({ id, name, description }) {
+    const body = { name, description };
+    const { data } = id
+        ? await apiClient.put(`/api/admin/roles/${id}/`, body)
+        : await apiClient.post("/api/admin/roles/", body);
+    return data;
+}
+
+export async function deleteAdminRole(roleId) {
+    await apiClient.delete(`/api/admin/roles/${roleId}/`);
+}
+
+export async function updateAdminRolePermissions(roleId, permissionIds) {
+    const { data } = await apiClient.put(`/api/admin/roles/${roleId}/permissions/`, { permissionIds });
+    return data;
+}
+
+export async function fetchAdminPermissions() {
+    const { data } = await apiClient.get("/api/admin/permissions/");
+    return data;
+}
+
 export async function fetchAdminPayments({ status = "all", page = 1, limit = 20 } = {}) {
     const response = await apiClient.get("/api/admin/payments/", { params: { status, page, limit } });
     return readList(response);

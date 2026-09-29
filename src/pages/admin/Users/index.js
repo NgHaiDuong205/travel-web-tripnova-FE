@@ -1,20 +1,29 @@
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import FormAlert from "../../../components/common/FormAlert";
 import Pagination from "../../../components/common/Pagination";
 import UserAvatar from "../../../components/common/UserAvatar";
 import { useAuth } from "../../../context/AuthContext";
-import { ALL_ROLES, fetchAdminUsers, updateAdminUserRoles, updateAdminUserStatus } from "../../../services/adminService";
+import {
+    ALL_ROLES,
+    deleteAdminUser,
+    fetchAdminRoles,
+    fetchAdminUsers,
+    updateAdminUser,
+    updateAdminUserRoles,
+    updateAdminUserStatus,
+} from "../../../services/adminService";
 import { formatDateTime } from "../../../utils/formatters";
 
 const PAGE_SIZE = 20;
+const inputClass = "rounded-lg border-gray-200 text-sm";
 
-function RoleEditor({ user, onSave, onCancel, saving }) {
+function RoleEditor({ user, roleNames, onSave, onCancel, saving }) {
     const [roles, setRoles] = useState(user.roles);
     const toggle = (role) =>
         setRoles((prev) => (prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]));
     return (
         <div className="flex flex-wrap items-center gap-3">
-            {ALL_ROLES.map((role) => (
+            {roleNames.map((role) => (
                 <label key={role} className="flex items-center gap-1 text-xs font-semibold">
                     <input type="checkbox" checked={roles.includes(role)} onChange={() => toggle(role)} />
                     {role}
@@ -30,6 +39,50 @@ function RoleEditor({ user, onSave, onCancel, saving }) {
     );
 }
 
+function ProfileEditor({ user, onSave, onCancel, saving }) {
+    const [form, setForm] = useState({
+        fullName: user.fullName || "",
+        phone: user.phone || "",
+        dateOfBirth: user.dateOfBirth || "",
+        gender: user.gender || "",
+    });
+    const set = (name) => (e) => setForm((prev) => ({ ...prev, [name]: e.target.value }));
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // PUT ghi đè toàn bộ hồ sơ -> giữ nguyên avatar hiện tại
+        onSave({ ...form, fullName: form.fullName.trim(), dateOfBirth: form.dateOfBirth || null, avatarUrl: user.avatarUrl });
+    };
+    return (
+        <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-3 bg-blue-50/40 border border-blue-100 rounded-xl p-3">
+            <label className="text-xs font-bold text-gray-600 flex-1 min-w-[180px]">
+                Full name *
+                <input required maxLength={150} value={form.fullName} onChange={set("fullName")} className={`${inputClass} block w-full`} />
+            </label>
+            <label className="text-xs font-bold text-gray-600">
+                Phone
+                <input maxLength={20} value={form.phone} onChange={set("phone")} className={`${inputClass} block w-40`} />
+            </label>
+            <label className="text-xs font-bold text-gray-600">
+                Date of birth
+                <input type="date" value={form.dateOfBirth} onChange={set("dateOfBirth")} className={`${inputClass} block`} />
+            </label>
+            <label className="text-xs font-bold text-gray-600">
+                Gender
+                <select value={form.gender} onChange={set("gender")} className={`${inputClass} block`}>
+                    <option value="">—</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+            </label>
+            <button type="submit" disabled={saving} className="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold disabled:opacity-50">
+                {saving ? "Saving..." : "Save"}
+            </button>
+            <button type="button" onClick={onCancel} className="px-3 py-2 rounded-lg text-xs font-bold text-gray-500">Cancel</button>
+        </form>
+    );
+}
+
 function AdminUsers() {
     const { user: me } = useAuth();
     const [filters, setFilters] = useState({ q: "", role: "all", status: "all" });
@@ -39,7 +92,15 @@ function AdminUsers() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [editingId, setEditingId] = useState(null);
+    const [profileEditingId, setProfileEditingId] = useState(null);
     const [busyId, setBusyId] = useState(null);
+    const [roleNames, setRoleNames] = useState(ALL_ROLES);
+
+    useEffect(() => {
+        fetchAdminRoles()
+            .then((roles) => setRoleNames(roles.map((r) => r.name)))
+            .catch(() => {}); // giữ danh sách role hệ thống mặc định
+    }, []);
 
     const load = useCallback(async () => {
         setLoading(true);
@@ -91,6 +152,33 @@ function AdminUsers() {
         }
     };
 
+    const handleSaveProfile = async (u, profile) => {
+        setBusyId(u.id);
+        setError("");
+        try {
+            replaceUser(await updateAdminUser(u.id, profile));
+            setProfileEditingId(null);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setBusyId(null);
+        }
+    };
+
+    const handleDelete = async (u) => {
+        if (!window.confirm(`Xoá tài khoản ${u.email}? Tài khoản bị khoá vĩnh viễn, lịch sử đơn hàng được giữ lại.`)) return;
+        setBusyId(u.id);
+        setError("");
+        try {
+            await deleteAdminUser(u.id);
+            await load();
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setBusyId(null);
+        }
+    };
+
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-extrabold text-primary">Users</h1>
@@ -113,7 +201,7 @@ function AdminUsers() {
                 </form>
                 <select value={filters.role} onChange={(e) => changeFilter("role", e.target.value)} className="rounded-lg border-gray-200 text-sm">
                     <option value="all">All roles</option>
-                    {ALL_ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
+                    {roleNames.map((r) => <option key={r} value={r}>{r}</option>)}
                 </select>
                 <select value={filters.status} onChange={(e) => changeFilter("status", e.target.value)} className="rounded-lg border-gray-200 text-sm">
                     <option value="all">All statuses</option>
@@ -147,7 +235,8 @@ function AdminUsers() {
                             result.items.map((u) => {
                                 const isMe = u.id === me?.id;
                                 return (
-                                    <tr key={u.id} className="border-t border-gray-100">
+                                    <Fragment key={u.id}>
+                                    <tr className="border-t border-gray-100">
                                         <td className="px-4 py-3">
                                             <div className="flex items-center gap-3">
                                                 <UserAvatar user={u} size="w-9 h-9" textSize="text-xs" />
@@ -162,6 +251,7 @@ function AdminUsers() {
                                             {editingId === u.id ? (
                                                 <RoleEditor
                                                     user={u}
+                                                    roleNames={roleNames}
                                                     saving={busyId === u.id}
                                                     onSave={(roles) => handleSaveRoles(u, roles)}
                                                     onCancel={() => setEditingId(null)}
@@ -200,9 +290,37 @@ function AdminUsers() {
                                                         {u.isActive ? "Lock" : "Unlock"}
                                                     </button>
                                                 )}
+                                                {profileEditingId !== u.id && (
+                                                    <button type="button" onClick={() => setProfileEditingId(u.id)} className="px-3 py-1 rounded-lg text-xs font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">
+                                                        Edit
+                                                    </button>
+                                                )}
+                                                {!isMe && (
+                                                    <button
+                                                        type="button"
+                                                        disabled={busyId === u.id}
+                                                        onClick={() => handleDelete(u)}
+                                                        className="px-3 py-1 rounded-lg text-xs font-bold border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
+                                    {profileEditingId === u.id && (
+                                        <tr>
+                                            <td colSpan={6} className="px-4 pb-4">
+                                                <ProfileEditor
+                                                    user={u}
+                                                    saving={busyId === u.id}
+                                                    onSave={(profile) => handleSaveProfile(u, profile)}
+                                                    onCancel={() => setProfileEditingId(null)}
+                                                />
+                                            </td>
+                                        </tr>
+                                    )}
+                                    </Fragment>
                                 );
                             })}
                     </tbody>

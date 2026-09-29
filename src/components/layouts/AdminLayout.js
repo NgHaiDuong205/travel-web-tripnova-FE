@@ -9,6 +9,7 @@ const NAV_ITEMS = [
     { to: "/admin/geography", label: "Geography", icon: "public" },
     { to: "/admin/bookings", label: "Bookings", icon: "book_online" },
     { to: "/admin/users", label: "Users", icon: "group" },
+    { to: "/admin/roles", label: "Roles", icon: "admin_panel_settings" },
     { to: "/admin/payments", label: "Payments", icon: "payments" },
     { to: "/admin/messages", label: "Messages", icon: "mail" },
 ];
