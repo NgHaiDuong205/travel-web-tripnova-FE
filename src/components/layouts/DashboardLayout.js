@@ -64,6 +64,10 @@ function DashboardLayout({ children }) {
                             <span className="material-symbols-outlined">payments</span>
                             <span className="font-medium text-sm tracking-wide">Payment History</span>
                         </Link>
+                        <Link to="/my-trips" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/my-trips' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
+                            <span className="material-symbols-outlined">luggage</span>
+                            <span className="font-medium text-sm tracking-wide">My Trips</span>
+                        </Link>
                         <Link to="/invoices" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/invoices' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">receipt_long</span>
                             <span className="font-medium text-sm tracking-wide">Invoices</span>

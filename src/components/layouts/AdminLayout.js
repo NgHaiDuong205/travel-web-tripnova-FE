@@ -5,6 +5,7 @@ import UserAvatar from "../common/UserAvatar";
 const NAV_ITEMS = [
     { to: "/admin", label: "Dashboard", icon: "dashboard", end: true },
     { to: "/admin/hotels", label: "Hotels", icon: "apartment" },
+    { to: "/admin/cars", label: "Cars", icon: "directions_car" },
     { to: "/admin/amenities", label: "Amenities", icon: "room_service" },
     { to: "/admin/geography", label: "Geography", icon: "public" },
     { to: "/admin/bookings", label: "Bookings", icon: "book_online" },

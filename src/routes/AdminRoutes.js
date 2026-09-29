@@ -12,6 +12,7 @@ import AdminGeography from "../pages/admin/Geography";
 import AdminRoles from "../pages/admin/Roles";
 import AdminPosts from "../pages/admin/Posts";
 import AdminInvoices from "../pages/admin/Invoices";
+import AdminCars from "../pages/admin/Cars";
 
 /** Đã được bọc bởi <PrivateRoute role="ADMIN"> trong AppRouter. */
 function AdminRoutes() {
@@ -22,6 +23,7 @@ function AdminRoutes() {
                 <Route path="/hotels" element={<AdminHotels />} />
                 <Route path="/hotels/new" element={<AdminHotelEdit />} />
                 <Route path="/hotels/:hotelId" element={<AdminHotelEdit />} />
+                <Route path="/cars" element={<AdminCars />} />
                 <Route path="/amenities" element={<AdminAmenities />} />
                 <Route path="/geography" element={<AdminGeography />} />
                 <Route path="/bookings" element={<AdminBookings />} />

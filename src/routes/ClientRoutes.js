@@ -16,6 +16,10 @@ import SavedTrips from "../pages/client/SavedTrips/index";
 import Itineraries from "../pages/client/Itineraries/index";
 import ItineraryDetail from "../pages/client/ItineraryDetail/index";
 import Invoices from "../pages/client/Invoices/index";
+import MyTrips from "../pages/client/MyTrips/index";
+import Cars from "../pages/client/Cars/index";
+import CarDetail from "../pages/client/CarDetail/index";
+import TripPayment from "../pages/client/TripPayment/index";
 import MyReviews from "../pages/client/MyReviews/index";
 import AccountSettings from "../pages/client/AccountSettings/index";
 import Checkout from "../pages/client/Checkout/index";
@@ -33,6 +37,7 @@ function ClientRoutes() {
                 <Route path="/booking-history" element={<BookingHistory />} />
                 <Route path="/payment-history" element={<PaymentHistory />} />
                 <Route path="/invoices" element={<Invoices />} />
+                <Route path="/my-trips" element={<MyTrips />} />
                 <Route path="/saved-trips" element={<SavedTrips />} />
                 <Route path="/itineraries" element={<Itineraries />} />
                 <Route path="/itineraries/:id" element={<ItineraryDetail />} />
@@ -48,6 +53,8 @@ function ClientRoutes() {
                 <Route path="/contacts" element={<Contact />} />
                 <Route path="/hotel/:id" element={<HotelDetail />} />
                 <Route path="/rooms" element={<Rooms />} />
+                <Route path="/cars" element={<Cars />} />
+                <Route path="/cars/:id" element={<CarDetail />} />
                 <Route path="/hotel/:hotelId/room/:roomId" element={<RoomDetail />} />
 
                 {/* Đặt phòng & thanh toán — bắt buộc đăng nhập */}
@@ -55,6 +62,7 @@ function ClientRoutes() {
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/payment/:paymentId" element={<Payment />} />
+                    <Route path="/trip-payment/:paymentId" element={<TripPayment />} />
                     <Route path="/bookings/:bookingId" element={<BookingDetail />} />
                 </Route>
 

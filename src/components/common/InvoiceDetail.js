@@ -30,9 +30,9 @@ function InvoiceDetail({ invoice, bookingLink }) {
                 <table className="w-full text-left">
                     <thead>
                         <tr className="text-[11px] uppercase tracking-wider text-on-surface-variant border-b border-outline-variant/30">
-                            <th className="py-2 pr-3">Hotel / room</th>
-                            <th className="py-2 pr-3">Stay</th>
-                            <th className="py-2 pr-3">Nights</th>
+                            <th className="py-2 pr-3">Item</th>
+                            <th className="py-2 pr-3">Period</th>
+                            <th className="py-2 pr-3">Nights / days</th>
                             <th className="py-2 pr-3">Status</th>
                             <th className="py-2 text-right">Amount</th>
                         </tr>
@@ -41,12 +41,15 @@ function InvoiceDetail({ invoice, bookingLink }) {
                         {(invoice.items || []).map((item) => (
                             <tr key={item.bookingId} className="border-b border-outline-variant/20 align-top">
                                 <td className="py-2 pr-3">
-                                    {bookingLink ? (
-                                        <Link to={bookingLink(item.bookingId)} className="font-bold text-primary hover:underline">{item.hotelName}</Link>
+                                    {bookingLink && item.itemType !== "car" ? (
+                                        <Link to={bookingLink(item.bookingId)} className="font-bold text-primary hover:underline">{item.title || item.hotelName}</Link>
                                     ) : (
-                                        <span className="font-bold">{item.hotelName}</span>
+                                        <span className="font-bold">{item.title || item.hotelName}</span>
                                     )}
-                                    <p className="text-xs text-on-surface-variant">{item.roomTypeName} · {item.guests} guest{item.guests === 1 ? "" : "s"}</p>
+                                    <p className="text-xs text-on-surface-variant">
+                                        {item.subtitle || item.roomTypeName}
+                                        {item.guests != null && ` · ${item.guests} guest${item.guests === 1 ? "" : "s"}`}
+                                    </p>
                                 </td>
                                 <td className="py-2 pr-3 whitespace-nowrap">{formatDate(item.checkInDate)} → {formatDate(item.checkOutDate)}</td>
                                 <td className="py-2 pr-3">{item.nights}</td>
