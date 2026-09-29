@@ -13,6 +13,8 @@ import Profile from "../pages/client/Profile/index";
 import BookingHistory from "../pages/client/BookingHistory/index";
 import PaymentHistory from "../pages/client/PaymentHistory/index";
 import SavedTrips from "../pages/client/SavedTrips/index";
+import Itineraries from "../pages/client/Itineraries/index";
+import ItineraryDetail from "../pages/client/ItineraryDetail/index";
 import AccountSettings from "../pages/client/AccountSettings/index";
 import Checkout from "../pages/client/Checkout/index";
 import Contact from "../pages/client/Contact/index";
@@ -28,6 +30,8 @@ function ClientRoutes() {
                 <Route path="/booking-history" element={<BookingHistory />} />
                 <Route path="/payment-history" element={<PaymentHistory />} />
                 <Route path="/saved-trips" element={<SavedTrips />} />
+                <Route path="/itineraries" element={<Itineraries />} />
+                <Route path="/itineraries/:id" element={<ItineraryDetail />} />
                 <Route path="/account-settings" element={<AccountSettings />} />
             </Route>
             <Route element={<ClientLayout />}>
