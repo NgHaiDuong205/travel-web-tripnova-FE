@@ -10,6 +10,33 @@ export async function fetchAdminDashboard() {
     return data;
 }
 
+/** Khoảng [from, to] (yyyy-MM-dd, tính cả 2 đầu), granularity: day | week | month. */
+export async function fetchAdminStatistics({ from, to, granularity }) {
+    const { data } = await apiClient.get("/api/admin/dashboard/statistics/", { params: { from, to, granularity } });
+    return data;
+}
+
+/** [{date, revenue, transactions}] — date là ngày đầu kỳ. */
+export async function fetchAdminRevenue({ from, to, groupBy }) {
+    const { data } = await apiClient.get("/api/admin/dashboard/revenue/", { params: { from, to, groupBy } });
+    return data;
+}
+
+export async function fetchAdminTopHotels({ from, to, limit = 5 }) {
+    const { data } = await apiClient.get("/api/admin/dashboard/top-hotels/", { params: { from, to, limit } });
+    return data;
+}
+
+export async function fetchAdminTopDestinations({ from, to, limit = 5 }) {
+    const { data } = await apiClient.get("/api/admin/dashboard/top-destinations/", { params: { from, to, limit } });
+    return data;
+}
+
+export async function fetchAdminRecentPayments(limit = 8) {
+    const { data } = await apiClient.get("/api/admin/dashboard/recent-payments/", { params: { limit } });
+    return data;
+}
+
 /** @param {{status?, q?, page?, limit?}} filters */
 export async function fetchAdminBookings({ status = "all", q = "", page = 1, limit = 20 } = {}) {
     const response = await apiClient.get("/api/admin/hotel-bookings/", {

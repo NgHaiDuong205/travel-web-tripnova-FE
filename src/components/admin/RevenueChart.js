@@ -8,7 +8,7 @@ const HEIGHT = 200;
  * Cột doanh thu theo ngày (1 chuỗi, 1 màu — không cần chú giải).
  * Hover cột để xem tooltip; bảng số liệu nằm trong <details> cho người không đọc được biểu đồ.
  */
-function RevenueChart({ points, currency }) {
+function RevenueChart({ points, currency, emptyText = "Chưa có doanh thu trong 30 ngày qua" }) {
     const [hover, setHover] = useState(null);
     const max = Math.max(...points.map((p) => Number(p.revenue)), 0);
     const hasData = max > 0;
@@ -20,7 +20,7 @@ function RevenueChart({ points, currency }) {
                 <div className="absolute left-0 right-0 border-t border-gray-200" style={{ top: HEIGHT }} />
                 {!hasData && (
                     <p className="absolute inset-0 flex items-center justify-center text-sm text-gray-400" style={{ height: HEIGHT }}>
-                        Chưa có doanh thu trong 30 ngày qua
+                        {emptyText}
                     </p>
                 )}
                 <div className="absolute inset-x-0 top-0 flex items-end gap-[2px]" style={{ height: HEIGHT }}>
