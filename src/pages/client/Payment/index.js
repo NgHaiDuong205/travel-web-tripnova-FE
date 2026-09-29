@@ -32,7 +32,8 @@ function Payment() {
             const result = await confirmMockPayment(paymentId, success);
             setPayment(result);
             if (result.bookingId && result.status !== "pending") {
-                navigate(`/bookings/${result.bookingId}`, { replace: true });
+                // Đơn từ giỏ hàng có nhiều booking -> xem cả danh sách
+                navigate(result.bookingCount > 1 ? "/booking-history" : `/bookings/${result.bookingId}`, { replace: true });
             }
         } catch (err) {
             setError(err.message);
@@ -105,10 +106,10 @@ function Payment() {
                 ) : (
                     payment.bookingId && (
                         <Link
-                            to={`/bookings/${payment.bookingId}`}
+                            to={payment.bookingCount > 1 ? "/booking-history" : `/bookings/${payment.bookingId}`}
                             className="block text-center w-full bg-[#003580] text-white py-4 rounded-lg font-bold hover:bg-blue-800"
                         >
-                            View booking
+                            {payment.bookingCount > 1 ? `View ${payment.bookingCount} bookings` : "View booking"}
                         </Link>
                     )
                 )}

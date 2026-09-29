@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { checkHotelAvailability, createHotelBooking, PAYMENT_METHODS } from "../../../services/bookingService";
+import { addCartItem } from "../../../services/cartService";
 import { fetchHotelById } from "../../../services/hotelService";
 import { fetchRoomDetails } from "../../../services/roomService";
 import { useAuth } from "../../../context/AuthContext";
@@ -32,6 +33,7 @@ function Checkout() {
     const [quoteError, setQuoteError] = useState("");
     const [error, setError] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    const [addingToCart, setAddingToCart] = useState(false);
 
     const nights = nightsBetween(form.checkIn, form.checkOut);
 
@@ -103,6 +105,33 @@ function Checkout() {
             setError(err.message || "Không tạo được đặt phòng.");
         } finally {
             setSubmitting(false);
+        }
+    };
+
+    // Giỏ hàng đặt theo loại phòng (không giữ phòng cụ thể), số khách là tổng cho các phòng.
+    const handleAddToCart = async () => {
+        if (form.adults + form.children > maxGuests) {
+            setError(`Phòng chỉ chứa tối đa ${maxGuests} khách.`);
+            return;
+        }
+        setAddingToCart(true);
+        setError("");
+        try {
+            await addCartItem({
+                itemType: "hotel",
+                hotelId,
+                roomTypeId,
+                checkIn: form.checkIn,
+                checkOut: form.checkOut,
+                quantity: 1,
+                adults: form.adults,
+                children: form.children,
+                specialRequests: form.specialRequests.trim() || undefined,
+            });
+            navigate("/cart");
+        } catch (err) {
+            setError(err.message || "Không thêm được vào giỏ hàng.");
+            setAddingToCart(false);
         }
     };
 
@@ -272,8 +301,17 @@ function Checkout() {
                         >
                             {submitting ? "Creating booking..." : "Continue to payment"}
                         </button>
+                        <button
+                            type="button"
+                            onClick={handleAddToCart}
+                            disabled={!canSubmit || addingToCart}
+                            className="w-full border-2 border-[#003580] text-[#003580] py-3 rounded-lg font-bold tracking-wide hover:bg-blue-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        >
+                            <span className="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+                            {addingToCart ? "Adding..." : "Add to cart"}
+                        </button>
                         <p className="text-xs text-center text-gray-500">
-                            Phòng được giữ 15 phút sau khi bạn bấm tiếp tục.
+                            Phòng được giữ 15 phút sau khi bạn bấm tiếp tục. Thêm vào giỏ thì chưa giữ phòng.
                         </p>
                     </div>
                 </aside>

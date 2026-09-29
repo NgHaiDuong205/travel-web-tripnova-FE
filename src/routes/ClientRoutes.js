@@ -17,6 +17,7 @@ import Itineraries from "../pages/client/Itineraries/index";
 import ItineraryDetail from "../pages/client/ItineraryDetail/index";
 import AccountSettings from "../pages/client/AccountSettings/index";
 import Checkout from "../pages/client/Checkout/index";
+import Cart from "../pages/client/Cart/index";
 import Contact from "../pages/client/Contact/index";
 import Payment from "../pages/client/Payment/index";
 import BookingDetail from "../pages/client/BookingDetail/index";
@@ -48,6 +49,7 @@ function ClientRoutes() {
                 {/* Đặt phòng & thanh toán — bắt buộc đăng nhập */}
                 <Route element={<PrivateRoute />}>
                     <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/cart" element={<Cart />} />
                     <Route path="/payment/:paymentId" element={<Payment />} />
                     <Route path="/bookings/:bookingId" element={<BookingDetail />} />
                 </Route>

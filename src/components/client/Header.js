@@ -32,6 +32,9 @@ function Header(){
                                     Admin
                                 </Link>
                             )}
+                            <Link to="/cart" aria-label="Cart" className="w-9 h-9 flex items-center justify-center rounded-lg text-[#434651] hover:text-[#003580] hover:bg-blue-50 transition-colors">
+                                <span className="material-symbols-outlined">shopping_cart</span>
+                            </Link>
                             <Link to="/profile" className="flex items-center gap-2 cursor-pointer font-bold text-[#003580] hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors">
                                 <div className="w-8 h-8 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center border border-blue-200">
                                     <span className="material-symbols-outlined text-[18px]">person</span>
