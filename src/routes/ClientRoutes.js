@@ -19,6 +19,8 @@ import Invoices from "../pages/client/Invoices/index";
 import MyTrips from "../pages/client/MyTrips/index";
 import Cars from "../pages/client/Cars/index";
 import CarDetail from "../pages/client/CarDetail/index";
+import Flights from "../pages/client/Flights/index";
+import FlightDetail from "../pages/client/FlightDetail/index";
 import TripPayment from "../pages/client/TripPayment/index";
 import MyReviews from "../pages/client/MyReviews/index";
 import AccountSettings from "../pages/client/AccountSettings/index";
@@ -55,6 +57,8 @@ function ClientRoutes() {
                 <Route path="/rooms" element={<Rooms />} />
                 <Route path="/cars" element={<Cars />} />
                 <Route path="/cars/:id" element={<CarDetail />} />
+                <Route path="/flights" element={<Flights />} />
+                <Route path="/flights/:id" element={<FlightDetail />} />
                 <Route path="/hotel/:hotelId/room/:roomId" element={<RoomDetail />} />
 
                 {/* Đặt phòng & thanh toán — bắt buộc đăng nhập */}

@@ -5,6 +5,8 @@ import FormAlert from "../../../components/common/FormAlert";
 import Pagination from "../../../components/common/Pagination";
 import StatusBadge from "../../../components/common/StatusBadge";
 import { BOOKING_STATUS_LABELS, cancelCarBooking, fetchMyCarBookings } from "../../../services/carService";
+import { SEAT_CLASS_LABELS, cancelFlightBooking, fetchMyFlightBookings } from "../../../services/flightService";
+import { AirlineLogo, FlightTimeline, flightDateLabel } from "../../../components/catalog/FlightTimeline";
 import { formatDateTime, formatMoney } from "../../../utils/formatters";
 
 const PAGE_SIZE = 10;
@@ -109,9 +111,125 @@ function CarTripCard({ booking, highlighted, onChanged }) {
     );
 }
 
-/** Các chuyến đã đặt ngoài khách sạn (hiện có: thuê xe). Khách sạn vẫn ở Booking History. */
+/** Một vé máy bay (một hành khách) trong My Trips. */
+function FlightTripCard({ booking, highlighted, onChanged }) {
+    const [busy, setBusy] = useState(false);
+    const [error, setError] = useState("");
+
+    const handleCancel = async () => {
+        const question =
+            booking.status === "confirmed"
+                ? `Cancel the ticket of ${booking.passengerName}? You will receive a full refund.`
+                : "Cancel this reservation? All passengers of this order will be cancelled.";
+        if (!window.confirm(question)) return;
+        setBusy(true);
+        setError("");
+        try {
+            onChanged(await cancelFlightBooking(booking.id));
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setBusy(false);
+        }
+    };
+
+    const flight = {
+        airline: booking.airline,
+        airlineLogoUrl: booking.airlineLogoUrl,
+        departureTime: booking.departureTime,
+        arrivalTime: booking.arrivalTime,
+        departureAirportCode: booking.departureAirportCode,
+        arrivalAirportCode: booking.arrivalAirportCode,
+        departureCity: booking.departureCity,
+        arrivalCity: booking.arrivalCity,
+        durationMinutes: Math.round((new Date(booking.arrivalTime) - new Date(booking.departureTime)) / 60000),
+    };
+
+    return (
+        <article
+            id={`trip-${booking.id}`}
+            className={`scroll-mt-28 bg-surface-container-lowest rounded-xl border p-6 space-y-4 ${
+                highlighted ? "border-primary shadow-lg" : "border-outline-variant/20"
+            }`}
+        >
+            <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                    <AirlineLogo flight={flight} size="w-12 h-12" />
+                    <div>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
+                            Flight · {booking.orderCode}
+                        </p>
+                        <h3 className="font-headline text-xl font-bold text-primary">
+                            {booking.airline} {booking.flightNumber}
+                        </h3>
+                        <p className="text-xs text-on-surface-variant">{flightDateLabel(booking.departureTime)}</p>
+                    </div>
+                </div>
+                <StatusBadge status={booking.status} labels={BOOKING_STATUS_LABELS} />
+            </div>
+            <FlightTimeline flight={flight} />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Passenger</p>
+                    <p className="font-semibold">{booking.passengerName}</p>
+                    {booking.passportNo && <p className="text-xs text-on-surface-variant">Passport {booking.passportNo}</p>}
+                </div>
+                <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Seat</p>
+                    <p className="font-semibold">
+                        {booking.seatNumber || "—"} {booking.seatClass ? `· ${SEAT_CLASS_LABELS[booking.seatClass] || booking.seatClass}` : ""}
+                    </p>
+                </div>
+                <div className="sm:text-right">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Fare</p>
+                    <p className="font-headline text-xl font-black text-primary">{formatMoney(booking.totalPrice, booking.currencyCode)}</p>
+                </div>
+            </div>
+            {error && <p className="text-xs text-error">{error}</p>}
+            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-outline-variant/20">
+                {booking.status === "confirmed" && booking.cancellable && (
+                    <span className="text-xs text-on-surface-variant mr-auto">
+                        Free cancellation until {formatDateTime(booking.freeCancellationUntil)}
+                    </span>
+                )}
+                {booking.status === "pending" && booking.paymentId && (
+                    <Link to={`/trip-payment/${booking.paymentId}`} className="editorial-gradient text-white px-4 py-2 rounded-lg text-xs font-bold">
+                        Pay now
+                    </Link>
+                )}
+                {booking.cancellable && (
+                    <button
+                        type="button"
+                        disabled={busy}
+                        onClick={handleCancel}
+                        className="px-4 py-2 rounded-lg text-xs font-bold text-error border border-error/30 hover:bg-error-container/40 disabled:opacity-50"
+                    >
+                        {busy ? "Cancelling..." : "Cancel"}
+                    </button>
+                )}
+            </div>
+        </article>
+    );
+}
+
+/** Loại chuyến trong My Trips: nguồn dữ liệu + thẻ hiển thị. */
+const TRIP_TYPES = {
+    cars: { label: "Cars", icon: "directions_car", fetch: fetchMyCarBookings, Card: CarTripCard, browse: "/cars", browseLabel: "Browse cars" },
+    flights: {
+        label: "Flights",
+        icon: "flight",
+        fetch: fetchMyFlightBookings,
+        Card: FlightTripCard,
+        browse: "/flights",
+        browseLabel: "Search flights",
+    },
+};
+
+/** Các chuyến đã đặt ngoài khách sạn (xe, vé máy bay; tab theo ?tab=). Khách sạn vẫn ở Booking History. */
 function MyTrips() {
     const [params, setParams] = useSearchParams();
+    const tab = TRIP_TYPES[params.get("tab")] ? params.get("tab") : "cars";
+    const type = TRIP_TYPES[tab];
     const status = params.get("status") || "all";
     const page = Number(params.get("page") || 1);
     const paidId = params.get("paid");
@@ -123,14 +241,14 @@ function MyTrips() {
         let cancelled = false;
         setLoading(true);
         setError("");
-        fetchMyCarBookings({ status, page, limit: PAGE_SIZE })
+        type.fetch({ status, page, limit: PAGE_SIZE })
             .then((data) => !cancelled && setResult(data))
             .catch((err) => !cancelled && setError(err.message))
             .finally(() => !cancelled && setLoading(false));
         return () => {
             cancelled = true;
         };
-    }, [status, page]);
+    }, [type, status, page]);
 
     // Vừa thanh toán xong: cuộn tới đơn đó (danh sách xếp theo ngày nhận xe nên có thể không nằm đầu trang).
     useEffect(() => {
@@ -138,6 +256,9 @@ function MyTrips() {
             document.getElementById(`trip-${paidId}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
         }
     }, [paidId, loading]);
+
+    // Vé máy bay: cả order (nhiều hành khách) được đánh dấu cùng lúc.
+    const paidOrderId = result.items.find((b) => b.id === paidId)?.orderId ?? null;
 
     const setFilter = (changes) => {
         const next = new URLSearchParams(params);
@@ -151,10 +272,26 @@ function MyTrips() {
             <section className="mb-10">
                 <span className="text-[0.75rem] uppercase tracking-[0.2em] text-on-tertiary-fixed-variant mb-2 block">Journeys</span>
                 <h1 className="font-headline text-5xl font-extrabold text-on-surface tracking-tight mb-2">My Trips</h1>
-                <p className="text-on-surface-variant text-lg">Car rentals and other reservations. Hotel stays are in Booking History.</p>
+                <p className="text-on-surface-variant text-lg">Car rentals, flights and other reservations. Hotel stays are in Booking History.</p>
             </section>
 
             {paidId && <FormAlert type="success">Payment received — your reservation is confirmed.</FormAlert>}
+
+            <div className="flex gap-2 border-b border-outline-variant/30 mt-6">
+                {Object.entries(TRIP_TYPES).map(([key, t]) => (
+                    <button
+                        key={key}
+                        type="button"
+                        onClick={() => setParams(new URLSearchParams({ tab: key }))}
+                        className={`flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 -mb-px transition-colors ${
+                            tab === key ? "border-primary text-primary" : "border-transparent text-on-surface-variant hover:text-on-surface"
+                        }`}
+                    >
+                        <span className="material-symbols-outlined text-[20px]">{t.icon}</span>
+                        {t.label}
+                    </button>
+                ))}
+            </div>
 
             <div className="flex flex-wrap gap-2 my-6">
                 {STATUS_TABS.map((tab) => (
@@ -181,19 +318,19 @@ function MyTrips() {
                 </div>
             ) : result.items.length === 0 ? (
                 <div className="text-center py-16 bg-surface-container-low rounded-xl">
-                    <span className="material-symbols-outlined text-5xl text-outline mb-3">directions_car</span>
+                    <span className="material-symbols-outlined text-5xl text-outline mb-3">{type.icon}</span>
                     <p className="text-on-surface-variant mb-4">No trips here yet.</p>
-                    <Link to="/cars" className="text-sm font-bold text-primary hover:underline">
-                        Browse cars
+                    <Link to={type.browse} className="text-sm font-bold text-primary hover:underline">
+                        {type.browseLabel}
                     </Link>
                 </div>
             ) : (
                 <div className="space-y-4">
                     {result.items.map((booking) => (
-                        <CarTripCard
+                        <type.Card
                             key={booking.id}
                             booking={booking}
-                            highlighted={booking.id === paidId}
+                            highlighted={booking.id === paidId || (paidOrderId != null && booking.orderId === paidOrderId)}
                             onChanged={(updated) =>
                                 setResult((prev) => ({ ...prev, items: prev.items.map((b) => (b.id === updated.id ? updated : b)) }))
                             }
