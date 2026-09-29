@@ -8,6 +8,7 @@ function NavigationMenu() {
         { path: "/flights", label: "Flights" },
         { path: "/tours", label: "Tours" },
         { path: "/destinations", label: "Destinations" },
+        { path: "/search", label: "Search" },
         { path: "/abouts", label: "About" },
         { path: "/contacts", label: "Contact" },
     ];

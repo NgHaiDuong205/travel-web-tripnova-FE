@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import FormInput from "../../../components/common/FormInput";
 import FormAlert from "../../../components/common/FormAlert";
+import SocialLoginButtons from "../../../components/auth/SocialLoginButtons";
 
 /** Chỉ cho phép redirect nội bộ (bắt đầu bằng "/") để tránh open-redirect. */
 function safeRedirect(value) {
@@ -98,6 +99,8 @@ function Login() {
                         {submitting ? "Signing in..." : "Sign In"}
                     </button>
                 </form>
+
+                <SocialLoginButtons redirect={searchParams.get("redirect") ? safeRedirect(searchParams.get("redirect")) : null} />
 
                 {/* Footer thẻ Login */}
                 <div className="mt-8 text-center text-sm text-gray-600 font-medium">

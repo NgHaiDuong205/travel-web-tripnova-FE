@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import NavigationMenu from "../client/NavigationMenu";
 import UserAvatar from "../common/UserAvatar";
+import NotificationBell from "../common/NotificationBell";
 import { useAuth } from "../../context/AuthContext";
 
 function DashboardLayout({ children }) {
@@ -27,9 +28,7 @@ function DashboardLayout({ children }) {
                     </div>
 
                     <div className="flex items-center gap-6">
-                        <button className="p-2 text-on-surface-variant hover:text-primary transition-colors">
-                            <span className="material-symbols-outlined">notifications</span>
-                        </button>
+                        <NotificationBell />
                         <Link to="/account-settings" className="overflow-hidden">
                             <UserAvatar user={user} />
                         </Link>
@@ -83,6 +82,14 @@ function DashboardLayout({ children }) {
                         <Link to="/my-reviews" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/my-reviews' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">rate_review</span>
                             <span className="font-medium text-sm tracking-wide">My Reviews</span>
+                        </Link>
+                        <Link to="/notifications" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/notifications' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
+                            <span className="material-symbols-outlined">notifications</span>
+                            <span className="font-medium text-sm tracking-wide">Notifications</span>
+                        </Link>
+                        <Link to="/account/security" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/account/security' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
+                            <span className="material-symbols-outlined">shield_person</span>
+                            <span className="font-medium text-sm tracking-wide">Login & Security</span>
                         </Link>
                         <Link to="/account-settings" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/account-settings' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">settings</span>

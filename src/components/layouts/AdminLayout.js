@@ -5,6 +5,7 @@ import UserAvatar from "../common/UserAvatar";
 const NAV_ITEMS = [
     { to: "/admin", label: "Dashboard", icon: "dashboard", end: true },
     { to: "/admin/hotels", label: "Hotels", icon: "apartment" },
+    { to: "/admin/hotel-images", label: "Hotel Images", icon: "photo_library" },
     { to: "/admin/cars", label: "Cars", icon: "directions_car" },
     { to: "/admin/flights", label: "Flights", icon: "flight" },
     { to: "/admin/tours", label: "Tours", icon: "tour" },
@@ -17,6 +18,8 @@ const NAV_ITEMS = [
     { to: "/admin/invoices", label: "Invoices", icon: "receipt_long" },
     { to: "/admin/messages", label: "Messages", icon: "mail" },
     { to: "/admin/posts", label: "Reviews", icon: "reviews" },
+    { to: "/admin/search-queries", label: "Search Queries", icon: "query_stats" },
+    { to: "/admin/audit-logs", label: "Audit Logs", icon: "history_edu" },
 ];
 
 function AdminLayout() {

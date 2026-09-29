@@ -31,6 +31,9 @@ import Cart from "../pages/client/Cart/index";
 import Contact from "../pages/client/Contact/index";
 import Payment from "../pages/client/Payment/index";
 import BookingDetail from "../pages/client/BookingDetail/index";
+import Notifications from "../pages/client/Notifications/index";
+import LoginSecurity from "../pages/client/LoginSecurity/index";
+import Search from "../pages/client/Search/index";
 
 function ClientRoutes() {
     return (
@@ -47,6 +50,8 @@ function ClientRoutes() {
                 <Route path="/itineraries/:id" element={<ItineraryDetail />} />
                 <Route path="/my-reviews" element={<MyReviews />} />
                 <Route path="/account-settings" element={<AccountSettings />} />
+                <Route path="/notifications" element={<Notifications />} />
+                <Route path="/account/security" element={<LoginSecurity />} />
             </Route>
             <Route element={<ClientLayout />}>
                 <Route path="/" element={<Home />} />
@@ -63,6 +68,7 @@ function ClientRoutes() {
                 <Route path="/flights/:id" element={<FlightDetail />} />
                 <Route path="/tours" element={<Tours />} />
                 <Route path="/tours/:id" element={<TourDetail />} />
+                <Route path="/search" element={<Search />} />
                 <Route path="/hotel/:hotelId/room/:roomId" element={<RoomDetail />} />
 
                 {/* Đặt phòng & thanh toán — bắt buộc đăng nhập */}

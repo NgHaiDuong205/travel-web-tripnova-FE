@@ -15,6 +15,9 @@ import AdminInvoices from "../pages/admin/Invoices";
 import AdminCars from "../pages/admin/Cars";
 import AdminFlights from "../pages/admin/Flights";
 import AdminTours from "../pages/admin/Tours";
+import AdminAuditLogs from "../pages/admin/AuditLogs";
+import AdminSearchQueries from "../pages/admin/SearchQueries";
+import AdminHotelImages from "../pages/admin/HotelImages";
 
 /** Đã được bọc bởi <PrivateRoute role="ADMIN"> trong AppRouter. */
 function AdminRoutes() {
@@ -37,6 +40,9 @@ function AdminRoutes() {
                 <Route path="/invoices" element={<AdminInvoices />} />
                 <Route path="/messages" element={<AdminMessages />} />
                 <Route path="/posts" element={<AdminPosts />} />
+                <Route path="/hotel-images" element={<AdminHotelImages />} />
+                <Route path="/audit-logs" element={<AdminAuditLogs />} />
+                <Route path="/search-queries" element={<AdminSearchQueries />} />
                 <Route path="*" element={<h2 className="text-xl font-bold text-gray-500">404 - Admin không có trang này</h2>} />
             </Route>
         </Routes>
