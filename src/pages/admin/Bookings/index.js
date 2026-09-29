@@ -3,7 +3,14 @@ import { useSearchParams } from "react-router-dom";
 import FormAlert from "../../../components/common/FormAlert";
 import Pagination from "../../../components/common/Pagination";
 import StatusBadge from "../../../components/common/StatusBadge";
-import { BOOKING_NEXT_STATUSES, fetchAdminBookings, updateAdminBookingStatus } from "../../../services/adminService";
+import {
+    BOOKING_NEXT_STATUSES,
+    deleteAdminBooking,
+    fetchAdminBookings,
+    refundAdminBooking,
+    remainingRefundable,
+    updateAdminBookingStatus,
+} from "../../../services/adminService";
 import { BOOKING_STATUS_LABELS } from "../../../services/bookingService";
 import { formatDate, formatMoney } from "../../../utils/formatters";
 
@@ -63,8 +70,50 @@ function AdminBookings() {
         setBusyId(booking.id);
         setError("");
         try {
-            const updated = await updateAdminBookingStatus(booking.id, nextStatus, reason);
-            setResult((prev) => ({ ...prev, items: prev.items.map((b) => (b.id === updated.id ? updated : b)) }));
+            replaceItem(await updateAdminBookingStatus(booking.id, nextStatus, reason));
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setBusyId(null);
+        }
+    };
+
+    const replaceItem = (updated) =>
+        setResult((prev) => ({ ...prev, items: prev.items.map((b) => (b.id === updated.id ? updated : b)) }));
+
+    const handleRefund = async (booking) => {
+        const remaining = remainingRefundable(booking);
+        const input = window.prompt(
+            `Số tiền hoàn (tối đa ${formatMoney(remaining, booking.currencyCode)}). ` +
+                "Hoàn đủ sẽ chuyển booking sang Refunded và trả phòng nếu khách chưa ở:",
+            String(remaining)
+        );
+        if (input === null) return;
+        const amount = Number(input);
+        if (!Number.isFinite(amount) || amount <= 0 || amount > remaining) {
+            setError(`Số tiền hoàn phải trong khoảng (0, ${remaining}]`);
+            return;
+        }
+        const reason = window.prompt("Lý do hoàn tiền:", "");
+        if (reason === null) return;
+        setBusyId(booking.id);
+        setError("");
+        try {
+            replaceItem(await refundAdminBooking(booking.id, { amount, reason }));
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setBusyId(null);
+        }
+    };
+
+    const handleDelete = async (booking) => {
+        if (!window.confirm(`Xoá hẳn booking ${booking.orderCode}? Chỉ xoá được booking đã huỷ và chưa thanh toán.`)) return;
+        setBusyId(booking.id);
+        setError("");
+        try {
+            await deleteAdminBooking(booking.id);
+            await load();
         } catch (err) {
             setError(err.message);
         } finally {
@@ -144,7 +193,14 @@ function AdminBookings() {
                                         <p className="text-xs text-gray-500">{b.numNights} nights · {b.numAdults + (b.numChildren || 0)} guests</p>
                                     </td>
                                     <td className="px-4 py-3"><StatusBadge status={b.status} labels={BOOKING_STATUS_LABELS} /></td>
-                                    <td className="px-4 py-3 text-right font-semibold whitespace-nowrap">{formatMoney(b.totalPrice, b.currencyCode)}</td>
+                                    <td className="px-4 py-3 text-right font-semibold whitespace-nowrap">
+                                        {formatMoney(b.totalPrice, b.currencyCode)}
+                                        {Number(b.refundAmount) > 0 && (
+                                            <p className="text-xs font-normal text-purple-700" title={b.refundReason || ""}>
+                                                Refunded {formatMoney(b.refundAmount, b.currencyCode)}
+                                            </p>
+                                        )}
+                                    </td>
                                     <td className="px-4 py-3">
                                         <div className="flex flex-wrap justify-end gap-2">
                                             {(BOOKING_NEXT_STATUSES[b.status] || []).map((next) => (
@@ -162,6 +218,26 @@ function AdminBookings() {
                                                     {ACTION_LABELS[next]}
                                                 </button>
                                             ))}
+                                            {remainingRefundable(b) > 0 && (
+                                                <button
+                                                    type="button"
+                                                    disabled={busyId === b.id}
+                                                    onClick={() => handleRefund(b)}
+                                                    className="px-3 py-1 rounded-lg text-xs font-bold border border-purple-200 text-purple-700 hover:bg-purple-50 disabled:opacity-50"
+                                                >
+                                                    Refund
+                                                </button>
+                                            )}
+                                            {b.status === "cancelled" && !b.refundedAt && (
+                                                <button
+                                                    type="button"
+                                                    disabled={busyId === b.id}
+                                                    onClick={() => handleDelete(b)}
+                                                    className="px-3 py-1 rounded-lg text-xs font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+                                                >
+                                                    Delete
+                                                </button>
+                                            )}
                                         </div>
                                     </td>
                                 </tr>

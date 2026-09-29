@@ -23,6 +23,17 @@ export async function updateAdminBookingStatus(bookingId, status, reason) {
     return data;
 }
 
+/** @param {{amount?: number, reason?: string}} body amount bỏ trống = hoàn toàn bộ phần còn lại */
+export async function refundAdminBooking(bookingId, { amount, reason } = {}) {
+    const { data } = await apiClient.post(`/api/admin/hotel-bookings/${bookingId}/refund/`, { amount, reason });
+    return data;
+}
+
+/** BE chỉ cho xoá booking đã huỷ và chưa từng thanh toán (409 nếu không). */
+export async function deleteAdminBooking(bookingId) {
+    await apiClient.delete(`/api/admin/hotel-bookings/${bookingId}/`);
+}
+
 /** @param {{q?, role?, status?: "all"|"active"|"locked", page?, limit?}} filters */
 export async function fetchAdminUsers({ q = "", role = "all", status = "all", page = 1, limit = 20 } = {}) {
     const response = await apiClient.get("/api/admin/users/", {
@@ -46,6 +57,25 @@ export async function fetchAdminPayments({ status = "all", page = 1, limit = 20 
     return readList(response);
 }
 
+export async function updateAdminPaymentStatus(paymentId, status, reason) {
+    const { data } = await apiClient.put(`/api/admin/payments/${paymentId}/status/`, { status, reason });
+    return data;
+}
+
+export async function refundAdminPayment(paymentId, reason) {
+    const { data } = await apiClient.post(`/api/admin/payments/${paymentId}/refund/`, { reason });
+    return data;
+}
+
+export async function replyAdminContactMessage(messageId, content) {
+    const { data } = await apiClient.post(`/api/admin/contact-messages/${messageId}/reply/`, { content });
+    return data;
+}
+
+export async function deleteAdminContactMessage(messageId) {
+    await apiClient.delete(`/api/admin/contact-messages/${messageId}/`);
+}
+
 export async function fetchAdminContactMessages({ status = "all", page = 1, limit = 20 } = {}) {
     const response = await apiClient.get("/api/admin/contact-messages/", { params: { status, page, limit } });
     return readList(response);
@@ -62,6 +92,22 @@ export const BOOKING_NEXT_STATUSES = {
     confirmed: ["checked_in", "no_show", "cancelled"],
     checked_in: ["checked_out"],
     checked_out: ["completed"],
+};
+
+/** Booking admin được hoàn tiền (khớp HotelBookingServiceImpl.ADMIN_REFUNDABLE_STATUSES), khi đơn đã thanh toán. */
+export const BOOKING_REFUNDABLE_STATUSES = ["confirmed", "no_show", "checked_out", "completed"];
+
+/** Số tiền còn có thể hoàn của booking (0 nếu chưa thanh toán / không hợp lệ). */
+export function remainingRefundable(booking) {
+    if (!BOOKING_REFUNDABLE_STATUSES.includes(booking.status)) return 0;
+    if (booking.orderStatus !== "paid" && booking.orderStatus !== "partially_refunded") return 0;
+    return Math.max(0, Number(booking.totalPrice || 0) - Number(booking.refundAmount || 0));
+}
+
+/** Chuyển trạng thái giao dịch thủ công (khớp PaymentServiceImpl.updateStatusByAdmin). */
+export const PAYMENT_NEXT_STATUSES = {
+    pending: ["success", "failed"],
+    success: ["refunded"],
 };
 
 export const ALL_ROLES = ["USER", "HOTEL_MANAGER", "ADMIN"];

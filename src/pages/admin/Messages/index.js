@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import FormAlert from "../../../components/common/FormAlert";
 import Pagination from "../../../components/common/Pagination";
 import StatusBadge from "../../../components/common/StatusBadge";
-import { CONTACT_STATUS_LABELS, fetchAdminContactMessages, updateAdminContactStatus } from "../../../services/adminService";
+import {
+    CONTACT_STATUS_LABELS,
+    deleteAdminContactMessage,
+    fetchAdminContactMessages,
+    replyAdminContactMessage,
+    updateAdminContactStatus,
+} from "../../../services/adminService";
 import { formatDateTime } from "../../../utils/formatters";
 
 const PAGE_SIZE = 20;
@@ -14,6 +20,42 @@ function AdminMessages() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [busyId, setBusyId] = useState(null);
+    const [replyingId, setReplyingId] = useState(null);
+    const [replyText, setReplyText] = useState("");
+    const [reloadKey, setReloadKey] = useState(0);
+
+    const replaceItem = (updated) =>
+        setResult((prev) => ({ ...prev, items: prev.items.map((m) => (m.id === updated.id ? updated : m)) }));
+
+    const handleReply = async (e, message) => {
+        e.preventDefault();
+        if (!replyText.trim()) return;
+        setBusyId(message.id);
+        setError("");
+        try {
+            replaceItem(await replyAdminContactMessage(message.id, replyText.trim()));
+            setReplyingId(null);
+            setReplyText("");
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setBusyId(null);
+        }
+    };
+
+    const handleDelete = async (message) => {
+        if (!window.confirm(`Xoá tin nhắn của ${message.fullName}?`)) return;
+        setBusyId(message.id);
+        setError("");
+        try {
+            await deleteAdminContactMessage(message.id);
+            setReloadKey((k) => k + 1);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setBusyId(null);
+        }
+    };
 
     useEffect(() => {
         let cancelled = false;
@@ -26,14 +68,13 @@ function AdminMessages() {
         return () => {
             cancelled = true;
         };
-    }, [status, page]);
+    }, [status, page, reloadKey]);
 
     const handleStatusChange = async (message, nextStatus) => {
         setBusyId(message.id);
         setError("");
         try {
-            const updated = await updateAdminContactStatus(message.id, nextStatus);
-            setResult((prev) => ({ ...prev, items: prev.items.map((m) => (m.id === updated.id ? updated : m)) }));
+            replaceItem(await updateAdminContactStatus(message.id, nextStatus));
         } catch (err) {
             setError(err.message);
         } finally {
@@ -96,6 +137,66 @@ function AdminMessages() {
                                 </div>
                             </div>
                             <p className="text-sm text-gray-700 whitespace-pre-line">{m.message}</p>
+
+                            {m.replyContent && (
+                                <div className="mt-4 border-l-4 border-green-300 bg-green-50 rounded-r-lg px-4 py-3">
+                                    <p className="text-xs font-semibold text-green-800 mb-1">Replied {formatDateTime(m.repliedAt)}</p>
+                                    <p className="text-sm text-gray-700 whitespace-pre-line">{m.replyContent}</p>
+                                </div>
+                            )}
+
+                            {replyingId === m.id ? (
+                                <form onSubmit={(e) => handleReply(e, m)} className="mt-4 space-y-2">
+                                    <textarea
+                                        value={replyText}
+                                        onChange={(e) => setReplyText(e.target.value)}
+                                        rows={4}
+                                        maxLength={5000}
+                                        placeholder={`Reply to ${m.email}...`}
+                                        className="w-full rounded-lg border-gray-200 text-sm"
+                                        autoFocus
+                                    />
+                                    <div className="flex gap-2 justify-end">
+                                        <button
+                                            type="button"
+                                            onClick={() => setReplyingId(null)}
+                                            className="px-4 py-1.5 rounded-lg text-sm border border-gray-200 text-gray-600"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            disabled={busyId === m.id || !replyText.trim()}
+                                            className="px-4 py-1.5 rounded-lg text-sm font-bold bg-primary text-white disabled:opacity-50"
+                                        >
+                                            Send reply
+                                        </button>
+                                    </div>
+                                </form>
+                            ) : (
+                                <div className="mt-4 flex gap-2 justify-end">
+                                    {m.status !== "spam" && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setReplyingId(m.id);
+                                                setReplyText("");
+                                            }}
+                                            className="px-3 py-1 rounded-lg text-xs font-bold border border-blue-200 text-primary hover:bg-blue-50"
+                                        >
+                                            {m.replyContent ? "Reply again" : "Reply"}
+                                        </button>
+                                    )}
+                                    <button
+                                        type="button"
+                                        disabled={busyId === m.id}
+                                        onClick={() => handleDelete(m)}
+                                        className="px-3 py-1 rounded-lg text-xs font-bold border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            )}
                         </article>
                     ))}
             </div>
