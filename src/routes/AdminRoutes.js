@@ -11,6 +11,7 @@ import AdminAmenities from "../pages/admin/Amenities";
 import AdminGeography from "../pages/admin/Geography";
 import AdminRoles from "../pages/admin/Roles";
 import AdminPosts from "../pages/admin/Posts";
+import AdminInvoices from "../pages/admin/Invoices";
 
 /** Đã được bọc bởi <PrivateRoute role="ADMIN"> trong AppRouter. */
 function AdminRoutes() {
@@ -27,6 +28,7 @@ function AdminRoutes() {
                 <Route path="/users" element={<AdminUsers />} />
                 <Route path="/roles" element={<AdminRoles />} />
                 <Route path="/payments" element={<AdminPayments />} />
+                <Route path="/invoices" element={<AdminInvoices />} />
                 <Route path="/messages" element={<AdminMessages />} />
                 <Route path="/posts" element={<AdminPosts />} />
                 <Route path="*" element={<h2 className="text-xl font-bold text-gray-500">404 - Admin không có trang này</h2>} />

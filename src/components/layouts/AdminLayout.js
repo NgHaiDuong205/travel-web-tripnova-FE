@@ -11,6 +11,7 @@ const NAV_ITEMS = [
     { to: "/admin/users", label: "Users", icon: "group" },
     { to: "/admin/roles", label: "Roles", icon: "admin_panel_settings" },
     { to: "/admin/payments", label: "Payments", icon: "payments" },
+    { to: "/admin/invoices", label: "Invoices", icon: "receipt_long" },
     { to: "/admin/messages", label: "Messages", icon: "mail" },
     { to: "/admin/posts", label: "Reviews", icon: "reviews" },
 ];

@@ -15,6 +15,7 @@ import PaymentHistory from "../pages/client/PaymentHistory/index";
 import SavedTrips from "../pages/client/SavedTrips/index";
 import Itineraries from "../pages/client/Itineraries/index";
 import ItineraryDetail from "../pages/client/ItineraryDetail/index";
+import Invoices from "../pages/client/Invoices/index";
 import MyReviews from "../pages/client/MyReviews/index";
 import AccountSettings from "../pages/client/AccountSettings/index";
 import Checkout from "../pages/client/Checkout/index";
@@ -31,6 +32,7 @@ function ClientRoutes() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/booking-history" element={<BookingHistory />} />
                 <Route path="/payment-history" element={<PaymentHistory />} />
+                <Route path="/invoices" element={<Invoices />} />
                 <Route path="/saved-trips" element={<SavedTrips />} />
                 <Route path="/itineraries" element={<Itineraries />} />
                 <Route path="/itineraries/:id" element={<ItineraryDetail />} />
