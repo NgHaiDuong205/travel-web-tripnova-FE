@@ -25,7 +25,7 @@ const EMPTY_HOTEL = {
     isActive: true,
 };
 
-const inputClass = "w-full rounded-lg border-gray-200 text-sm";
+const inputClass = "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm";
 
 function Field({ label, children, className = "" }) {
     return (
@@ -66,8 +66,11 @@ export function AmenityPicker({ amenities, selected, onChange }) {
     );
 }
 
-/** Form tạo / sửa thông tin khách sạn. hotel = null khi tạo mới. */
-function HotelForm({ hotel, onSubmit }) {
+/**
+ * Form tạo / sửa thông tin khách sạn. hotel = null khi tạo mới.
+ * canChangeStatus = false (trang quản lý khách sạn): ẩn ô "Active" — BE cũng bỏ qua trường này.
+ */
+function HotelForm({ hotel, onSubmit, canChangeStatus = true }) {
     const [form, setForm] = useState(() => (hotel ? { ...EMPTY_HOTEL, ...hotelToPayload(hotel) } : EMPTY_HOTEL));
     const [destinations, setDestinations] = useState([]);
     const [amenities, setAmenities] = useState([]);
@@ -192,10 +195,12 @@ function HotelForm({ hotel, onSubmit }) {
                     <input type="checkbox" checked={!!form.petFriendly} onChange={set("petFriendly")} />
                     Pet friendly
                 </label>
-                <label className="flex items-center gap-2 text-sm font-semibold">
-                    <input type="checkbox" checked={!!form.isActive} onChange={set("isActive")} />
-                    Active (hiện ở trang public)
-                </label>
+                {canChangeStatus && (
+                    <label className="flex items-center gap-2 text-sm font-semibold">
+                        <input type="checkbox" checked={!!form.isActive} onChange={set("isActive")} />
+                        Active (hiện ở trang public)
+                    </label>
+                )}
             </div>
 
             <div>
@@ -210,7 +215,12 @@ function HotelForm({ hotel, onSubmit }) {
             <FormAlert>{error}</FormAlert>
             <FormAlert type="success">{success}</FormAlert>
             <div className="flex justify-end">
-                <button type="submit" disabled={saving} className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-bold disabled:opacity-50">
+                {/* Chờ danh sách điểm đến: trước đó ô chọn (required) chưa có lựa chọn nên trình duyệt chặn submit không báo gì */}
+                <button
+                    type="submit"
+                    disabled={saving || destinations.length === 0}
+                    className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-bold disabled:opacity-50"
+                >
                     {saving ? "Saving..." : hotel ? "Save changes" : "Create hotel"}
                 </button>
             </div>

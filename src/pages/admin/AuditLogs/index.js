@@ -3,6 +3,7 @@ import FormAlert from "../../../components/common/FormAlert";
 import Pagination from "../../../components/common/Pagination";
 import { fetchAuditActions, fetchAuditLogs } from "../../../services/adminLogService";
 import { formatDateTime } from "../../../utils/formatters";
+import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
 
 const PAGE_SIZE = 25;
 const EMPTY_FILTERS = { userId: "", action: "", from: "", to: "" };
@@ -55,6 +56,7 @@ function AdminAuditLogs() {
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-extrabold text-primary">Audit Logs</h1>
+            <AdminStatsPanel section="audit" />
             <form
                 onSubmit={(event) => {
                     event.preventDefault();

@@ -10,6 +10,7 @@ import {
 } from "../../../services/adminService";
 import { PAYMENT_STATUS_LABELS } from "../../../services/paymentService";
 import { formatDateTime, formatMoney } from "../../../utils/formatters";
+import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
 
 const PAGE_SIZE = 20;
 const ACTIONS = {
@@ -68,6 +69,7 @@ function AdminPayments() {
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-extrabold text-primary">Payments</h1>
+            <AdminStatsPanel section="payments" />
 
             <div className="flex items-center gap-3">
                 <select

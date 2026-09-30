@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import FormAlert from "../common/FormAlert";
 import { AmenityPicker } from "./HotelForm";
 import { fetchAmenities } from "../../services/lookupService";
-import { deactivateAdminRoomType, roomTypeToPayload, saveAdminRoomType } from "../../services/adminHotelService";
+import { roomTypeToPayload } from "../../services/adminHotelService";
+import { useHotelApi } from "../../context/HotelApiContext";
 import { formatMoney } from "../../utils/formatters";
 
 const EMPTY_ROOM_TYPE = {
@@ -17,7 +18,7 @@ const EMPTY_ROOM_TYPE = {
     isActive: true,
 };
 
-const inputClass = "w-full rounded-lg border-gray-200 text-sm";
+const inputClass = "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm";
 
 function RoomTypeForm({ initial, amenities, onSave, onCancel }) {
     const [form, setForm] = useState(initial);
@@ -95,6 +96,7 @@ function RoomTypeForm({ initial, amenities, onSave, onCancel }) {
 
 /** Danh sách + thêm/sửa/ẩn hạng phòng của 1 khách sạn. */
 function RoomTypeManager({ hotelId, roomTypes, onChanged }) {
+    const api = useHotelApi();
     const [amenities, setAmenities] = useState([]);
     const [editing, setEditing] = useState(null); // null | "new" | roomTypeId
     const [busyId, setBusyId] = useState(null);
@@ -105,7 +107,7 @@ function RoomTypeManager({ hotelId, roomTypes, onChanged }) {
     }, []);
 
     const handleSave = async (roomTypeId, payload) => {
-        await saveAdminRoomType(hotelId, roomTypeId, payload);
+        await api.saveRoomType(hotelId, roomTypeId, payload);
         setEditing(null);
         await onChanged();
     };
@@ -116,9 +118,9 @@ function RoomTypeManager({ hotelId, roomTypes, onChanged }) {
         setError("");
         try {
             if (rt.isActive) {
-                await deactivateAdminRoomType(hotelId, rt.id);
+                await api.deactivateRoomType(hotelId, rt.id);
             } else {
-                await saveAdminRoomType(hotelId, rt.id, { ...roomTypeToPayload(rt), isActive: true });
+                await api.saveRoomType(hotelId, rt.id, { ...roomTypeToPayload(rt), isActive: true });
             }
             await onChanged();
         } catch (err) {

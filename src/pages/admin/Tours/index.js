@@ -23,6 +23,7 @@ import {
 } from "../../../services/adminTourService";
 import { fetchTourCars, fetchTourFlights, fetchTourHotels } from "../../../services/tourService";
 import { formatDate, formatDateTime, formatMoney } from "../../../utils/formatters";
+import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
 
 const PAGE_SIZE = 20;
 const inputClass = "rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm w-full";
@@ -787,6 +788,7 @@ function AdminTours() {
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-extrabold text-primary">Tours</h1>
+            <AdminStatsPanel section="tours" />
             <div className="flex gap-2 border-b border-gray-200">
                 <button type="button" onClick={() => setTab("tours")} className={tabClass(tab === "tours")}>
                     Tours

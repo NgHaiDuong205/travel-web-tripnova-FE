@@ -11,6 +11,7 @@ import {
     resendAdminInvoice,
 } from "../../../services/adminInvoiceService";
 import { formatDateTime, formatMoney } from "../../../utils/formatters";
+import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
 
 const PAGE_SIZE = 20;
 const EMPTY_FILTERS = { q: "", from: "", to: "" };
@@ -73,6 +74,7 @@ function AdminInvoices() {
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-extrabold text-primary">Invoices</h1>
+            <AdminStatsPanel section="invoices" />
 
             <form
                 onSubmit={(e) => {

@@ -18,6 +18,7 @@ import AdminTours from "../pages/admin/Tours";
 import AdminAuditLogs from "../pages/admin/AuditLogs";
 import AdminSearchQueries from "../pages/admin/SearchQueries";
 import AdminHotelImages from "../pages/admin/HotelImages";
+import AdminHotelManagers from "../pages/admin/HotelManagers";
 
 /** Đã được bọc bởi <PrivateRoute role="ADMIN"> trong AppRouter. */
 function AdminRoutes() {
@@ -41,6 +42,7 @@ function AdminRoutes() {
                 <Route path="/messages" element={<AdminMessages />} />
                 <Route path="/posts" element={<AdminPosts />} />
                 <Route path="/hotel-images" element={<AdminHotelImages />} />
+                <Route path="/hotel-managers" element={<AdminHotelManagers />} />
                 <Route path="/audit-logs" element={<AdminAuditLogs />} />
                 <Route path="/search-queries" element={<AdminSearchQueries />} />
                 <Route path="*" element={<h2 className="text-xl font-bold text-gray-500">404 - Admin không có trang này</h2>} />

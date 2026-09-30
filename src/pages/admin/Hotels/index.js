@@ -9,6 +9,7 @@ import {
     hotelToPayload,
     updateAdminHotel,
 } from "../../../services/adminHotelService";
+import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
 
 const PAGE_SIZE = 20;
 
@@ -73,6 +74,8 @@ function AdminHotels() {
                     New hotel
                 </Link>
             </div>
+
+            <AdminStatsPanel section="hotels" />
 
             <div className="flex flex-wrap gap-3 items-center">
                 <form

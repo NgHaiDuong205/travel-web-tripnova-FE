@@ -10,6 +10,7 @@ import {
     updateAdminContactStatus,
 } from "../../../services/adminService";
 import { formatDateTime } from "../../../utils/formatters";
+import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
 
 const PAGE_SIZE = 20;
 
@@ -85,6 +86,7 @@ function AdminMessages() {
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-extrabold text-primary">Contact messages</h1>
+            <AdminStatsPanel section="messages" />
 
             <div className="flex items-center gap-3">
                 <select

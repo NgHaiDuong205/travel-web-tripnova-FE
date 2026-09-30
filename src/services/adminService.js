@@ -185,3 +185,38 @@ export const CONTACT_STATUS_LABELS = {
     spam: { label: "Spam", className: "bg-red-50 text-red-700 border-red-200" },
     closed: { label: "Closed", className: "bg-gray-50 text-gray-700 border-gray-200" },
 };
+
+/**
+ * Thống kê cho trang admin: {kpis, series: [{period, values}], breakdowns: {name: [{key, label, count, amount}]}}.
+ * section: overview | hotels | bookings | cars | flights | tours | users | payments | invoices | messages | reviews | search | audit.
+ */
+export async function fetchAdminStats(section, { from, to, granularity } = {}) {
+    const { data } = await apiClient.get(`/api/admin/stats/${section}/`, { params: { from, to, granularity } });
+    return data;
+}
+
+// ---- Hotel managers (tài khoản quản lý khách sạn) ----
+
+/** [{id, email, fullName, phone, isActive, createdAt, lastLoginAt, hotels: [{id, name, isActive, destinationName}]}] */
+export async function fetchHotelManagers() {
+    const { data } = await apiClient.get("/api/admin/hotel-managers/");
+    return data;
+}
+
+/** password trống → BE sinh mật khẩu tạm, trả về một lần trong `temporaryPassword`. */
+export async function createHotelManager({ email, fullName, phone, password, hotelIds }) {
+    const { data } = await apiClient.post("/api/admin/hotel-managers/", {
+        email,
+        fullName,
+        phone: phone || null,
+        password: password || null,
+        hotelIds,
+    });
+    return data;
+}
+
+/** Thay toàn bộ danh sách khách sạn của manager (khách sạn đang của manager khác sẽ chuyển sang). */
+export async function assignHotelManagerHotels(managerId, hotelIds) {
+    const { data } = await apiClient.put(`/api/admin/hotel-managers/${managerId}/hotels/`, { hotelIds });
+    return data;
+}

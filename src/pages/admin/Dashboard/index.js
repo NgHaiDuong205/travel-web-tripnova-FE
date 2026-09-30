@@ -14,6 +14,7 @@ import {
 import { BOOKING_STATUS_LABELS } from "../../../services/bookingService";
 import { PAYMENT_STATUS_LABELS } from "../../../services/paymentService";
 import { formatDate, formatDateTime, formatMoney, isoDateFromToday } from "../../../utils/formatters";
+import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
 
 function StatTile({ icon, label, value, to }) {
     const body = (
@@ -229,6 +230,8 @@ function AdminDashboard() {
             </section>
 
             <PeriodPerformance currency={data.currencyCode} />
+
+            <AdminStatsPanel section="overview" />
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 <section className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">

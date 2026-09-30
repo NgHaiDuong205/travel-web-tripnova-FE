@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import FormAlert from "../../../components/common/FormAlert";
 import Pagination from "../../../components/common/Pagination";
 import UserAvatar from "../../../components/common/UserAvatar";
@@ -13,6 +14,7 @@ import {
     updateAdminUserStatus,
 } from "../../../services/adminService";
 import { formatDateTime } from "../../../utils/formatters";
+import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
 
 const PAGE_SIZE = 20;
 const inputClass = "rounded-lg border-gray-200 text-sm";
@@ -85,8 +87,11 @@ function ProfileEditor({ user, onSave, onCancel, saving }) {
 
 function AdminUsers() {
     const { user: me } = useAuth();
-    const [filters, setFilters] = useState({ q: "", role: "all", status: "all" });
-    const [keyword, setKeyword] = useState("");
+    // ?q= cho phép trang khác (VD Hotel Managers) mở sẵn kết quả tìm một tài khoản.
+    const [searchParams] = useSearchParams();
+    const initialQ = searchParams.get("q") || "";
+    const [filters, setFilters] = useState({ q: initialQ, role: "all", status: "all" });
+    const [keyword, setKeyword] = useState(initialQ);
     const [page, setPage] = useState(1);
     const [result, setResult] = useState({ items: [], total: 0 });
     const [loading, setLoading] = useState(true);
@@ -182,6 +187,7 @@ function AdminUsers() {
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-extrabold text-primary">Users</h1>
+            <AdminStatsPanel section="users" />
 
             <div className="flex flex-wrap gap-3 items-center">
                 <form

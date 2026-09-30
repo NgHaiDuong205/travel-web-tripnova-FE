@@ -3,6 +3,7 @@ import FormAlert from "../../../components/common/FormAlert";
 import Pagination from "../../../components/common/Pagination";
 import { fetchSearchQueries, fetchTopSearchQueries } from "../../../services/adminLogService";
 import { formatDateTime } from "../../../utils/formatters";
+import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
 
 const PAGE_SIZE = 25;
 const EMPTY_FILTERS = { q: "", from: "", to: "" };
@@ -50,6 +51,7 @@ function AdminSearchQueries() {
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-extrabold text-primary">Search Queries</h1>
+            <AdminStatsPanel section="search" />
             <form
                 onSubmit={(event) => {
                     event.preventDefault();

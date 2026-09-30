@@ -13,6 +13,7 @@ import {
 } from "../../../services/adminService";
 import { BOOKING_STATUS_LABELS } from "../../../services/bookingService";
 import { formatDate, formatMoney } from "../../../utils/formatters";
+import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
 
 const PAGE_SIZE = 20;
 const ACTION_LABELS = {
@@ -124,6 +125,7 @@ function AdminBookings() {
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-extrabold text-primary">Hotel bookings</h1>
+            <AdminStatsPanel section="bookings" />
 
             <div className="flex flex-wrap gap-3 items-center">
                 <select

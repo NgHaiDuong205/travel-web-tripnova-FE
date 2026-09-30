@@ -30,7 +30,8 @@ function Login() {
         setSubmitting(true);
         try {
             const user = await login(account.email.trim(), account.password);
-            const fallback = user?.roles?.includes("ADMIN") ? "/admin" : "/";
+            const roles = user?.roles || [];
+            const fallback = roles.includes("ADMIN") ? "/admin" : roles.includes("HOTEL_MANAGER") ? "/manager" : "/";
             navigate(searchParams.get("redirect") ? safeRedirect(searchParams.get("redirect")) : fallback, {
                 replace: true,
             });

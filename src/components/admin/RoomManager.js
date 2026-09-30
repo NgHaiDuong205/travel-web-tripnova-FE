@@ -1,9 +1,10 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
 import FormAlert from "../common/FormAlert";
 import RoomAvailabilityPanel from "./RoomAvailabilityPanel";
-import { ROOM_STATUSES, deleteAdminRoom, fetchAdminRooms, saveAdminRoom } from "../../services/adminHotelService";
+import { ROOM_STATUSES } from "../../services/adminHotelService";
+import { useHotelApi } from "../../context/HotelApiContext";
 
-const inputClass = "rounded-lg border-gray-200 text-sm";
+const inputClass = "rounded-lg border border-gray-300 px-2 py-1.5 text-sm";
 
 const STATUS_STYLES = {
     available: "text-green-700",
@@ -65,6 +66,7 @@ function RoomRowForm({ initial, roomTypes, onSave, onCancel }) {
 
 /** Danh sách + thêm/sửa/xoá phòng, mở lịch khoá ngày cho từng phòng. */
 function RoomManager({ hotelId, roomTypes, onChanged }) {
+    const api = useHotelApi();
     const [filterType, setFilterType] = useState("");
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -77,20 +79,20 @@ function RoomManager({ hotelId, roomTypes, onChanged }) {
         setLoading(true);
         setError("");
         try {
-            setRooms(await fetchAdminRooms(hotelId, filterType));
+            setRooms(await api.fetchRooms(hotelId, filterType));
         } catch (err) {
             setError(err.message);
         } finally {
             setLoading(false);
         }
-    }, [hotelId, filterType]);
+    }, [api, hotelId, filterType]);
 
     useEffect(() => {
         load();
     }, [load, roomTypes]);
 
     const handleSave = async (roomId, payload) => {
-        await saveAdminRoom(hotelId, roomId, payload);
+        await api.saveRoom(hotelId, roomId, payload);
         setEditing(null);
         await load();
         await onChanged();
@@ -101,7 +103,7 @@ function RoomManager({ hotelId, roomTypes, onChanged }) {
         setBusyId(room.id);
         setError("");
         try {
-            await deleteAdminRoom(hotelId, room.id);
+            await api.deleteRoom(hotelId, room.id);
             await load();
             await onChanged();
         } catch (err) {

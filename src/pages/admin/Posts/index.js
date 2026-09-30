@@ -15,6 +15,7 @@ import {
     updateAdminPostStatus,
 } from "../../../services/adminPostService";
 import { formatDateTime } from "../../../utils/formatters";
+import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
 
 const PAGE_SIZE = 20;
 const ENTITY_TYPES = ["hotel", "destination", "landmark", "tour", "car", "flight"];
@@ -327,6 +328,7 @@ function AdminPosts() {
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-extrabold text-primary">Reviews & comments</h1>
+            <AdminStatsPanel section="reviews" />
             <div className="flex gap-2 border-b border-gray-200">
                 <button type="button" onClick={() => setTab("posts")} className={tabClass(tab === "posts")}>Posts</button>
                 <button type="button" onClick={() => setTab("comments")} className={tabClass(tab === "comments")}>Comments</button>

@@ -14,6 +14,7 @@ import {
 } from "../../../services/adminCarService";
 import { fetchDestinations } from "../../../services/destinationService";
 import { formatDateTime, formatMoney } from "../../../utils/formatters";
+import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
 
 const PAGE_SIZE = 20;
 const EMPTY_CAR = {
@@ -515,6 +516,7 @@ function AdminCars() {
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-extrabold text-primary">Cars</h1>
+            <AdminStatsPanel section="cars" />
             <div className="flex gap-2 border-b border-gray-200">
                 <button type="button" onClick={() => setTab("fleet")} className={tabClass(tab === "fleet")}>
                     Fleet

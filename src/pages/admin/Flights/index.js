@@ -16,6 +16,7 @@ import {
 } from "../../../services/adminFlightService";
 import { SEAT_CLASS_LABELS, formatDuration } from "../../../services/flightService";
 import { formatDateTime, formatMoney } from "../../../utils/formatters";
+import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
 
 const PAGE_SIZE = 20;
 const EMPTY_FLIGHT = {
@@ -740,6 +741,7 @@ function AdminFlights() {
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-extrabold text-primary">Flights</h1>
+            <AdminStatsPanel section="flights" />
             <div className="flex gap-2 border-b border-gray-200">
                 <button type="button" onClick={() => setTab("flights")} className={tabClass(tab === "flights")}>
                     Flights

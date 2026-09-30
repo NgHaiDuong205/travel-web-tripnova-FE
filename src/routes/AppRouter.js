@@ -1,7 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import ClientRoutes from "./ClientRoutes";
 import AdminRoutes from "./AdminRoutes";
+import ManagerRoutes from "./ManagerRoutes";
 import PrivateRoute from "./PrivateRoute";
+import HotelAccountGuard from "./HotelAccountGuard";
 import AuthLayout from "../components/layouts/AuthLayout";
 import Login from "../pages/auth/Login"; // Trang đăng nhập
 import Register from "../pages/auth/Register"; // Trang đăng ký
@@ -16,8 +18,18 @@ function AppRouter() {
             <Route
                 path="/admin/*"
                 element={
-                    <PrivateRoute role="ADMIN">
-                        <AdminRoutes />
+                    <HotelAccountGuard>
+                        <PrivateRoute role="ADMIN">
+                            <AdminRoutes />
+                        </PrivateRoute>
+                    </HotelAccountGuard>
+                }
+            />
+            <Route
+                path="/manager/*"
+                element={
+                    <PrivateRoute role="HOTEL_MANAGER">
+                        <ManagerRoutes />
                     </PrivateRoute>
                 }
             />
@@ -30,7 +42,15 @@ function AppRouter() {
                 <Route path="/verify-email" element={<VerifyEmail />} />
                 <Route path="/oauth2/callback" element={<OAuthCallback />} />
             </Route>
-            <Route path="/*" element={<ClientRoutes />} />
+            {/* Tài khoản khách sạn không dùng site khách: chuyển về /manager */}
+            <Route
+                path="/*"
+                element={
+                    <HotelAccountGuard>
+                        <ClientRoutes />
+                    </HotelAccountGuard>
+                }
+            />
         </Routes>
     );
 }

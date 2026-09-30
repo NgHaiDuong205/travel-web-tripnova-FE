@@ -6,6 +6,7 @@ const NAV_ITEMS = [
     { to: "/admin", label: "Dashboard", icon: "dashboard", end: true },
     { to: "/admin/hotels", label: "Hotels", icon: "apartment" },
     { to: "/admin/hotel-images", label: "Hotel Images", icon: "photo_library" },
+    { to: "/admin/hotel-managers", label: "Hotel Managers", icon: "manage_accounts" },
     { to: "/admin/cars", label: "Cars", icon: "directions_car" },
     { to: "/admin/flights", label: "Flights", icon: "flight" },
     { to: "/admin/tours", label: "Tours", icon: "tour" },
@@ -22,7 +23,8 @@ const NAV_ITEMS = [
     { to: "/admin/audit-logs", label: "Audit Logs", icon: "history_edu" },
 ];
 
-function AdminLayout() {
+/** Khung trang quản trị; ManagerLayout dùng lại với menu / nhãn / trang chủ riêng (siteLink = false: ẩn "View site"). */
+function AdminLayout({ navItems = NAV_ITEMS, badge = "ADMIN", home = "/admin", siteLink = true }) {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
@@ -34,11 +36,11 @@ function AdminLayout() {
     return (
         <div className="min-h-screen bg-surface-container-low text-on-surface">
             <aside className="fixed inset-y-0 left-0 w-64 bg-primary text-white flex flex-col">
-                <Link to="/admin" className="px-6 h-20 flex items-center text-2xl font-black italic tracking-tight">
-                    Tripnova <span className="ml-2 text-xs not-italic font-bold bg-white/15 px-2 py-0.5 rounded">ADMIN</span>
+                <Link to={home} className="px-6 h-20 flex items-center text-2xl font-black italic tracking-tight">
+                    Tripnova <span className="ml-2 text-xs not-italic font-bold bg-white/15 px-2 py-0.5 rounded">{badge}</span>
                 </Link>
-                <nav className="flex-1 px-3 space-y-1">
-                    {NAV_ITEMS.map((item) => (
+                <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
+                    {navItems.map((item) => (
                         <NavLink
                             key={item.to}
                             to={item.to}
@@ -63,9 +65,11 @@ function AdminLayout() {
                         </div>
                     </div>
                     <div className="flex gap-2">
-                        <Link to="/" className="flex-1 text-center text-xs font-bold py-2 rounded bg-white/10 hover:bg-white/20">
-                            View site
-                        </Link>
+                        {siteLink && (
+                            <Link to="/" className="flex-1 text-center text-xs font-bold py-2 rounded bg-white/10 hover:bg-white/20">
+                                View site
+                            </Link>
+                        )}
                         <button type="button" onClick={handleSignOut} className="flex-1 text-xs font-bold py-2 rounded bg-white/10 hover:bg-red-500">
                             Sign out
                         </button>

@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import FormAlert from "../common/FormAlert";
-import { fetchRoomAvailability, updateRoomAvailability } from "../../services/adminHotelService";
+import { useHotelApi } from "../../context/HotelApiContext";
 import { formatDate, isoDateFromToday } from "../../utils/formatters";
 
-const inputClass = "rounded-lg border-gray-200 text-sm";
+const inputClass = "rounded-lg border border-gray-300 px-2 py-1.5 text-sm";
 
 /** Xem & khoá/mở ngày của 1 phòng. Ngày booked do khách đặt, không khoá/mở được ở đây. */
 function RoomAvailabilityPanel({ room }) {
+    const api = useHotelApi();
     const [range, setRange] = useState({ from: isoDateFromToday(0), to: isoDateFromToday(60) });
     const [days, setDays] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,13 +19,13 @@ function RoomAvailabilityPanel({ room }) {
         setLoading(true);
         setError("");
         try {
-            setDays(await fetchRoomAvailability(room.id, range.from, range.to));
+            setDays(await api.fetchRoomAvailability(room.id, range.from, range.to));
         } catch (err) {
             setError(err.message);
         } finally {
             setLoading(false);
         }
-    }, [room.id, range]);
+    }, [api, room.id, range]);
 
     useEffect(() => {
         load();
@@ -34,7 +35,7 @@ function RoomAvailabilityPanel({ room }) {
         setBusy(true);
         setError("");
         try {
-            await updateRoomAvailability(room.id, { from: form.from, to: form.to, status, reason: form.reason || undefined });
+            await api.updateRoomAvailability(room.id, { from: form.from, to: form.to, status, reason: form.reason || undefined });
             await load();
         } catch (err) {
             setError(err.message);
