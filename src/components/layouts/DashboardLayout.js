@@ -55,17 +55,13 @@ function DashboardLayout({ children }) {
                             <span className="material-symbols-outlined">dashboard</span>
                             <span className="font-medium text-sm tracking-wide">Dashboard</span>
                         </Link>
-                        <Link to="/booking-history" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/booking-history' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
-                            <span className="material-symbols-outlined">history</span>
-                            <span className="font-medium text-sm tracking-wide">Booking History</span>
+                        <Link to="/my-trips" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/my-trips' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
+                            <span className="material-symbols-outlined">luggage</span>
+                            <span className="font-medium text-sm tracking-wide">My Trips</span>
                         </Link>
                         <Link to="/payment-history" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/payment-history' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">payments</span>
                             <span className="font-medium text-sm tracking-wide">Payment History</span>
-                        </Link>
-                        <Link to="/my-trips" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/my-trips' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
-                            <span className="material-symbols-outlined">luggage</span>
-                            <span className="font-medium text-sm tracking-wide">My Trips</span>
                         </Link>
                         <Link to="/invoices" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/invoices' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">receipt_long</span>
@@ -128,9 +124,9 @@ function DashboardLayout({ children }) {
                     <span className="material-symbols-outlined" style={location.pathname === '/profile' ? {fontVariationSettings: "'FILL' 1"} : {}}>dashboard</span>
                     <span className="text-[10px] font-bold">Dashboard</span>
                 </Link>
-                <Link to="/booking-history" className={`flex flex-col items-center gap-1 ${location.pathname === '/booking-history' ? 'text-primary' : 'text-on-surface-variant'}`}>
-                    <span className="material-symbols-outlined" style={location.pathname === '/booking-history' ? {fontVariationSettings: "'FILL' 1"} : {}}>history</span>
-                    <span className="text-[10px] font-medium">History</span>
+                <Link to="/my-trips" className={`flex flex-col items-center gap-1 ${location.pathname === '/my-trips' ? 'text-primary' : 'text-on-surface-variant'}`}>
+                    <span className="material-symbols-outlined" style={location.pathname === '/my-trips' ? {fontVariationSettings: "'FILL' 1"} : {}}>luggage</span>
+                    <span className="text-[10px] font-medium">Trips</span>
                 </Link>
                 <span className="flex flex-col items-center gap-1 text-on-surface-variant cursor-pointer">
                     <span className="material-symbols-outlined">favorite</span>

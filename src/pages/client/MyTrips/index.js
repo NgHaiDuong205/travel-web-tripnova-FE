@@ -4,6 +4,8 @@ import DashboardLayout from "../../../components/layouts/DashboardLayout";
 import FormAlert from "../../../components/common/FormAlert";
 import Pagination from "../../../components/common/Pagination";
 import StatusBadge from "../../../components/common/StatusBadge";
+import BookingListItem from "../../../components/client/BookingListItem";
+import { fetchMyBookings } from "../../../services/meService";
 import { BOOKING_STATUS_LABELS, cancelCarBooking, fetchMyCarBookings } from "../../../services/carService";
 import { SEAT_CLASS_LABELS, cancelFlightBooking, fetchMyFlightBookings } from "../../../services/flightService";
 import { AirlineLogo, FlightTimeline, flightDateLabel } from "../../../components/catalog/FlightTimeline";
@@ -327,8 +329,25 @@ function TourTripCard({ booking, highlighted, onChanged }) {
     );
 }
 
+/** Đặt phòng khách sạn: dùng lại thẻ của Booking History cũ (huỷ / xem chi tiết ở /bookings/:id). */
+function HotelTripCard({ booking, highlighted }) {
+    return (
+        <div id={`trip-${booking.id}`} className={highlighted ? "rounded-xl ring-2 ring-primary" : ""}>
+            <BookingListItem booking={booking} />
+        </div>
+    );
+}
+
 /** Loại chuyến trong My Trips: nguồn dữ liệu + thẻ hiển thị. */
 const TRIP_TYPES = {
+    hotels: {
+        label: "Hotels",
+        icon: "hotel",
+        fetch: fetchMyBookings,
+        Card: HotelTripCard,
+        browse: "/hotels",
+        browseLabel: "Find a hotel",
+    },
     cars: {
         label: "Cars",
         icon: "directions_car",
@@ -355,30 +374,32 @@ const TRIP_TYPES = {
     },
 };
 
-/** Các chuyến đã đặt ngoài khách sạn (xe, vé máy bay, tour; tab theo ?tab=). Khách sạn vẫn ở Booking History. */
+/** Mọi chuyến đã đặt: khách sạn, xe, vé máy bay, tour (tab theo ?tab=; /booking-history chuyển về tab hotels). */
 function MyTrips() {
     const [params, setParams] = useSearchParams();
-    const tab = TRIP_TYPES[params.get("tab")] ? params.get("tab") : "cars";
+    const tab = TRIP_TYPES[params.get("tab")] ? params.get("tab") : "hotels";
     const type = TRIP_TYPES[tab];
     const status = params.get("status") || "all";
     const page = Number(params.get("page") || 1);
     const paidId = params.get("paid");
-    const [result, setResult] = useState({ items: [], total: 0 });
-    const [loading, setLoading] = useState(true);
+    // `tab` đi kèm dữ liệu: lúc vừa đổi tab, danh sách cũ (vd. booking xe) không được vẽ bằng thẻ của tab mới.
+    const [result, setResult] = useState({ tab: null, items: [], total: 0 });
+    const [fetching, setFetching] = useState(true);
+    const loading = fetching || result.tab !== tab;
     const [error, setError] = useState("");
 
     useEffect(() => {
         let cancelled = false;
-        setLoading(true);
+        setFetching(true);
         setError("");
         type.fetch({ status, page, limit: PAGE_SIZE })
-            .then((data) => !cancelled && setResult(data))
-            .catch((err) => !cancelled && setError(err.message))
-            .finally(() => !cancelled && setLoading(false));
+            .then((data) => !cancelled && setResult({ ...data, tab }))
+            .catch((err) => !cancelled && (setError(err.message), setResult({ tab, items: [], total: 0 })))
+            .finally(() => !cancelled && setFetching(false));
         return () => {
             cancelled = true;
         };
-    }, [type, status, page]);
+    }, [tab, type, status, page]);
 
     // Vừa thanh toán xong: cuộn tới đơn đó (danh sách xếp theo ngày nhận xe nên có thể không nằm đầu trang).
     useEffect(() => {
@@ -405,7 +426,7 @@ function MyTrips() {
                 </span>
                 <h1 className="font-headline text-5xl font-extrabold text-on-surface tracking-tight mb-2">My Trips</h1>
                 <p className="text-on-surface-variant text-lg">
-                    Car rentals, flights and tours. Hotel stays are in Booking History.
+                    Hotel stays, car rentals, flights and tours in one place.
                 </p>
             </section>
 

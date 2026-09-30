@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import ClientLayout from "../components/layouts/ClientLayout";
 import PrivateRoute from "./PrivateRoute";
 import Home from "../pages/client/Home/index";
@@ -10,7 +10,6 @@ import HotelDetail from "../pages/client/HotelDetail/index";
 import Rooms from "../pages/client/Rooms/index";
 import RoomDetail from "../pages/client/RoomDetail/index";
 import Profile from "../pages/client/Profile/index";
-import BookingHistory from "../pages/client/BookingHistory/index";
 import PaymentHistory from "../pages/client/PaymentHistory/index";
 import SavedTrips from "../pages/client/SavedTrips/index";
 import Itineraries from "../pages/client/Itineraries/index";
@@ -42,7 +41,8 @@ function ClientRoutes() {
             {/* Trang cá nhân — bắt buộc đăng nhập */}
             <Route element={<PrivateRoute />}>
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/booking-history" element={<BookingHistory />} />
+                {/* Booking History đã gộp vào My Trips (tab Hotels) */}
+                <Route path="/booking-history" element={<Navigate to="/my-trips?tab=hotels" replace />} />
                 <Route path="/payment-history" element={<PaymentHistory />} />
                 <Route path="/invoices" element={<Invoices />} />
                 <Route path="/my-trips" element={<MyTrips />} />
