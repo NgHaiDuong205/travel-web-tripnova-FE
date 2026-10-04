@@ -2,8 +2,97 @@
   "hero": {
     "eyebrow": "AI Trip Planner",
     "title": "Your trip, planned by AI.",
-    "subtitle": "Tell us where, when and how you like to travel — our AI assistant drafts a day-by-day itinerary with hotels, tours, cars and flights you can book in one place.",
+    "subtitle": "Pick a destination and we draft a day-by-day itinerary from real places nearby — sights grouped by area, restaurants close to each stop and a hotel in the middle — shown on a satellite map.",
     "imageAlt": "Traveller planning a trip with a map",
-    "comingSoon": "Coming soon"
+    "badge": "AI + satellite map"
+  },
+  "form": {
+    "title": "Where do you want to go?",
+    "destination": "Destination",
+    "destinationPlaceholder": "Type a city, e.g. Hoi An, Da Nang…",
+    "noMatch": "No destination found",
+    "popular": "Try:",
+    "startDate": "Start date",
+    "days": "Length",
+    "daysOption_one": "{{count}} day",
+    "daysOption_other": "{{count}} days",
+    "party": "Travellers",
+    "budget": "Budget",
+    "budgetOptions": {
+      "budget": "Budget",
+      "mid": "Mid-range",
+      "luxury": "Luxury"
+    },
+    "pace": "Pace",
+    "paceOptions": {
+      "relaxed": "Relaxed",
+      "balanced": "Balanced",
+      "packed": "Packed"
+    },
+    "interests": "Interests",
+    "interestOptions": {
+      "culture": "Culture & history",
+      "nature": "Nature",
+      "beach": "Beaches",
+      "food": "Food & markets",
+      "shopping": "Shopping",
+      "entertainment": "Entertainment",
+      "wellness": "Wellness & spa"
+    },
+    "note": "Anything else?",
+    "notePlaceholder": "e.g. travelling with kids, love street food",
+    "disclaimer": "Places, hotels and restaurants come from TripNova's data; travel times are estimates based on distance. Check opening hours before you go.",
+    "submit": "Plan my trip",
+    "generating": "Planning…",
+    "loginToPlan": "Sign in to plan your trip",
+    "chooseDestination": "Please choose a destination from the list."
+  },
+  "loading": {
+    "places": "Finding the best places at your destination…",
+    "cluster": "Grouping them into days by area…",
+    "writing": "AI is writing your itinerary…"
+  },
+  "result": {
+    "aiBadge": "Written by AI",
+    "fallbackBadge": "Auto-planned (AI unavailable)",
+    "travellers_one": "{{count}} traveller",
+    "travellers_other": "{{count}} travellers",
+    "estimatedTotal": "Est. {{amount}}",
+    "editPreferences": "Edit preferences",
+    "regenerate": "Try another plan",
+    "save": "Save to my itineraries",
+    "saving": "Saving…",
+    "allDays": "All days",
+    "day": "Day {{day}}",
+    "distance": "~{{km}} km",
+    "travel": "~{{minutes}} min · {{km}} km",
+    "travelNoKm": "~{{minutes}} min travel",
+    "mayBeClosed": "May be closed at this time (hours: {{hours}})",
+    "viewPlace": "View details",
+    "noPin": "No map location",
+    "removeStop": "Remove {{title}}",
+    "hotelTitle_one": "Your stay · {{count}} night",
+    "hotelTitle_other": "Your stay · {{count}} nights",
+    "perNight": "{{price}} / night",
+    "rating": "{{rating}}★ ({{count}})",
+    "alternatives_one": "{{count}} other hotel nearby",
+    "alternatives_other": "{{count}} other hotels nearby",
+    "useHotel": "Choose",
+    "tips": "Travel tips"
+  },
+  "warnings": {
+    "few_places": "There are only a few places for this destination in our data, so some days are lighter.",
+    "no_coordinates": "Places here have no map locations yet, so the map and travel times are limited.",
+    "no_hotel": "No hotel in this destination fits your group — the plan has no stay.",
+    "no_restaurants": "No restaurants in our data here — meals are left as free choice.",
+    "ai_unavailable": "The AI assistant is not responding, so this plan was built automatically without AI notes.",
+    "ai_quota": "The AI assistant has hit its usage limit for now, so this plan was built automatically. Try again in a few minutes."
+  },
+  "map": {
+    "satellite": "Satellite",
+    "streets": "Streets",
+    "labels": "Place names",
+    "noCoordinates": "No places with map locations to show.",
+    "title": "Trip map"
   }
 }

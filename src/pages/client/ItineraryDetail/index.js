@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import DashboardLayout from "../../../components/layouts/DashboardLayout";
 import FormAlert from "../../../components/common/FormAlert";
@@ -10,6 +10,7 @@ import {
     deleteItineraryItem,
     fetchItinerary,
     fetchLinkOptions,
+    LINKABLE_TYPES,
     updateItinerary,
     updateItineraryItem,
 } from "../../../services/itineraryService";
@@ -17,6 +18,7 @@ import { formatDate, formatMoney } from "../../../utils/formatters";
 import { ItineraryFields, toItineraryBody } from "../Itineraries";
 import { useT } from "../../../i18n/I18nContext";
 
+const TripMap = lazy(() => import("../../../components/planner/TripMap"));
 const MAX_DAYS = 60; // khớp ItineraryServiceImpl.MAX_DAYS
 const inputClass = "w-full rounded-lg border-outline-variant/40 bg-surface-container-lowest text-sm";
 const EMPTY_ITEM = { entityType: "activity", entityId: "", title: "", startTime: "", endTime: "", estimatedCost: "", notes: "" };
@@ -64,7 +66,7 @@ function ItemForm({ itinerary, dayNumber, item, dayCount, onSaved, onCancel }) {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
     const set = (name) => (e) => setForm((prev) => ({ ...prev, [name]: e.target.value }));
-    const linkable = itinerary.destinationId && (form.entityType === "landmark" || form.entityType === "hotel");
+    const linkable = itinerary.destinationId && LINKABLE_TYPES.includes(form.entityType);
 
     useEffect(() => {
         let cancelled = false;
@@ -234,6 +236,30 @@ function ItineraryDetail() {
         return map;
     }, [itinerary]);
 
+    // Ghim bản đồ: hoạt động gắn khách sạn / địa danh có toạ độ, đánh số theo thứ tự trong ngày.
+    const mapStops = useMemo(() => {
+        const stops = [];
+        Object.keys(itemsByDay).forEach((day) => {
+            let n = 0;
+            itemsByDay[day].forEach((item) => {
+                if (item.latitude == null || item.longitude == null) return;
+                const kind = item.entityType === "hotel" ? "hotel" : item.entityType === "restaurant" ? "lunch" : "sight";
+                stops.push({
+                    key: item.id,
+                    day: Number(day),
+                    kind, // "lunch" = ghim quán ăn (icon dao nĩa, không đánh số)
+                    label: kind === "sight" ? ++n : null,
+                    lat: item.latitude,
+                    lng: item.longitude,
+                    title: item.title,
+                    subtitle: t("trips.itineraryDetail.day", { day }),
+                });
+            });
+        });
+        return stops;
+    }, [itemsByDay, t]);
+    const [activeStop, setActiveStop] = useState(null);
+
     const handleSave = async (e) => {
         e.preventDefault();
         setSaving(true);
@@ -338,6 +364,23 @@ function ItineraryDetail() {
 
             {!editing && <FormAlert>{error}</FormAlert>}
 
+            {mapStops.length > 0 && (
+                <section className="mb-6">
+                    <h2 className="font-headline text-lg font-bold text-on-surface mb-3">{t("planner.map.title")}</h2>
+                    <Suspense fallback={<div className="h-[380px] rounded-2xl bg-surface-container-high animate-pulse" />}>
+                    <TripMap
+                        stops={mapStops}
+                        activeKey={activeStop}
+                        onSelect={(key) => {
+                            setActiveStop(key);
+                            document.getElementById(`itinerary-item-${key}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+                        }}
+                        className="h-[380px]"
+                    />
+                    </Suspense>
+                </section>
+            )}
+
             <div className="space-y-6">
                 {Array.from({ length: dayCount }, (_, i) => i + 1).map((day) => {
                     const items = itemsByDay[day] || [];
@@ -377,7 +420,11 @@ function ItineraryDetail() {
                                         );
                                     }
                                     return (
-                                        <li key={item.id} className="flex gap-4 items-start">
+                                        <li
+                                            key={item.id}
+                                            id={`itinerary-item-${item.id}`}
+                                            className={`flex gap-4 items-start rounded-lg ${activeStop === item.id ? "ring-2 ring-primary/40 bg-primary/5" : ""}`}
+                                        >
                                             <span className="w-24 shrink-0 text-xs font-semibold text-on-surface-variant pt-1">
                                                 {item.startTime ? item.startTime.slice(0, 5) : t("trips.itineraryDetail.anytime")}
                                                 {item.endTime ? ` – ${item.endTime.slice(0, 5)}` : ""}

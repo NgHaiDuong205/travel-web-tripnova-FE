@@ -67,12 +67,18 @@ export const ITEM_TYPES = [
     { value: "other", label: "Other", icon: "more_horiz" },
 ];
 
-/** Địa danh / khách sạn của điểm đến để gắn vào hoạt động: [{id, name}]. */
+/** Loại hoạt động gắn được với địa điểm có thật trong điểm đến. */
+export const LINKABLE_TYPES = ["landmark", "hotel", "restaurant"];
+
+/** Địa danh / khách sạn / quán ăn của điểm đến để gắn vào hoạt động: [{id, name}]. */
 export async function fetchLinkOptions(destinationId, type) {
-    if (!destinationId || (type !== "landmark" && type !== "hotel")) return [];
+    if (!destinationId || !LINKABLE_TYPES.includes(type)) return [];
+    // "restaurant" = địa danh loại restaurant (BE kiểm tra entityId trong bảng landmarks).
     const { data } =
-        type === "landmark"
-            ? await apiClient.get(`/api/destinations/${destinationId}/landmarks/`)
-            : await apiClient.get("/api/hotels/", { params: { destinationId, page: 1, limit: 100 } });
+        type === "hotel"
+            ? await apiClient.get("/api/hotels/", { params: { destinationId, page: 1, limit: 100 } })
+            : await apiClient.get(`/api/destinations/${destinationId}/landmarks/`, {
+                params: type === "restaurant" ? { category: "restaurant" } : {},
+            });
     return data.map((x) => ({ id: x.id, name: x.name }));
 }

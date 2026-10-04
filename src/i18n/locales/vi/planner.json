@@ -2,8 +2,93 @@
   "hero": {
     "eyebrow": "Lên kế hoạch bằng AI",
     "title": "Lên kế hoạch chuyến đi cùng AI.",
-    "subtitle": "Cho chúng tôi biết bạn muốn đi đâu, khi nào và theo phong cách nào — trợ lý AI sẽ gợi ý lịch trình từng ngày kèm khách sạn, tour, xe và chuyến bay để đặt ngay tại một nơi.",
+    "subtitle": "Chọn điểm đến, chúng tôi dựng lịch trình từng ngày từ địa điểm thật gần nhau — điểm tham quan chia theo khu vực, quán ăn gần từng chặng và khách sạn ở giữa — hiển thị trên bản đồ vệ tinh.",
     "imageAlt": "Du khách lên kế hoạch chuyến đi bên tấm bản đồ",
-    "comingSoon": "Sắp ra mắt"
+    "badge": "AI + bản đồ vệ tinh"
+  },
+  "form": {
+    "title": "Bạn muốn đi đâu?",
+    "destination": "Điểm đến",
+    "destinationPlaceholder": "Nhập thành phố, VD Hội An, Đà Nẵng…",
+    "noMatch": "Không tìm thấy điểm đến",
+    "popular": "Gợi ý:",
+    "startDate": "Ngày bắt đầu",
+    "days": "Số ngày",
+    "daysOption_other": "{{count}} ngày",
+    "party": "Số người",
+    "budget": "Ngân sách",
+    "budgetOptions": {
+      "budget": "Tiết kiệm",
+      "mid": "Trung bình",
+      "luxury": "Cao cấp"
+    },
+    "pace": "Nhịp độ",
+    "paceOptions": {
+      "relaxed": "Thong thả",
+      "balanced": "Vừa phải",
+      "packed": "Dày đặc"
+    },
+    "interests": "Sở thích",
+    "interestOptions": {
+      "culture": "Văn hoá & lịch sử",
+      "nature": "Thiên nhiên",
+      "beach": "Biển",
+      "food": "Ẩm thực & chợ",
+      "shopping": "Mua sắm",
+      "entertainment": "Vui chơi giải trí",
+      "wellness": "Thư giãn & spa"
+    },
+    "note": "Mong muốn thêm",
+    "notePlaceholder": "VD: đi cùng trẻ nhỏ, thích ăn vặt đường phố",
+    "disclaimer": "Địa điểm, khách sạn và quán ăn lấy từ dữ liệu TripNova; thời gian di chuyển là ước tính theo khoảng cách. Hãy kiểm tra giờ mở cửa trước khi đi.",
+    "submit": "Lên lịch trình",
+    "generating": "Đang lên lịch trình…",
+    "loginToPlan": "Đăng nhập để lên lịch trình",
+    "chooseDestination": "Vui lòng chọn một điểm đến trong danh sách."
+  },
+  "loading": {
+    "places": "Đang tìm những địa điểm hay nhất ở điểm đến…",
+    "cluster": "Đang chia địa điểm theo khu vực cho từng ngày…",
+    "writing": "AI đang viết lịch trình cho bạn…"
+  },
+  "result": {
+    "aiBadge": "AI viết lịch trình",
+    "fallbackBadge": "Tự động sắp xếp (AI tạm không khả dụng)",
+    "travellers_other": "{{count}} người",
+    "estimatedTotal": "Ước tính {{amount}}",
+    "editPreferences": "Sửa yêu cầu",
+    "regenerate": "Gợi ý phương án khác",
+    "save": "Lưu vào lịch trình của tôi",
+    "saving": "Đang lưu…",
+    "allDays": "Tất cả các ngày",
+    "day": "Ngày {{day}}",
+    "distance": "~{{km}} km",
+    "travel": "~{{minutes}} phút · {{km}} km",
+    "travelNoKm": "~{{minutes}} phút di chuyển",
+    "mayBeClosed": "Có thể đã đóng cửa vào giờ này (giờ mở cửa: {{hours}})",
+    "viewPlace": "Xem chi tiết",
+    "noPin": "Chưa có vị trí trên bản đồ",
+    "removeStop": "Bỏ {{title}}",
+    "hotelTitle_other": "Nơi lưu trú · {{count}} đêm",
+    "perNight": "{{price}} / đêm",
+    "rating": "{{rating}}★ ({{count}})",
+    "alternatives_other": "{{count}} khách sạn khác gần đó",
+    "useHotel": "Chọn",
+    "tips": "Mẹo cho chuyến đi"
+  },
+  "warnings": {
+    "few_places": "Điểm đến này còn ít địa điểm trong dữ liệu nên một số ngày khá nhẹ.",
+    "no_coordinates": "Địa điểm ở đây chưa có vị trí trên bản đồ nên bản đồ và thời gian di chuyển bị hạn chế.",
+    "no_hotel": "Không có khách sạn phù hợp với nhóm của bạn ở điểm đến này — lịch trình chưa có nơi lưu trú.",
+    "no_restaurants": "Chưa có quán ăn trong dữ liệu ở đây — các bữa ăn để tự do.",
+    "ai_unavailable": "Trợ lý AI chưa phản hồi nên lịch trình được sắp xếp tự động, chưa có ghi chú của AI.",
+    "ai_quota": "Trợ lý AI tạm hết hạn mức nên lịch trình được sắp xếp tự động. Hãy thử lại sau ít phút."
+  },
+  "map": {
+    "satellite": "Vệ tinh",
+    "streets": "Đường phố",
+    "labels": "Tên địa danh",
+    "noCoordinates": "Không có địa điểm nào có vị trí để hiển thị.",
+    "title": "Bản đồ chuyến đi"
   }
 }
