@@ -47,5 +47,9 @@
     "flight": "Chuyến bay này được mang bao nhiêu hành lý?",
     "destination": "Khách sạn tốt ở điểm đến này?",
     "landmark": "Khách sạn gần địa điểm này?"
-  }
+  },
+  "greeting": "Xin chào! 👋\nMình là trợ lý AI của TripNova. Bạn cần giúp gì?",
+  "greetingNamed": "Xin chào {{name}}! 👋\nMình là trợ lý AI của TripNova. Bạn cần giúp gì?",
+  "dismissGreeting": "Ẩn lời chào",
+  "dragHint": "kéo để di chuyển"
 }

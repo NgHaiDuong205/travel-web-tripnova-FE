@@ -18,7 +18,7 @@ export function BotAvatar({ error = false, size = "h-7 w-7" }) {
 
 export function UserBubble({ message }) {
     return (
-        <div className="flex justify-end">
+        <div className="flex justify-end tn-msg-in">
             <div
                 className={`max-w-[85%] rounded-2xl rounded-br-sm bg-primary px-3 py-2 text-sm text-white whitespace-pre-wrap break-words ${
                     message.pending ? "opacity-70" : ""
@@ -37,7 +37,7 @@ export function AssistantBubble({ message, t, onRetry, onRate, busy, onLinkClick
 
     if (message.isError) {
         return (
-            <div className="flex gap-2">
+            <div className="flex gap-2 tn-msg-in">
                 <BotAvatar error />
                 <div className="max-w-[85%] rounded-2xl rounded-bl-sm border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
                     <p>{message.content}</p>
@@ -57,7 +57,7 @@ export function AssistantBubble({ message, t, onRetry, onRate, busy, onLinkClick
 
     const current = sources.find((s) => s.citation === openSource);
     return (
-        <div className="flex gap-2" data-testid="assistant-message">
+        <div className="flex gap-2 tn-msg-in" data-testid="assistant-message">
             <BotAvatar />
             <div className="max-w-[85%] min-w-0">
                 <div className="rounded-2xl rounded-bl-sm bg-surface-container-low px-3 py-2 text-on-surface break-words" onClick={onLinkClick}>
@@ -130,7 +130,7 @@ function FeedbackButton({ icon, label, active, onClick }) {
 
 export function Thinking({ t }) {
     return (
-        <div className="flex gap-2 items-center" aria-live="polite">
+        <div className="flex gap-2 items-center tn-msg-in" aria-live="polite">
             <BotAvatar />
             <div className="rounded-2xl bg-surface-container-low px-3 py-2 text-xs text-on-surface-variant flex items-center gap-2">
                 <span className="flex gap-1">

@@ -47,5 +47,9 @@
     "flight": "What is the baggage allowance on this flight?",
     "destination": "Best hotels at this destination?",
     "landmark": "Hotels near this place?"
-  }
+  },
+  "greeting": "Hi there! 👋\nI am the TripNova AI assistant. How can I help you?",
+  "greetingNamed": "Hi {{name}}! 👋\nI am the TripNova AI assistant. How can I help you?",
+  "dismissGreeting": "Hide greeting",
+  "dragHint": "drag to move"
 }

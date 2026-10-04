@@ -13,6 +13,11 @@ import {
 import { withRedirect } from "../../utils/authRedirect";
 import { formatDateTime } from "../../utils/formatters";
 import { AssistantBubble, BotAvatar, Thinking, UserBubble } from "./ChatBubbles";
+import ChatLauncher, { EDGE_MARGIN, LAUNCHER_SIZE } from "./ChatLauncher";
+
+const PANEL_WIDTH = 400;
+const PANEL_HEIGHT = 620;
+const GREETING_DELAY_MS = 1200;
 
 const MAX_CHARS = 2000;
 const SUGGESTION_KEYS = ["s1", "s2", "s3", "s4"];
@@ -72,6 +77,9 @@ function ChatWidget() {
     const [sending, setSending] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [launcherPos, setLauncherPos] = useState(null);
+    const [greetingReady, setGreetingReady] = useState(false);
+    const [greetingDismissed, setGreetingDismissed] = useState(!!stored.current.greetingDismissed);
     const bottomRef = useRef(null);
     const inputRef = useRef(null);
     const skipLoadRef = useRef(null);
@@ -91,8 +99,18 @@ function ChatWidget() {
     }, [userId, initializing]);
 
     useEffect(() => {
-        if (!initializing) writeStored({ open, activeId, userId });
-    }, [open, activeId, userId, initializing]);
+        if (!initializing) writeStored({ open, activeId, userId, greetingDismissed });
+    }, [open, activeId, userId, initializing, greetingDismissed]);
+
+    // Lời chào hiện sau một nhịp khi trang đã tải; mở chat hoặc bấm ✕ thì ẩn (nhớ theo tab).
+    useEffect(() => {
+        const timer = window.setTimeout(() => setGreetingReady(true), GREETING_DELAY_MS);
+        return () => window.clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+        if (open) setGreetingDismissed(true);
+    }, [open]);
 
     const loadSessions = useCallback(() => {
         return fetchChatSessions({ limit: 30 })
@@ -220,6 +238,29 @@ function ChatWidget() {
 
     if (initializing) return null;
 
+    // Khung chat (màn hình >= 640px) mở cạnh nút: cùng phía, phía trên nếu nút ở nửa dưới màn hình.
+    let panelStyle;
+    let panelOrigin = "bottom right";
+    if (launcherPos && !launcherPos.vp.mobile) {
+        const { vp, side, top } = launcherPos;
+        const height = Math.min(PANEL_HEIGHT, vp.h - 2 * EDGE_MARGIN);
+        const width = Math.min(PANEL_WIDTH, vp.w - 2 * EDGE_MARGIN);
+        const above = top + LAUNCHER_SIZE / 2 > vp.h / 2;
+        let panelTop = above ? top - 12 - height : top + LAUNCHER_SIZE + 12;
+        panelTop = Math.min(Math.max(panelTop, EDGE_MARGIN), vp.h - height - EDGE_MARGIN);
+        panelStyle = {
+            top: panelTop,
+            left: side === "left" ? EDGE_MARGIN : vp.w - width - EDGE_MARGIN,
+            width,
+            height,
+            transformOrigin: `${above ? "bottom" : "top"} ${side}`,
+        };
+        panelOrigin = panelStyle.transformOrigin;
+    }
+    const greeting = user?.fullName
+        ? t("chatbot.greetingNamed", { name: givenName(user.fullName, lang) })
+        : t("chatbot.greeting");
+
     return (
         <>
             {open && (
@@ -227,11 +268,15 @@ function ChatWidget() {
                     role="dialog"
                     aria-label={t("chatbot.title")}
                     data-testid="chat-widget"
-                    className="fixed z-[70] inset-0 sm:inset-auto sm:bottom-24 sm:right-6 sm:w-[400px] sm:h-[620px] sm:max-h-[calc(100vh-8rem)] flex flex-col overflow-hidden bg-white sm:rounded-2xl shadow-2xl border border-outline-variant/30"
+                    style={panelStyle || { transformOrigin: panelOrigin }}
+                    className={`tn-panel-in fixed z-[70] flex flex-col overflow-hidden bg-white shadow-2xl border border-outline-variant/30 ${
+                        panelStyle ? "rounded-2xl" : "inset-0"
+                    }`}
                 >
                     <header className="flex items-center gap-2 bg-primary px-3 py-2.5 text-white">
-                        <span className="h-9 w-9 rounded-full bg-white/15 flex items-center justify-center">
-                            <span className="material-symbols-outlined text-[20px]">smart_toy</span>
+                        <span className="relative h-9 w-9 rounded-full bg-white/15 flex items-center justify-center">
+                            <span className="material-symbols-outlined text-[20px] tn-bot-icon">smart_toy</span>
+                            <span className="tn-online-dot absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-400 ring-2 ring-primary" />
                         </span>
                         <div className="flex-1 min-w-0">
                             <p className="font-bold text-sm leading-tight">{t("chatbot.title")}</p>
@@ -373,26 +418,28 @@ function ChatWidget() {
                 </section>
             )}
 
-            <button
-                type="button"
-                onClick={() => setOpen((v) => !v)}
-                aria-label={open ? t("chatbot.minimize") : t("chatbot.launcher")}
-                aria-expanded={open}
-                title={open ? t("chatbot.minimize") : t("chatbot.launcher")}
-                data-testid="chat-launcher"
-                className={`fixed z-[70] right-4 bottom-20 md:right-6 md:bottom-6 h-14 w-14 rounded-full bg-primary text-white shadow-xl ring-4 ring-white/70 flex items-center justify-center transition-transform hover:scale-105 ${
-                    open ? "hidden sm:flex" : "flex"
-                }`}
-            >
-                <span className="material-symbols-outlined text-[28px]">{open ? "close" : "smart_toy"}</span>
-                {!open && (
-                    <span className="absolute -top-0.5 -right-0.5 rounded-full bg-amber-400 px-1.5 text-[9px] font-extrabold text-primary leading-4">
-                        AI
-                    </span>
-                )}
-            </button>
+            <ChatLauncher
+                open={open}
+                onToggle={() => setOpen((v) => !v)}
+                onPositionChange={setLauncherPos}
+                greeting={greeting}
+                showGreeting={greetingReady && !greetingDismissed}
+                onDismissGreeting={() => setGreetingDismissed(true)}
+                labels={{
+                    open: t("chatbot.launcher"),
+                    close: t("chatbot.minimize"),
+                    drag: t("chatbot.dragHint"),
+                    dismiss: t("chatbot.dismissGreeting"),
+                }}
+            />
         </>
     );
+}
+
+/** Tên gọi để chào: tiếng Việt lấy chữ cuối (Nguyễn Hải Dương → Dương), tiếng Anh lấy chữ đầu. */
+function givenName(fullName, lang) {
+    const parts = fullName.trim().split(/\s+/);
+    return lang === "vi" ? parts[parts.length - 1] : parts[0];
 }
 
 function HeaderButton({ icon, label, onClick }) {
