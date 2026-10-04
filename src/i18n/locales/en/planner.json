@@ -1,9 +1,45 @@
 {
   "hero": {
-    "eyebrow": "AI Trip Planner",
-    "title": "Your trip, planned by AI.",
-    "subtitle": "Tell us where, when and how you like to travel — our AI assistant drafts a day-by-day itinerary with hotels, tours, cars and flights you can book in one place.",
-    "imageAlt": "Traveller planning a trip with a map",
-    "comingSoon": "Coming soon"
+    "eyebrow": "AI Travel Assistant",
+    "title": "Ask anything about your trip.",
+    "subtitle": "Our AI assistant searches real TripNova hotels, tours, car rentals and flights, plus our travel policies, to answer in seconds.",
+    "imageAlt": "Traveller planning a trip with a map"
+  },
+  "chat": {
+    "newChat": "New chat",
+    "history": "Your conversations",
+    "emptyHistory": "No conversations yet.",
+    "untitled": "New conversation",
+    "close": "Delete conversation",
+    "closeConfirm": "Delete this conversation? You will not be able to see it again.",
+    "placeholder": "Ask about hotels, tours, cars, flights or policies…",
+    "send": "Send",
+    "thinking": "Looking it up…",
+    "retry": "Try again",
+    "sources": "Sources",
+    "helpful": "Helpful",
+    "notHelpful": "Not helpful",
+    "loading": "Loading…",
+    "loginTitle": "Sign in to chat with the AI assistant",
+    "loginText": "The assistant keeps your conversations so you can pick up where you left off.",
+    "loginButton": "Sign in",
+    "welcomeTitle": "How can I help you plan?",
+    "welcomeText": "Ask about prices, star ratings, amenities, flight times or cancellation policies. Answers use live TripNova data.",
+    "disclaimer": "AI can make mistakes. Check prices and availability on the detail page before booking.",
+    "contextNote": "This conversation is about the {{type}} you were viewing.",
+    "contextTypes": {
+      "hotel": "hotel",
+      "tour": "tour",
+      "car": "car",
+      "flight": "flight",
+      "destination": "destination",
+      "landmark": "landmark"
+    },
+    "suggestions": {
+      "s1": "4-star hotels in Da Nang under $60 a night",
+      "s2": "Cheapest Ha Long Bay tour",
+      "s3": "Flights from Hanoi to Ho Chi Minh City tomorrow",
+      "s4": "Rent a 7-seat car with a driver"
+    }
   }
 }
