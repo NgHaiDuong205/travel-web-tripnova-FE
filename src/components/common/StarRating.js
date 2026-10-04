@@ -1,3 +1,5 @@
+import { useT } from "../../i18n/I18nContext";
+
 const FILLED = { fontVariationSettings: "'FILL' 1" };
 
 /**
@@ -5,9 +7,10 @@ const FILLED = { fontVariationSettings: "'FILL' 1" };
  * `value` có thể lẻ (4.3) khi chỉ hiển thị: làm tròn tới nửa sao.
  */
 function StarRating({ value = 0, onChange, size = "text-[18px]", className = "" }) {
+    const t = useT();
     const rounded = Math.round((value || 0) * 2) / 2;
     return (
-        <div className={`inline-flex items-center text-amber-500 ${className}`} aria-label={`${value || 0} out of 5`}>
+        <div className={`inline-flex items-center text-amber-500 ${className}`} aria-label={t("reviews.starRating.outOfFive", { rating: value || 0 })}>
             {[1, 2, 3, 4, 5].map((star) => {
                 const icon = rounded >= star ? "star" : rounded >= star - 0.5 ? "star_half" : "star";
                 const filled = rounded >= star - 0.5;
@@ -26,7 +29,7 @@ function StarRating({ value = 0, onChange, size = "text-[18px]", className = "" 
                         type="button"
                         onClick={() => onChange(value === star ? null : star)}
                         className="hover:scale-110 transition-transform"
-                        aria-label={`${star} star${star > 1 ? "s" : ""}`}
+                        aria-label={t("reviews.starRating.stars", { count: star })}
                     >
                         {span}
                     </button>

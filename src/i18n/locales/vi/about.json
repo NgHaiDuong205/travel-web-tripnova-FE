@@ -1,0 +1,60 @@
+{
+  "images": {
+    "heroAlt": "Hồ bơi vô cực sang trọng nhìn ra bờ biển Địa Trung Hải lúc hoàng hôn, ghế nằm thanh lịch và ánh vàng ấm áp",
+    "storyAlt": "Nội thất khách sạn sang trọng với cửa kính kịch trần nhìn ra núi và nội thất tối giản",
+    "ctaAlt": "Cận cảnh từ trên cao sóng biển vỗ vào bãi cát với sắc xanh thẳm và bọt trắng"
+  },
+  "hero": {
+    "eyebrow": "Trải nghiệm biên tập",
+    "titlePrefix": "Nghệ thuật của hành trình,",
+    "titleEmphasis": "Tuyển chọn.",
+    "description": "Tại TripNova, chúng tôi tin rằng du lịch không chỉ là điểm đến — đó là một câu chuyện. Cách tiếp cận biên tập giúp mỗi kỳ lưu trú, chuyến bay và trải nghiệm trở thành một chương trong hành trình khám phá của riêng bạn."
+  },
+  "story": {
+    "title": "Câu chuyện của chúng tôi",
+    "paragraphOne": "Ra đời từ một nhóm biên tập viên du lịch và chuyên viên concierge cao cấp, TripNova được thành lập để giải quyết nghịch lý của quá nhiều lựa chọn trong du lịch hiện đại. Giữa thời đại lướt mạng vô tận, chúng tôi chọn con đường tuyển chọn có chủ đích.",
+    "paragraphTwo": "Chúng tôi không chỉ liệt kê khách sạn; chúng tôi thẩm định chúng. Mỗi đối tác đều được chọn vì kiến trúc chuẩn mực, dịch vụ xuất sắc và giá trị văn hoá. Chúng tôi là người tuyển chọn du lịch riêng của bạn, lọc bỏ những điều thừa để giữ lại những gì đặc biệt.",
+    "paragraphThree": "Sứ mệnh của chúng tôi rất đơn giản: để mỗi khoảnh khắc xa nhà của bạn là sự đầu tư cho cái đẹp, sự thoải mái và những kết nối sâu sắc."
+  },
+  "values": {
+    "title": "Tiêu chuẩn Nova",
+    "curatedExcellence": {
+      "title": "Tuyển chọn xuất sắc",
+      "description": "Mỗi điểm đến đều được đội ngũ chuyên gia toàn cầu trực tiếp thẩm định. Chúng tôi đặt chất lượng lên trên số lượng, chỉ những khách sạn xuất sắc nhất mới có mặt trong bộ sưu tập."
+    },
+    "globalInsight": {
+      "title": "Hiểu biết toàn cầu",
+      "description": "Mạng lưới của chúng tôi trải khắp sáu châu lục, mang đến hiểu biết thực địa mà thuật toán không thể thay thế. Chúng tôi nắm rõ những nét bản địa giúp chuyến đi thật sự chân thực."
+    },
+    "seamlessService": {
+      "title": "Dịch vụ liền mạch",
+      "description": "Sang trọng là khi mọi thứ diễn ra trơn tru. Từ lúc đặt chỗ đến khi trở về, đội ngũ concierge luôn đón đầu nhu cầu của bạn trước cả khi bạn nói ra."
+    }
+  },
+  "curators": {
+    "eyebrow": "Những người kiến tạo cảm hứng",
+    "title": "Đội ngũ tuyển chọn",
+    "description": "Dẫn dắt bởi hàng chục năm kinh nghiệm trong ngành khách sạn cao cấp và báo chí du lịch.",
+    "elena": {
+      "role": "Phụ trách Di sản châu Âu",
+      "alt": "Chân dung một người phụ nữ thanh lịch tóc sẫm màu mặc áo blazer trong văn phòng hiện đại, sáng sủa"
+    },
+    "julian": {
+      "role": "Giám đốc Nghỉ dưỡng nhiệt đới",
+      "alt": "Chân dung một người đàn ông trung niên tóc muối tiêu mặc sơ mi linen cao cấp, tự tin và thoải mái trên nền đô thị"
+    },
+    "aria": {
+      "role": "Chuyên viên tuyển chọn thám hiểm",
+      "alt": "Cận cảnh một người phụ nữ đeo kính với nụ cười ấm áp, trang sức tối giản và áo lụa"
+    },
+    "marcus": {
+      "role": "Chuyên gia hàng không",
+      "alt": "Chân dung một người đàn ông trẻ mặc áo cổ lọ tối màu, trầm ngâm nhìn ra xa trong studio phong cách"
+    }
+  },
+  "cta": {
+    "title": "Sẵn sàng viết chương tiếp theo?",
+    "description": "Hãy đến với thế giới nghỉ dưỡng được tuyển chọn của chúng tôi và trải nghiệm du lịch đúng nghĩa.",
+    "explore": "Khám phá điểm đến"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "filters": {
+    "refineSelection": "Refine selection"
+  },
+  "tripCart": {
+    "adding": "Adding…",
+    "add": "Add to Trip Cart",
+    "added": "Added to your trip cart.",
+    "viewCart": "View cart"
+  },
+  "flight": {
+    "nonStop": "Non-stop"
+  },
+  "pending": {
+    "title": "You have an unpaid booking here",
+    "heldUntil": "held until {{time}}",
+    "cancel": "Cancel booking",
+    "cancelConfirm": "Cancel this unpaid booking and release the held seats/dates?",
+    "continuePayment": "Continue payment",
+    "flightSeats_one": "Seat {{seats}}",
+    "flightSeats_other": "Seats {{seats}}",
+    "cartTitle": "Unpaid order - complete payment before the hold expires"
+  }
+}

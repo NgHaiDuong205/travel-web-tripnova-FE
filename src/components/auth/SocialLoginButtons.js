@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { OAUTH_PROVIDERS, OAUTH_REDIRECT_KEY, fetchOAuthProviders, oauthAuthorizeUrl } from "../../services/accountService";
+import { useT } from "../../i18n/I18nContext";
 
 /**
  * Nút đăng nhập Google / Facebook / GitHub. Chỉ hiện provider BE đã cấu hình client id/secret —
  * chưa có key nào thì không hiện gì cả.
  */
 function SocialLoginButtons({ redirect }) {
+    const t = useT();
     const [providers, setProviders] = useState([]);
 
     useEffect(() => {
@@ -34,7 +36,7 @@ function SocialLoginButtons({ redirect }) {
         <div className="mt-6">
             <div className="flex items-center gap-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
                 <span className="flex-1 h-px bg-gray-200" />
-                or continue with
+                {t("auth.social.orContinueWith")}
                 <span className="flex-1 h-px bg-gray-200" />
             </div>
             <div className="grid gap-3">
@@ -48,7 +50,7 @@ function SocialLoginButtons({ redirect }) {
                             className={`w-full flex items-center justify-center gap-3 py-3 rounded-lg font-bold text-sm transition-colors ${meta.className}`}
                         >
                             <span className="w-5 text-center font-black">{meta.icon}</span>
-                            Continue with {meta.label}
+                            {t("auth.social.continueWith", { provider: meta.label })}
                         </button>
                     );
                 })}

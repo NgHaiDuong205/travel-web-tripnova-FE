@@ -1,0 +1,60 @@
+{
+  "images": {
+    "heroAlt": "luxury infinity pool overlooking a Mediterranean coastline at sunset with elegant lounge chairs and warm golden lighting",
+    "storyAlt": "vertical artistic shot of a luxury hotel interior with floor-to-ceiling windows showing a mountain view and minimalist furniture",
+    "ctaAlt": "subtle aerial texture of ocean waves hitting a sandy beach with deep blue and white foam tones"
+  },
+  "hero": {
+    "eyebrow": "The Editorial Experience",
+    "titlePrefix": "The Art of the Journey,",
+    "titleEmphasis": "Curated.",
+    "description": "At TripNova, we believe travel is more than a destination—it is a narrative. Our editorial approach frames every stay, flight, and experience as a chapter in your personal legacy of discovery."
+  },
+  "story": {
+    "title": "Our Narrative",
+    "paragraphOne": "Born from a collective of travel editors and luxury concierges, TripNova was founded to solve the paradox of choice in modern travel. In an era of endless scrolling, we choose the deliberate path of curation.",
+    "paragraphTwo": "We don't just list properties; we audit them. Every partner in our ecosystem is selected for its architectural integrity, service excellence, and cultural resonance. We operate as your personal travel curator, filtering out the noise to reveal the exceptional.",
+    "paragraphThree": "Our mission is simple: to ensure that every moment you spend away from home is an investment in beauty, comfort, and profound connection."
+  },
+  "values": {
+    "title": "The Nova Standard",
+    "curatedExcellence": {
+      "title": "Curated Excellence",
+      "description": "Every destination is hand-vetted by our team of global scouts. We prioritize quality over quantity, ensuring only the most distinguished properties enter our collection."
+    },
+    "globalInsight": {
+      "title": "Global Insight",
+      "description": "Our network spans six continents, providing boots-on-the-ground intelligence that algorithms cannot replicate. We know the local nuances that make a trip truly authentic."
+    },
+    "seamlessService": {
+      "title": "Seamless Service",
+      "description": "Luxury is defined by the absence of friction. From booking to return, our concierge ecosystem anticipates your needs before you even voice them."
+    }
+  },
+  "curators": {
+    "eyebrow": "Meet the Architects of Awe",
+    "title": "The Lead Curators",
+    "description": "Guided by decades of experience in high-end hospitality and travel journalism.",
+    "elena": {
+      "role": "European Heritage Lead",
+      "alt": "professional portrait of a sophisticated woman with dark hair wearing a tailored blazer in a bright, modern office setting"
+    },
+    "julian": {
+      "role": "Tropical Luxury Director",
+      "alt": "portrait of a middle-aged man with graying hair in a premium linen shirt, looking confident and relaxed against an urban background"
+    },
+    "aria": {
+      "role": "Expedition Curator",
+      "alt": "close up of a professional woman with glasses and a warm smile, wearing minimalist jewelry and a silk top"
+    },
+    "marcus": {
+      "role": "Aviation Specialist",
+      "alt": "portrait of a young professional man in a dark turtleneck looking thoughtfully away from the camera in a stylish studio"
+    }
+  },
+  "cta": {
+    "title": "Ready to write your next chapter?",
+    "description": "Join our curated world of luxury and experience travel the way it was meant to be.",
+    "explore": "Explore Destinations"
+  }
+}

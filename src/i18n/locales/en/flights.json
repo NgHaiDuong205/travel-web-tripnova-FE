@@ -1,0 +1,100 @@
+{
+  "hero": {
+    "imageAlt": "Aircraft wing above the clouds",
+    "titleLineOne": "Skyward Bound.",
+    "titleLineTwo": "Elegance in Flight.",
+    "subtitle": "Compare schedules, pick your seat on the cabin map and pay securely in minutes."
+  },
+  "search": {
+    "roundTrip": "Round Trip",
+    "oneWay": "One Way",
+    "submit": "Search Flights",
+    "from": "From (Departure)",
+    "fromPlaceholder": "City or airport code",
+    "to": "To (Destination)",
+    "toPlaceholder": "Where to?",
+    "departureDate": "Departure Date",
+    "returnDate": "Return Date"
+  },
+  "filters": {
+    "title": "Filters",
+    "airlines": "Airlines",
+    "priceRange": "Price Range",
+    "flightTimes": "Flight Times",
+    "upTo": "up to {{price}}"
+  },
+  "times": {
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening",
+    "night": "Night"
+  },
+  "sort": {
+    "departure": "Earliest departure",
+    "price_asc": "Best price",
+    "price_desc": "Highest price",
+    "duration": "Shortest"
+  },
+  "classes": {
+    "economy": "Economy",
+    "premium_economy": "Premium Economy",
+    "business": "Business",
+    "first": "First"
+  },
+  "list": {
+    "from": "From",
+    "seatsLeft_one": "{{count}} seat left",
+    "seatsLeft_other": "{{count}} seats left",
+    "selectFlight": "Select Flight",
+    "empty": "No flights match your search. Try another date or fewer filters.",
+    "allRoutes": "All routes",
+    "finding": "Finding flights…",
+    "matches_one": "Showing {{count}} flight match",
+    "matches_other": "Showing {{count}} flight matches",
+    "outbound": "Outbound",
+    "return": "Return · {{route}}"
+  },
+  "detail": {
+    "backToFlights": "Back to Flights",
+    "noLongerOnSale": "This flight is no longer on sale.",
+    "route": "Route",
+    "selectYourFlight": "Select Your Flight",
+    "soldOut": "This flight is sold out."
+  },
+  "seats": {
+    "empty": "No seats in this cabin.",
+    "cabinMap": "Cabin map",
+    "available": "Available",
+    "occupied": "Occupied",
+    "selected": "Selected",
+    "seatClass": "Seat {{seat}} · {{className}}",
+    "heldByYou": "Held for you (unpaid)"
+  },
+  "passengers": {
+    "fullName": "Passenger full name *",
+    "passportNumber": "Passport no."
+  },
+  "booking": {
+    "summary": "Booking Summary",
+    "chooseSeats_one": "Choose {{count}} seat on the cabin map.",
+    "chooseSeats_other": "Choose {{count}} seats on the cabin map.",
+    "flightFare": "Flight fare × {{count}}",
+    "taxesFees": "Taxes & fees",
+    "included": "Included",
+    "payment": "Payment",
+    "continueToPayment": "Continue to Payment",
+    "freeCancellation": "Free cancellation until 24h before departure",
+    "includedBaggage": "Included Baggage",
+    "defaultBaggage": "Standard carry-on allowance applies. Contact us for checked baggage."
+  },
+  "reviews": {
+    "title": "Passenger Reviews"
+  },
+  "validation": {
+    "returnDate": "Return date must be on or after the departure date.",
+    "chooseSeats_one": "Please choose {{count}} seat on the map.",
+    "chooseSeats_other": "Please choose {{count}} seats on the map.",
+    "passengerName": "Enter the passenger name for seat {{seat}}."
+  },
+  "duration": "{{h}}h {{m}}m"
+}

@@ -1,0 +1,479 @@
+{
+  "hero": {
+    "eyebrow": "World Discovery",
+    "titleFirst": "Curated",
+    "titleSecond": "Destinations",
+    "description": "An editorial selection of the world's most evocative landscapes, from sun-drenched coastlines to mist-covered peaks.",
+    "imageAlt": "Traveller overlooking a mountain lake"
+  },
+  "filters": {
+    "country": "Country",
+    "city": "City",
+    "selectCountry": "Select country",
+    "selectCity": "Select city"
+  },
+  "categories": {
+    "all": "All escapes",
+    "coastal": "Coastal",
+    "historical": "Historical",
+    "mountain": "Mountain",
+    "urban": "Urban luxe",
+    "hidden": "Hidden gems"
+  },
+  "actions": {
+    "find": "Find destinations",
+    "learnMore": "Learn more",
+    "consult": "Consult a curator"
+  },
+  "results": {
+    "count_one": "{{count}} curated destination",
+    "count_other": "{{count}} curated destinations",
+    "inLocation_one": "{{count}} curated destination in {{location}}",
+    "inLocation_other": "{{count}} curated destinations in {{location}}"
+  },
+  "empty": {
+    "title": "No destinations found",
+    "description": "Try a different country or city, change the category filter, or clear your search."
+  },
+  "cta": {
+    "title": "Can't find your ideal escape?",
+    "description": "Our travel curators can craft a bespoke itinerary for your interests."
+  },
+  "detail": {
+    "backToDestinations": "Back to Destinations",
+    "curatorPerspective": "The Curator's Perspective",
+    "curatorImageAlt": "Curator",
+    "essentialExperiences": "Essential Experiences.",
+    "experiencesDescription": "The definitive list of things you cannot miss.",
+    "refinedStays": "Refined Stays Nearby.",
+    "staysDescription": "Our hand-selected properties that embody the soul of the coast through service and architecture.",
+    "viewAllAccommodations": "View All Accommodations",
+    "newsletter": {
+      "title": "Want more curated guides?",
+      "description": "Join our editorial circle for weekly travel dispatches, hidden gems, and exclusive member-only hotel rates.",
+      "emailPlaceholder": "Email Address",
+      "joinNow": "Join Now"
+    }
+  },
+  "content": {
+    "amalfi": {
+      "list": {
+        "badge": "Exclusive Access",
+        "title": "The Amalfi Coast",
+        "description": "Italy's most evocative vertical landscape.",
+        "alt": "dramatic wide shot of the Amalfi Coast at sunset with warm glowing lights in Mediterranean villas overlooking deep blue ocean"
+      },
+      "detail": {
+        "heroTitle": [
+          "The Amalfi",
+          "Coast."
+        ],
+        "heroAlt": "wide cinematic shot of Amalfi Coast town colorful buildings cascading down steep cliffs to deep blue Mediterranean sea at sunset",
+        "badge": "LEGENDARY DESTINATION",
+        "bestTime": "BEST TIME: MAY – SEPT",
+        "curatorQuote": "\"A vertical landscape where lemon groves meet the deep azure of the Tyrrhenian Sea.\"",
+        "curator": {
+          "name": "Elena Moretti",
+          "role": "Lead Destination Architect",
+          "note": "\"The Amalfi Coast isn't just a location; it's a sensory symphony. From the scent of Sfusato Amalfitano lemons to the terrifying yet beautiful drive along the SS163.\""
+        },
+        "paragraphs": [
+          "Suspended between the blue sky and the iridescent sea, the Amalfi Coast seems to have been born from the palette of a painter who wanted to describe the divine. It is a stretch of coastline like no other on Earth—a UNESCO World Heritage site where mountains plunge into the sea in a nail-biting sequence of crags and forests.",
+          "Positano, the crown jewel, is a vertical town that defies gravity. Its pastel-colored houses appear to be stacked atop one another, connected by steep stairways and narrow alleys draped in bougainvillea. It is here that the concept of 'La Dolce Vita' truly finds its home, amidst the luxury boutiques and the scent of sea salt and Aperol.",
+          "Further along, Amalfi serves as the historical heart, its grand cathedral dominating the main piazza with its glittering Byzantine facade. For those seeking solitude, the higher-altitude Ravello offers a refined, aristocratic retreat, with gardens that seem to float between the clouds and the water below."
+        ],
+        "experiences": [
+          {
+            "tag": "Coastal Gem",
+            "title": "Sunset Cocktails in Positano",
+            "alt": "Positano beach view with rows of orange umbrellas and turquoise water, colorful cliffside houses in the background"
+          },
+          {
+            "tag": "Adventure",
+            "title": "The Path of the Gods Hike",
+            "alt": "high angle hiking trail overlooking the amalfi coastline and sea with rocky mountains in the foreground"
+          },
+          {
+            "title": "Villa Cimbrone Gardens",
+            "alt": "lush mediterranean garden with ancient stone columns and panoramic sea view under clear sky"
+          },
+          {
+            "title": "Amalfi Lemon Tour",
+            "alt": "close up of vibrant yellow lemons growing on green trees in a sunny italian orchard"
+          }
+        ],
+        "hotels": [
+          {
+            "name": "Palazzo Avino",
+            "location": "Ravello, Amalfi Coast",
+            "price": "FROM $1,250",
+            "description": "A 12th-century pink palace tucked away in the hilltops, offering the most poetic views of the coast.",
+            "alt": "exterior of a pink luxury palace hotel with white windows overlooking a blue pool and the mediterranean coast"
+          },
+          {
+            "name": "Le Sirenuse",
+            "location": "Positano, Amalfi Coast",
+            "price": "FROM $1,800",
+            "description": "An icon of Italian hospitality where vintage glamour meets the ultimate Positano location.",
+            "alt": "terraced hotel balcony with classic red walls, green plants and white wrought iron furniture overlooking Positano bay"
+          },
+          {
+            "name": "Monastero Santa Rosa",
+            "location": "Conca dei Marini",
+            "price": "FROM $1,100",
+            "description": "A former monastery transformed into a sanctuary of peace with an infinity pool that merges with the sky.",
+            "alt": "luxury infinity pool jutting out from a steep rocky cliff with the ocean stretching to the horizon"
+          }
+        ]
+      }
+    },
+    "agra": {
+      "list": {
+        "tag": "Historical",
+        "title": "Agra Heritage",
+        "description": "\"A teardrop on the cheek of eternity.\" Experience the sublime architecture of the Mughal empire.",
+        "alt": "symmetrical architecture of the Taj Mahal in Agra India during sunrise with soft pink sky and morning mist"
+      },
+      "detail": {
+        "heroTitle": [
+          "Agra",
+          "Heritage."
+        ],
+        "heroAlt": "symmetrical architecture of the Taj Mahal in Agra India during sunrise",
+        "badge": "UNESCO WORLD HERITAGE",
+        "bestTime": "BEST TIME: OCT – MAR",
+        "curatorQuote": "\"Where marble becomes poetry and dawn paints the dome in rose gold.\"",
+        "curator": {
+          "name": "Rajesh Verma",
+          "role": "South Asia Heritage Specialist",
+          "note": "\"Visit at first light when the crowds are still dreaming—the Taj Mahal belongs to those who arrive with patience and reverence.\""
+        },
+        "paragraphs": [
+          "Agra stands as the luminous heart of Mughal India, where emperors commissioned monuments that would outlast empires. The Taj Mahal remains the world's most celebrated act of architectural devotion—a symphony of white marble, pietra dura, and perfect symmetry reflected in still waters.",
+          "Beyond the Taj, the Agra Fort reveals centuries of power and intrigue in its red sandstone walls. From its ramparts, the view toward the mausoleum across the Yamuna River offers a perspective few travelers pause to discover.",
+          "The old city's bazaars pulse with craftsmanship passed through generations: marble inlay, leatherwork, and spices that perfume the narrow lanes. Agra rewards the curious traveler who looks beyond the postcard."
+        ],
+        "experiences": [
+          {
+            "tag": "Iconic",
+            "title": "Sunrise at the Taj Mahal",
+            "alt": "Taj Mahal at sunrise with soft pink sky"
+          },
+          {
+            "tag": "History",
+            "title": "Agra Fort Private Tour",
+            "alt": "historic fort architecture in India"
+          },
+          {
+            "title": "Marble Inlay Workshop",
+            "alt": "artisan working on marble inlay craft"
+          },
+          {
+            "title": "Mehtab Bagh Gardens",
+            "alt": "garden view across river toward Taj Mahal"
+          }
+        ],
+        "hotels": [
+          {
+            "name": "The Oberoi Amarvilas",
+            "location": "Agra, Uttar Pradesh",
+            "price": "FROM $650",
+            "description": "Every room offers an uninterrupted view of the Taj Mahal—luxury defined by proximity to wonder.",
+            "alt": "luxury hotel with view of Taj Mahal"
+          },
+          {
+            "name": "ITC Mughal",
+            "location": "Agra, Uttar Pradesh",
+            "price": "FROM $280",
+            "description": "Sprawling Mughal-inspired gardens and palatial rooms minutes from the monuments.",
+            "alt": "resort gardens and architecture"
+          },
+          {
+            "name": "Trident Agra",
+            "location": "Agra, Uttar Pradesh",
+            "price": "FROM $180",
+            "description": "Contemporary comfort with Mughal motifs and easy access to the Taj.",
+            "alt": "elegant hotel exterior with pool"
+          }
+        ]
+      }
+    },
+    "london": {
+      "list": {
+        "title": "London Fog",
+        "description": "Bespoke urban exploration through the historic West End.",
+        "alt": "aesthetic vertical shot of a london telephone booth with fog and wet pavement and city lights in background"
+      },
+      "detail": {
+        "heroTitle": [
+          "London",
+          "Fog."
+        ],
+        "heroAlt": "London telephone booth with fog and wet pavement",
+        "badge": "URBAN LUXE",
+        "bestTime": "BEST TIME: APR – JUN",
+        "curatorQuote": "\"A city of layers—Victorian grandeur, literary ghosts, and the eternal drama of the Thames.\"",
+        "curator": {
+          "name": "James Whitfield",
+          "role": "European Urban Curator",
+          "note": "\"London reveals itself in the rain—the West End glows, theatres spill their audiences onto wet pavements, and every corner feels borrowed from a novel.\""
+        },
+        "paragraphs": [
+          "London is not a single city but a palimpsest of centuries—Roman foundations beneath Georgian squares, Victorian markets beside glass skyscrapers. The West End remains the beating heart of theatre, dining, and nocturnal elegance.",
+          "From the hushed galleries of Mayfair to the creative ferment of Shoreditch, each neighbourhood offers a distinct temperament. Our curated routes favour the intimate: private viewings, members' clubs, and mews hidden from the tourist tide.",
+          "Cross the Thames at dusk when St Paul's dome catches the last gold of day, or wander South Bank where street performers and bookstalls preserve a bohemian spirit against the modern skyline."
+        ],
+        "experiences": [
+          {
+            "tag": "Theatre",
+            "title": "West End Opening Night",
+            "alt": "London West End theatre district at night"
+          },
+          {
+            "tag": "Culture",
+            "title": "Private British Museum Tour",
+            "alt": "British Museum interior grand hall"
+          },
+          {
+            "title": "Afternoon Tea at Claridge's",
+            "alt": "elegant afternoon tea service"
+          },
+          {
+            "title": "Thames Sunset Cruise",
+            "alt": "Thames river at sunset with London skyline"
+          }
+        ],
+        "hotels": [
+          {
+            "name": "Claridge's",
+            "location": "Mayfair, London",
+            "price": "FROM $950",
+            "description": "Art Deco grandeur and impeccable service in the heart of Mayfair.",
+            "alt": "luxury hotel lobby Mayfair"
+          },
+          {
+            "name": "The Savoy",
+            "location": "Strand, London",
+            "price": "FROM $720",
+            "description": "Edwardian elegance on the Thames with legendary bars and river views.",
+            "alt": "The Savoy hotel exterior"
+          },
+          {
+            "name": "Shangri-La The Shard",
+            "location": "Southwark, London",
+            "price": "FROM $580",
+            "description": "Sky-high rooms with panoramic views from Western Europe's tallest building.",
+            "alt": "view from Shard hotel room"
+          }
+        ]
+      }
+    },
+    "cinqueTerre": {
+      "list": {
+        "title": "Cinque Terre",
+        "description": "The five ancient villages where the mountains meet the sea.",
+        "alt": "colorful cliffside houses of Cinque Terre Italy with vibrant turquoise sea water and golden afternoon sun"
+      },
+      "detail": {
+        "heroTitle": [
+          "Cinque",
+          "Terre."
+        ],
+        "heroAlt": "colorful cliffside houses of Cinque Terre Italy",
+        "badge": "COASTAL GEM",
+        "bestTime": "BEST TIME: MAY – OCT",
+        "curatorQuote": "\"Five villages suspended between sky and Ligurian blue—Italy at its most painterly.\"",
+        "curator": {
+          "name": "Elena Moretti",
+          "role": "Lead Destination Architect",
+          "note": "\"Walk the coastal path at golden hour when Vernazza glows like a jewel box and the sea turns molten copper.\""
+        },
+        "paragraphs": [
+          "The Cinque Terre—Monterosso, Vernazza, Corniglia, Manarola, and Riomaggiore—are five medieval villages carved into cliffs above the Ligurian Sea. UNESCO protection has preserved their chromatic facades and terraced vineyards.",
+          "The Sentiero Azzurro coastal trail connects the villages with views that have inspired painters for centuries. Each hamlet possesses its own character: Manarola's sunset, Vernazza's harbour, Monterosso's sandy beach.",
+          "Local cuisine celebrates the sea—anchovies marinated in lemon, trofie al pesto, and Sciacchetrà wine from terraced slopes that defy gravity. This is Italy stripped to its essential poetry."
+        ],
+        "experiences": [
+          {
+            "tag": "Coastal",
+            "title": "Blue Trail Coastal Hike",
+            "alt": "Cinque Terre coastal trail view"
+          },
+          {
+            "tag": "Culinary",
+            "title": "Pesto & Wine Tasting",
+            "alt": "Italian pesto and local wine"
+          },
+          {
+            "title": "Manarola Sunset",
+            "alt": "Manarola village at sunset"
+          },
+          {
+            "title": "Boat Tour Between Villages",
+            "alt": "boat along Ligurian coast"
+          }
+        ],
+        "hotels": [
+          {
+            "name": "Grand Hotel Portovenere",
+            "location": "Portovenere, Liguria",
+            "price": "FROM $420",
+            "description": "Historic waterfront elegance at the gateway to the Cinque Terre.",
+            "alt": "waterfront hotel Liguria"
+          },
+          {
+            "name": "La Spezia Boutique",
+            "location": "La Spezia, Liguria",
+            "price": "FROM $220",
+            "description": "A stylish base for daily village excursions along the coast.",
+            "alt": "boutique hotel room"
+          },
+          {
+            "name": "Vernazza Sea View",
+            "location": "Vernazza, Cinque Terre",
+            "price": "FROM $310",
+            "description": "Intimate rooms overlooking the harbour where fishing boats still moor.",
+            "alt": "harbour view room Vernazza"
+          }
+        ]
+      }
+    },
+    "fuji": {
+      "list": {
+        "title": "Mount Fuji",
+        "description": "Spiritual tranquility in the heart of Japan's alpine region.",
+        "alt": "snow capped peak of Mount Fuji behind a red pagoda with cherry blossom trees in the foreground"
+      },
+      "detail": {
+        "heroTitle": [
+          "Mount",
+          "Fuji."
+        ],
+        "heroAlt": "Mount Fuji with pagoda and cherry blossoms",
+        "badge": "SPIRITUAL LANDMARK",
+        "bestTime": "BEST TIME: JUL – AUG",
+        "curatorQuote": "\"Japan's sacred peak—where pilgrims, poets, and photographers have sought clarity for centuries.\"",
+        "curator": {
+          "name": "Yuki Tanaka",
+          "role": "Japan Alpine Curator",
+          "note": "\"Climb through the night to greet sunrise from the summit—the moment when Fuji-san reveals why it has been worshipped as a deity.\""
+        },
+        "paragraphs": [
+          "Mount Fuji rises 3,776 metres above the Kanto plain, its symmetrical cone visible from Tokyo on clear days. Registered as a UNESCO World Heritage site, Fuji is both natural wonder and spiritual symbol in Japanese culture.",
+          "The Five Lakes region at Fuji's northern base offers hot springs, museums, and reflection views that photographers chase through every season. Cherry blossom in spring, snow cap in winter—each frame tells a different story.",
+          "Nearby Hakone and the Izu Peninsula extend the journey with onsen retreats, volcanic valleys, and the artistry of kaiseki dining. This is Japan at its most contemplative and sublime."
+        ],
+        "experiences": [
+          {
+            "tag": "Adventure",
+            "title": "Summit Sunrise Trek",
+            "alt": "Mount Fuji summit at sunrise"
+          },
+          {
+            "tag": "Wellness",
+            "title": "Hakone Onsen Retreat",
+            "alt": "traditional Japanese onsen"
+          },
+          {
+            "title": "Chureito Pagoda View",
+            "alt": "pagoda with Mount Fuji behind"
+          },
+          {
+            "title": "Lake Kawaguchi Cruise",
+            "alt": "Lake Kawaguchi with Fuji reflection"
+          }
+        ],
+        "hotels": [
+          {
+            "name": "Fufu Kawaguchiko",
+            "location": "Lake Kawaguchi, Yamanashi",
+            "price": "FROM $890",
+            "description": "Private onsen villas with unobstructed Fuji views and kaiseki excellence.",
+            "alt": "luxury ryokan with Fuji view"
+          },
+          {
+            "name": "Hoshinoya Fuji",
+            "location": "Fuji Five Lakes",
+            "price": "FROM $1,200",
+            "description": "Glamping reimagined—cloud-level cabins and forest dining beneath the sacred peak.",
+            "alt": "glamping cabins forest Fuji"
+          },
+          {
+            "name": "Gora Kadan",
+            "location": "Hakone, Kanagawa",
+            "price": "FROM $750",
+            "description": "Former imperial retreat in the mountains—tatami, gardens, and transcendent calm.",
+            "alt": "traditional Japanese inn Hakone"
+          }
+        ]
+      }
+    }
+  },
+  "live": {
+    "landmarksTitle": "Landmarks",
+    "landmarksSubtitle": "Places worth seeing in {{name}}.",
+    "freeEntry": "Free entry",
+    "hotelsTitle": "Stays in {{name}}",
+    "viewAllHotels_one": "View {{count}} hotel",
+    "viewAllHotels_other": "View all {{count}} hotels",
+    "noHotels": "No hotels are available here yet.",
+    "toursTitle": "Tours in {{name}}",
+    "viewAllTours_one": "View {{count}} tour",
+    "viewAllTours_other": "View all {{count}} tours",
+    "reviewsTitle": "Traveller Reviews",
+    "notFound": "Destination not found",
+    "loadError": "Could not load this destination",
+    "popular": "Popular destination",
+    "about": "About {{name}}",
+    "allCategories": "All",
+    "showMore": "Show {{n}} more",
+    "viewMap": "View on map",
+    "landmarkCategories": {
+      "beach": "Beach",
+      "temple": "Temple & pagoda",
+      "museum": "Museum",
+      "park": "Nature & parks",
+      "mountain": "Mountains & caves",
+      "market": "Shopping",
+      "restaurant": "Food & drink",
+      "entertainment": "Entertainment",
+      "historical": "Historical site",
+      "wellness": "Wellness & spa",
+      "sport": "Sport",
+      "other": "Other"
+    }
+  },
+  "directory": {
+    "title": "All destinations",
+    "subtitle": "Every destination you can book stays and tours in.",
+    "count": "{{n}} destinations",
+    "all": "All",
+    "popularOnly": "Popular",
+    "loadMore": "Load {{n}} more",
+    "empty": "No destinations match your search.",
+    "error": "Could not load destinations."
+  },
+  "landmarkDetail": {
+    "backTo": "Back to {{name}}",
+    "backToDestination": "Back to destination",
+    "notFound": "Place not found",
+    "about": "About this place",
+    "noDescription": "No description yet.",
+    "map": "Location",
+    "mapNote": "Location is matched from the address on OpenStreetMap and may be approximate.",
+    "info": "Visitor information",
+    "address": "Address",
+    "openingHours": "Opening hours",
+    "entryFee": "Entry fee",
+    "phone": "Phone",
+    "website": "Website",
+    "openMap": "Open in OpenStreetMap",
+    "nearbyPlaces": "Nearby places",
+    "nearbyPlacesSubtitle": "Other places to visit in {{name}}, closest first.",
+    "away": "{{distance}} away",
+    "nearbyHotels": "Hotels nearby",
+    "nearbyHotelsSubtitle": "Stays within {{km}} km, closest first.",
+    "noHotels": "No hotels found nearby.",
+    "reviewsTitle": "Visitor reviews"
+  }
+}

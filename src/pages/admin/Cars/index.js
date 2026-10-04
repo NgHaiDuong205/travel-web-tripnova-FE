@@ -15,6 +15,7 @@ import {
 import { fetchDestinations } from "../../../services/destinationService";
 import { formatDateTime, formatMoney } from "../../../utils/formatters";
 import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 20;
 const EMPTY_CAR = {
@@ -44,6 +45,7 @@ function errorMessage(err) {
 
 /** Biểu mẫu thêm hoặc sửa xe trong khu vực quản trị. */
 function CarForm({ initial, destinations, onSave, onCancel }) {
+    const t = useT();
     const [form, setForm] = useState({ ...EMPTY_CAR, ...initial, destinationId: initial?.destinationId || "" });
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
@@ -72,32 +74,32 @@ function CarForm({ initial, destinations, onSave, onCancel }) {
             className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 grid grid-cols-1 md:grid-cols-2 gap-4"
         >
             <label className="text-xs font-bold text-gray-600">
-                Name *<input required value={form.name} onChange={set("name")} className={inputClass} />
+                {t("admin.cars.name")} *<input required value={form.name} onChange={set("name")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Brand
+                {t("admin.cars.brand")}
                 <input value={form.brand || ""} onChange={set("brand")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Model
+                {t("admin.cars.model")}
                 <input value={form.model || ""} onChange={set("model")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                License plate
+                {t("admin.cars.licensePlate")}
                 <input value={form.licensePlate || ""} onChange={set("licensePlate")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Car type *
+                {t("admin.cars.carType")} *
                 <select required value={form.carType} onChange={set("carType")} className={inputClass}>
                     {Object.entries(CAR_TYPE_LABELS).map(([key, label]) => (
                         <option key={key} value={key}>
-                            {label}
+                            {t(`admin.cars.carTypes.${key}`, { defaultValue: label })}
                         </option>
                     ))}
                 </select>
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Seats *
+                {t("admin.cars.seats")} *
                 <input
                     required
                     min="1"
@@ -109,23 +111,19 @@ function CarForm({ initial, destinations, onSave, onCancel }) {
                 />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Transmission
+                {t("admin.cars.transmission")}
                 <select value={form.transmission} onChange={set("transmission")} className={inputClass}>
-                    <option value="automatic">Automatic</option>
-                    <option value="manual">Manual</option>
+                    <option value="automatic">{t("admin.cars.transmissionAutomatic")}</option><option value="manual">{t("admin.cars.transmissionManual")}</option>
                 </select>
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Fuel type
+                {t("admin.cars.fuelType")}
                 <select value={form.fuelType} onChange={set("fuelType")} className={inputClass}>
-                    <option value="petrol">Petrol</option>
-                    <option value="diesel">Diesel</option>
-                    <option value="hybrid">Hybrid</option>
-                    <option value="electric">Electric</option>
+                    <option value="petrol">{t("admin.cars.fuelPetrol")}</option><option value="diesel">{t("admin.cars.fuelDiesel")}</option><option value="hybrid">{t("admin.cars.fuelHybrid")}</option><option value="electric">{t("admin.cars.fuelElectric")}</option>
                 </select>
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Price / day *
+                {t("admin.cars.pricePerDay")} *
                 <input
                     required
                     min="0"
@@ -137,9 +135,9 @@ function CarForm({ initial, destinations, onSave, onCancel }) {
                 />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Destination
+                {t("common.fields.destination")}
                 <select value={form.destinationId} onChange={set("destinationId")} className={inputClass}>
-                    <option value="">— None —</option>
+                    <option value="">{t("admin.cars.none")}</option>
                     {destinations.map((destination) => (
                         <option key={destination.id} value={destination.id}>
                             {destination.name}
@@ -148,38 +146,38 @@ function CarForm({ initial, destinations, onSave, onCancel }) {
                 </select>
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Pick-up location
+                {t("admin.cars.pickupLocation")}
                 <input value={form.pickupLocation || ""} onChange={set("pickupLocation")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Cover image URL
+                {t("admin.cars.coverImageUrl")}
                 <input type="url" value={form.coverImageUrl || ""} onChange={set("coverImageUrl")} className={inputClass} />
             </label>
             <label className="md:col-span-2 text-xs font-bold text-gray-600">
-                Description
+                {t("admin.cars.description")}
                 <textarea rows="4" value={form.description || ""} onChange={set("description")} className={inputClass} />
             </label>
             {form.coverImageUrl && (
-                <img src={form.coverImageUrl} alt="Cover preview" className="w-32 h-20 object-cover rounded bg-gray-100" />
+                <img src={form.coverImageUrl} alt={t("admin.cars.coverPreview")} className="w-32 h-20 object-cover rounded bg-gray-100" />
             )}
             <div className="md:col-span-2 flex flex-wrap items-center gap-5">
                 <label className="flex items-center gap-2 text-sm text-gray-700">
                     <input type="checkbox" checked={form.withDriver} onChange={set("withDriver")} />
-                    With driver
+                    {t("admin.cars.withDriver")}
                 </label>
                 <label className="flex items-center gap-2 text-sm text-gray-700">
                     <input type="checkbox" checked={form.isActive} onChange={set("isActive")} />
-                    Active
+                    {t("common.status.active")}
                 </label>
                 <div className="ml-auto flex gap-2">
                     <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg text-sm font-bold text-gray-500">
-                        Cancel
+                        {t("common.actions.cancel")}
                     </button>
                     <button
                         disabled={saving}
                         className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold disabled:opacity-50"
                     >
-                        {saving ? "Saving..." : "Save"}
+                        {saving ? t("common.state.saving") : t("common.actions.save")}
                     </button>
                 </div>
             </div>
@@ -192,6 +190,7 @@ function CarForm({ initial, destinations, onSave, onCancel }) {
 
 /** Tab quản lý đội xe. */
 function FleetTab() {
+    const t = useT();
     const [filters, setFilters] = useState({ q: "", type: "", active: "" });
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
@@ -235,7 +234,7 @@ function FleetTab() {
         setReload((value) => value + 1);
     };
     const deactivate = async (car) => {
-        if (!window.confirm(`Deactivate ${car.name}?`)) return;
+        if (!window.confirm(t("admin.cars.confirmDeactivate", { name: car.name }))) return;
         setBusyId(car.id);
         setError("");
         try {
@@ -259,29 +258,27 @@ function FleetTab() {
                 <input
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search cars..."
+                    placeholder={t("admin.cars.searchCars")}
                     className={`${filterClass} w-64`}
                 />
                 <select value={filters.type} onChange={(e) => change("type", e.target.value)} className={filterClass}>
-                    <option value="">All types</option>
+                    <option value="">{t("admin.cars.allTypes")}</option>
                     {Object.entries(CAR_TYPE_LABELS).map(([key, label]) => (
                         <option key={key} value={key}>
-                            {label}
+                            {t(`admin.cars.carTypes.${key}`, { defaultValue: label })}
                         </option>
                     ))}
                 </select>
                 <select value={filters.active} onChange={(e) => change("active", e.target.value)} className={filterClass}>
-                    <option value="">All statuses</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
+                    <option value="">{t("common.status.all")}</option><option value="active">{t("common.status.active")}</option><option value="inactive">{t("common.status.inactive")}</option>
                 </select>
-                <button className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white">Search</button>
+                <button className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white">{t("common.actions.search")}</button>
                 <button
                     type="button"
                     onClick={() => setEditing("new")}
                     className="ml-auto px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white"
                 >
-                    Add car
+                    {t("admin.cars.addCar")}
                 </button>
             </form>
             <FormAlert>{error}</FormAlert>
@@ -294,22 +291,15 @@ function FleetTab() {
                 />
             )}
             {loading ? (
-                <p className="text-gray-500">Đang tải...</p>
+                <p className="text-gray-500">{t("common.state.loading")}</p>
             ) : result.items.length === 0 ? (
-                <p className="text-gray-500">Không có dữ liệu.</p>
+                <p className="text-gray-500">{t("admin.cars.empty")}</p>
             ) : (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead className="bg-gray-50 text-left text-xs text-gray-500">
                             <tr>
-                                <th className="p-4">Car</th>
-                                <th>Plate</th>
-                                <th>Type</th>
-                                <th>Seats</th>
-                                <th>Price/day</th>
-                                <th>Driver</th>
-                                <th>Status</th>
-                                <th className="p-4">Actions</th>
+                                <th className="p-4">{t("admin.cars.car")}</th><th>{t("admin.cars.plate")}</th><th>{t("admin.cars.carType")}</th><th>{t("admin.cars.seats")}</th><th>{t("admin.cars.pricePerDay")}</th><th>{t("admin.cars.driver")}</th><th>{t("common.fields.status")}</th><th className="p-4">{t("admin.cars.actions")}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -331,15 +321,15 @@ function FleetTab() {
                                         </div>
                                     </td>
                                     <td>{car.licensePlate}</td>
-                                    <td>{CAR_TYPE_LABELS[car.carType] || car.carType}</td>
+                                    <td>{t(`admin.cars.carTypes.${car.carType}`, { defaultValue: CAR_TYPE_LABELS[car.carType] || car.carType })}</td>
                                     <td>{car.seats}</td>
                                     <td>{formatMoney(car.pricePerDay, car.currencyCode)}</td>
-                                    <td>{car.withDriver ? "Yes" : "No"}</td>
+                                    <td>{car.withDriver ? t("common.actions.yes") : t("common.actions.no")}</td>
                                     <td>
                                         <span
                                             className={`px-2 py-1 rounded-full text-xs font-bold ${car.isActive ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-600"}`}
                                         >
-                                            {car.isActive ? "Active" : "Inactive"}
+                                            {car.isActive ? t("common.status.active") : t("common.status.inactive")}
                                         </span>
                                     </td>
                                     <td className="p-4 whitespace-nowrap">
@@ -348,7 +338,7 @@ function FleetTab() {
                                             onClick={() => setEditing(car)}
                                             className="text-primary font-bold text-xs"
                                         >
-                                            Edit
+                                            {t("common.actions.edit")}
                                         </button>
                                         {car.isActive && (
                                             <button
@@ -357,7 +347,7 @@ function FleetTab() {
                                                 onClick={() => deactivate(car)}
                                                 className="ml-3 text-red-600 font-bold text-xs disabled:opacity-50"
                                             >
-                                                Deactivate
+                                                {t("admin.cars.deactivate")}
                                             </button>
                                         )}
                                     </td>
@@ -374,6 +364,7 @@ function FleetTab() {
 
 /** Tab quản lý đơn thuê xe. */
 function RentalsTab() {
+    const t = useT();
     const [status, setStatus] = useState("");
     const [q, setQ] = useState("");
     const [search, setSearch] = useState("");
@@ -396,7 +387,7 @@ function RentalsTab() {
     }, [status, q, page]);
     const update = async (booking, nextStatus) => {
         if (!nextStatus) return;
-        const reason = nextStatus === "cancelled" ? window.prompt("Cancellation reason:") : undefined;
+        const reason = nextStatus === "cancelled" ? window.prompt(t("admin.cars.cancellationReason")) : undefined;
         if (nextStatus === "cancelled" && reason === null) return;
         setBusyId(booking.id);
         setError("");
@@ -427,7 +418,7 @@ function RentalsTab() {
                     }}
                     className={filterClass}
                 >
-                    <option value="">All statuses</option>
+                    <option value="">{t("common.status.all")}</option>
                     {Object.entries(BOOKING_STATUS_LABELS).map(([key, value]) => (
                         <option key={key} value={key}>
                             {value.label}
@@ -437,29 +428,22 @@ function RentalsTab() {
                 <input
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Order code, customer, car, plate"
+                    placeholder={t("admin.cars.rentalSearch")}
                     className={`${filterClass} w-72`}
                 />
-                <button className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white">Search</button>
+                <button className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white">{t("common.actions.search")}</button>
             </form>
             <FormAlert>{error}</FormAlert>
             {loading ? (
-                <p className="text-gray-500">Đang tải...</p>
+                <p className="text-gray-500">{t("common.state.loading")}</p>
             ) : result.items.length === 0 ? (
-                <p className="text-gray-500">Không có dữ liệu.</p>
+                <p className="text-gray-500">{t("admin.cars.empty")}</p>
             ) : (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead className="bg-gray-50 text-left text-xs text-gray-500">
                             <tr>
-                                <th className="p-4">Order</th>
-                                <th>Customer</th>
-                                <th>Car</th>
-                                <th>Pick-up → return</th>
-                                <th>Days</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                                <th className="p-4">Action</th>
+                                <th className="p-4">{t("admin.cars.order")}</th><th>{t("admin.cars.customer")}</th><th>{t("admin.cars.car")}</th><th>{t("admin.cars.pickupReturn")}</th><th>{t("admin.cars.days")}</th><th>{t("common.fields.total")}</th><th>{t("common.fields.status")}</th><th className="p-4">{t("admin.cars.action")}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -489,7 +473,7 @@ function RentalsTab() {
                                             onChange={(e) => update(booking, e.target.value)}
                                             className="rounded-lg border border-gray-300 bg-white px-2 py-1 text-xs"
                                         >
-                                            <option value="">Change status…</option>
+                                            <option value="">{t("admin.cars.changeStatus")}</option>
                                             {(CAR_BOOKING_NEXT_STATUSES[booking.status] || []).map((next) => (
                                                 <option key={next} value={next}>
                                                     {BOOKING_STATUS_LABELS[next].label}
@@ -510,19 +494,20 @@ function RentalsTab() {
 
 /** Trang quản trị xe và đơn thuê xe. */
 function AdminCars() {
+    const t = useT();
     const [tab, setTab] = useState("fleet");
     const tabClass = (active) =>
         `px-4 py-2 text-sm font-bold border-b-2 ${active ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-800"}`;
     return (
         <div className="space-y-6">
-            <h1 className="text-3xl font-extrabold text-primary">Cars</h1>
+            <h1 className="text-3xl font-extrabold text-primary">{t("admin.cars.title")}</h1>
             <AdminStatsPanel section="cars" />
             <div className="flex gap-2 border-b border-gray-200">
                 <button type="button" onClick={() => setTab("fleet")} className={tabClass(tab === "fleet")}>
-                    Fleet
+                    {t("admin.cars.fleet")}
                 </button>
                 <button type="button" onClick={() => setTab("rentals")} className={tabClass(tab === "rentals")}>
-                    Rentals
+                    {t("admin.cars.rentals")}
                 </button>
             </div>
             {tab === "fleet" ? <FleetTab /> : <RentalsTab />}

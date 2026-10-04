@@ -3,8 +3,10 @@ import ClientLayout from "../components/layouts/ClientLayout";
 import PrivateRoute from "./PrivateRoute";
 import Home from "../pages/client/Home/index";
 import Hotels from "../pages/client/Hotels/index";
+import AiPlanner from "../pages/client/AiPlanner/index";
 import Destinations from "../pages/client/Destinations/index";
 import DestinationDetail from "../pages/client/DestinationDetail/index";
+import LandmarkDetail from "../pages/client/LandmarkDetail/index";
 import About from "../pages/client/About/index";
 import HotelDetail from "../pages/client/HotelDetail/index";
 import Rooms from "../pages/client/Rooms/index";
@@ -23,7 +25,6 @@ import FlightDetail from "../pages/client/FlightDetail/index";
 import Tours from "../pages/client/Tours/index";
 import TourDetail from "../pages/client/TourDetail/index";
 import TripPayment from "../pages/client/TripPayment/index";
-import TripCart from "../pages/client/TripCart/index";
 import MyReviews from "../pages/client/MyReviews/index";
 import AccountSettings from "../pages/client/AccountSettings/index";
 import Checkout from "../pages/client/Checkout/index";
@@ -34,8 +35,10 @@ import BookingDetail from "../pages/client/BookingDetail/index";
 import Notifications from "../pages/client/Notifications/index";
 import LoginSecurity from "../pages/client/LoginSecurity/index";
 import Search from "../pages/client/Search/index";
+import { useT } from "../i18n/I18nContext";
 
 function ClientRoutes() {
+    const t = useT();
     return (
         <Routes>
             {/* Trang cá nhân — bắt buộc đăng nhập */}
@@ -59,6 +62,7 @@ function ClientRoutes() {
                 <Route path="/hotels" element={<Hotels />} />
                 <Route path="/destinations" element={<Destinations />} />
                 <Route path="/destinations/:id" element={<DestinationDetail />} />
+                <Route path="/destinations/:id/landmarks/:landmarkId" element={<LandmarkDetail />} />
                 <Route path="/abouts" element={<About />} />
                 <Route path="/contacts" element={<Contact />} />
                 <Route path="/hotel/:id" element={<HotelDetail />} />
@@ -70,6 +74,7 @@ function ClientRoutes() {
                 <Route path="/tours" element={<Tours />} />
                 <Route path="/tours/:id" element={<TourDetail />} />
                 <Route path="/search" element={<Search />} />
+                <Route path="/ai-planner" element={<AiPlanner />} />
                 <Route path="/hotel/:hotelId/room/:roomId" element={<RoomDetail />} />
 
                 {/* Đặt phòng & thanh toán — bắt buộc đăng nhập */}
@@ -78,13 +83,14 @@ function ClientRoutes() {
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/payment/:paymentId" element={<Payment />} />
                     <Route path="/trip-payment/:paymentId" element={<TripPayment />} />
-                    <Route path="/trip-cart" element={<TripCart />} />
+                    {/* Giỏ tour / xe / chuyến bay đã gộp vào /cart */}
+                    <Route path="/trip-cart" element={<Navigate to="/cart" replace />} />
                     <Route path="/bookings/:bookingId" element={<BookingDetail />} />
                 </Route>
 
                 
                 {/* Lưới hứng dự phòng khi khách truy cập nhầm trang */}
-                <Route path="*" element={<div className="p-10 text-center font-bold text-2xl text-gray-500">Trang này đang được xây dựng...</div>} />
+                <Route path="*" element={<div className="p-10 text-center font-bold text-2xl text-gray-500">{t("common.state.underConstruction")}</div>} />
             </Route>
         </Routes>
     );

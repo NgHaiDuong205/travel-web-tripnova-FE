@@ -1,0 +1,76 @@
+{
+  "summary": {
+    "ratedReviews_other": "{{count}} đánh giá có chấm điểm"
+  },
+  "section": {
+    "defaultTitle": "Đánh giá của khách",
+    "updatedPending": "Đánh giá của bạn đã được cập nhật và đang chờ duyệt lại.",
+    "submittedPending": "Cảm ơn bạn! Đánh giá đã được gửi và sẽ hiển thị sau khi được kiểm duyệt. Bạn có thể theo dõi trong mục Đánh giá của tôi.",
+    "writeReview": "Viết đánh giá",
+    "signInToWrite": "Đăng nhập để viết đánh giá",
+    "empty": "Chưa có đánh giá nào. Hãy là người đầu tiên chia sẻ trải nghiệm."
+  },
+  "sort": {
+    "newest": "Mới nhất",
+    "top": "Hữu ích nhất",
+    "rating_high": "Điểm cao nhất",
+    "rating_low": "Điểm thấp nhất",
+    "oldest": "Cũ nhất"
+  },
+  "status": {
+    "pending": "Chờ duyệt",
+    "approved": "Đã đăng",
+    "rejected": "Bị từ chối"
+  },
+  "postCard": {
+    "deleteConfirm": "Xoá đánh giá này? Thao tác không thể hoàn tác.",
+    "ownVote": "Bạn không thể bình chọn cho đánh giá của chính mình",
+    "helpful": "Hữu ích",
+    "notHelpful": "Không hữu ích",
+    "comments_other": "{{count}} bình luận",
+    "verified": {
+      "hotel": "Đã lưu trú",
+      "tour": "Đã tham gia tour",
+      "car": "Đã thuê xe",
+      "flight": "Đã bay",
+      "booking": "Đã đặt chỗ"
+    }
+  },
+  "form": {
+    "maxImages": "Tối đa {{count}} URL ảnh.",
+    "rating": "Điểm đánh giá của bạn",
+    "ratingOutOfFive": "{{rating}} / 5",
+    "title": "Tiêu đề",
+    "titlePlaceholder": "Tóm tắt trải nghiệm của bạn",
+    "reviewRequired": "Nội dung đánh giá *",
+    "contentPlaceholder": "Bạn thích điều gì? Điều gì có thể tốt hơn?",
+    "photoUrls": "URL ảnh (mỗi dòng một URL, không bắt buộc)",
+    "approvalNotice": "Đánh giá được đăng sau khi được kiểm duyệt. Sửa đánh giá sẽ phải duyệt lại.",
+    "submit": "Gửi đánh giá"
+  },
+  "comments": {
+    "sending": "Đang gửi...",
+    "edited": "đã sửa",
+    "deleteConfirm": "Xoá bình luận này?",
+    "removed": "Bình luận này đã bị gỡ.",
+    "replyPlaceholder": "Trả lời {{name}}...",
+    "writePlaceholder": "Viết bình luận...",
+    "comment": "Bình luận",
+    "signIn": "Đăng nhập",
+    "joinConversation": " để tham gia thảo luận.",
+    "loading": "Đang tải bình luận...",
+    "empty": "Chưa có bình luận nào."
+  },
+  "starRating": {
+    "outOfFive": "{{rating}} / 5",
+    "stars_other": "{{count}} sao"
+  },
+  "myReviews": {
+    "community": "Cộng đồng",
+    "title": "Đánh giá của tôi",
+    "subtitle": "Những đánh giá bạn đã viết. Đánh giá mới hoặc vừa sửa sẽ hiển thị công khai sau khi được duyệt.",
+    "empty": "Bạn chưa viết đánh giá nào.",
+    "emptyFiltered": "Bạn chưa có đánh giá nào ở trạng thái này.",
+    "findHotel": "Tìm khách sạn bạn đã ở"
+  }
+}

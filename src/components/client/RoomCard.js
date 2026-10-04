@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
 import { getRoomTypeName } from "../../constants/rooms";
 import RoomStatusBadge from "./RoomStatusBadge";
+import { useT } from "../../i18n/I18nContext";
+import { formatMoney } from "../../utils/formatters";
 
 const PLACEHOLDER_IMAGE =
   "https://images.unsplash.com/photo-1631049301164-da64c29e0a5a?w=800&q=80";
 
 function RoomCard({ room }) {
+  const t = useT();
   const hasStatus = room.status != null && room.status !== "";
 
   return (
@@ -37,16 +40,15 @@ function RoomCard({ room }) {
               )}
             </div>
             <span className="text-primary font-bold text-xl shrink-0">
-              {room.currency}
-              {room.price}
-              <span className="text-sm font-normal text-on-surface-variant">/night</span>
+              {formatMoney(room.price, "USD")}
+              <span className="text-sm font-normal text-on-surface-variant">{t("common.units.perNight")}</span>
             </span>
           </div>
           <p className="text-on-surface-variant text-sm mb-4">{room.description}</p>
           <ul className="space-y-2 mb-4">
             <li className="flex items-center gap-2 text-xs text-on-surface-variant uppercase tracking-wide">
               <span className="material-symbols-outlined text-[16px]">group</span>
-              Up to {room.maxGuests} guests
+              {t("hotels.card.upToGuests", { count: room.maxGuests })}
             </li>
             {room.highlights?.map((h) => (
               <li
@@ -63,7 +65,7 @@ function RoomCard({ room }) {
           to={`/hotel/${room.hotelId}/room/${room.id}`}
           className="editorial-gradient text-white py-3 rounded-lg font-bold tracking-wide transition-all active:scale-95 text-center block"
         >
-          Select Room
+          {t("hotels.actions.selectRoom")}
         </Link>
       </div>
     </div>

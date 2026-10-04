@@ -1,0 +1,143 @@
+{
+  "favorite": {
+    "removeFromSaved": "Bỏ khỏi danh sách đã lưu",
+    "saveToFavorites": "Lưu vào yêu thích"
+  },
+  "myTrips": {
+    "status": {
+      "awaitingPayment": "Chờ thanh toán",
+      "inProgress": "Đang diễn ra",
+      "returned": "Đã trả xe"
+    },
+    "confirm": {
+      "cancelRentalPaid": "Huỷ lượt thuê xe này? Bạn sẽ được hoàn tiền toàn bộ.",
+      "cancelReservationUnpaid": "Huỷ đặt chỗ này? Đặt chỗ chưa được thanh toán.",
+      "cancelTicketPaid": "Huỷ vé của {{passengerName}}? Bạn sẽ được hoàn tiền toàn bộ.",
+      "cancelFlightReservation": "Huỷ đặt chỗ này? Tất cả hành khách trong đơn sẽ bị huỷ.",
+      "cancelTourPaid": "Huỷ tour này? Bạn sẽ được hoàn tiền toàn bộ."
+    },
+    "carRentalOrder": "Thuê xe · {{orderCode}}",
+    "carDetailsWithDriver": "{{model}} · kèm tài xế",
+    "carDetailsSelfDrive": "{{model}} · tự lái",
+    "pickup": "Nhận xe",
+    "dropoff": "Trả xe",
+    "freeCancellationUntil": "Huỷ miễn phí đến {{date}}",
+    "payNow": "Thanh toán ngay",
+    "cancelling": "Đang huỷ...",
+    "flightOrder": "Chuyến bay · {{orderCode}}",
+    "passenger": "Hành khách",
+    "passport": "Hộ chiếu {{passportNo}}",
+    "seat": "Ghế",
+    "seatDetails": "{{seatNumber}} · {{seatClass}}",
+    "seatClasses": {
+      "economy": "Phổ thông",
+      "premiumEconomy": "Phổ thông đặc biệt",
+      "business": "Thương gia",
+      "first": "Hạng nhất"
+    },
+    "fare": "Giá vé",
+    "travellersWithChildren": "{{adults}}, {{children}}",
+    "tourOrder": "Tour · {{orderCode}}",
+    "dates": "Ngày",
+    "travellers": "Du khách",
+    "browse": {
+      "findHotel": "Tìm khách sạn",
+      "cars": "Xem xe cho thuê",
+      "flights": "Tìm chuyến bay",
+      "tours": "Khám phá tour"
+    },
+    "eyebrow": "Hành trình",
+    "subtitle": "Khách sạn, thuê xe, chuyến bay và tour ở cùng một nơi.",
+    "paymentReceived": "Đã nhận thanh toán — đặt chỗ của bạn đã được xác nhận.",
+    "empty": "Chưa có chuyến đi nào ở đây."
+  },
+  "savedTrips": {
+    "pricePerAdult": "{{price}} / người lớn",
+    "seats_other": "{{count}} chỗ",
+    "pricePerDay": "{{price}} / ngày",
+    "fromPrice": "từ {{price}}",
+    "eyebrow": "Bộ sưu tập của bạn",
+    "subtitle": "Khách sạn, tour, xe và chuyến bay bạn đã lưu để xem sau.",
+    "empty": "Chưa có mục nào được lưu. Bấm biểu tượng trái tim ở trang chi tiết để lưu.",
+    "exploreHotels": "Khám phá khách sạn",
+    "exploreTours": "Khám phá tour",
+    "exploreCars": "Khám phá xe",
+    "exploreFlights": "Khám phá chuyến bay",
+    "hotel": "Khách sạn",
+    "starRating_other": "{{count}} sao",
+    "hotelNoLongerAvailable": "Khách sạn không còn hoạt động",
+    "itemNoLongerAvailable": "Mục này không còn khả dụng",
+    "savedOn": "Đã lưu {{date}}"
+  },
+  "itineraries": {
+    "tripNameRequired": "Tên chuyến đi *",
+    "tripNamePlaceholder": "VD: Đà Nẵng 3 ngày",
+    "notDecided": "— Chưa chọn —",
+    "travellers": "Số người",
+    "budgetUsd": "Ngân sách (USD)",
+    "startDate": "Ngày bắt đầu",
+    "endDate": "Ngày kết thúc",
+    "eyebrow": "Lên kế hoạch",
+    "subtitle": "Lên kế hoạch cho từng ngày của chuyến đi.",
+    "newItinerary": "Lịch trình mới",
+    "creating": "Đang tạo...",
+    "createAndAddActivities": "Tạo & thêm hoạt động",
+    "empty": "Bạn chưa có lịch trình nào. Hãy tạo lịch trình đầu tiên!",
+    "destinationNotSet": "Chưa chọn điểm đến",
+    "dateRange": "{{startDate}} – {{endDate}}",
+    "dateSingle": "{{startDate}}",
+    "dateRangeWithDays_other": "{{startDate}} – {{endDate}} · {{count}} ngày",
+    "dateSingleWithDays_other": "{{startDate}} · {{count}} ngày",
+    "datesNotSet": "Chưa chọn ngày",
+    "activities_other": "{{count}} hoạt động",
+    "ofBudget": " / {{budget}}"
+  },
+  "itineraryDetail": {
+    "itemTypes": {
+      "sightseeing": "Tham quan",
+      "hotel": "Khách sạn",
+      "foodAndDrink": "Ăn uống",
+      "activity": "Hoạt động",
+      "transport": "Di chuyển",
+      "destination": "Điểm đến",
+      "other": "Khác"
+    },
+    "validation": {
+      "titleOrPlaceRequired": "Nhập tiêu đề hoặc chọn một địa điểm.",
+      "endTimeAfterStartTime": "Giờ kết thúc phải sau giờ bắt đầu."
+    },
+    "type": "Loại",
+    "hotelInDestinationOptional": "Khách sạn tại {{destination}} (không bắt buộc)",
+    "landmarkInDestinationOptional": "Địa danh tại {{destination}} (không bắt buộc)",
+    "none": "— Không —",
+    "titleOptionalPlaceName": "Tiêu đề (để trống sẽ dùng tên địa điểm)",
+    "titleRequired": "Tiêu đề *",
+    "estimatedCostUsd": "Chi phí dự kiến (USD)",
+    "adding": "Đang thêm...",
+    "addActivity": "Thêm hoạt động",
+    "notFound": "Không tìm thấy lịch trình",
+    "status": {
+      "draft": "Bản nháp",
+      "saved": "Đã lưu",
+      "booked": "Đã đặt"
+    },
+    "confirmDelete": "Xoá lịch trình \"{{title}}\" và toàn bộ hoạt động?",
+    "backToItineraries": "← Quay lại danh sách lịch trình",
+    "myItineraries": "← Lịch trình của tôi",
+    "destinationNotSet": "Chưa chọn điểm đến",
+    "dateRange": "{{startDate}} – {{endDate}}",
+    "datesNotSet": "Chưa chọn ngày",
+    "travellers_other": "{{count}} người",
+    "estimated": "Dự kiến {{estimated}}",
+    "estimatedWithBudget": "Dự kiến {{estimated}} / ngân sách {{budget}}",
+    "estimatedOverBudget": "Dự kiến {{estimated}} / ngân sách {{budget}} — vượt ngân sách",
+    "editTrip": "Sửa chuyến đi",
+    "day": "Ngày {{day}}",
+    "noActivities": "Chưa có hoạt động nào.",
+    "anytime": "Bất kỳ lúc nào",
+    "removeItem": "Xoá {{title}}",
+    "addDay": "Thêm ngày",
+    "dayField": "Ngày",
+    "editItem": "Sửa {{title}}"
+  }
+}

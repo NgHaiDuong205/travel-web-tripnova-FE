@@ -4,16 +4,15 @@ import { useAuth } from "../../../context/AuthContext";
 import FormInput from "../../../components/common/FormInput";
 import FormAlert from "../../../components/common/FormAlert";
 import SocialLoginButtons from "../../../components/auth/SocialLoginButtons";
-
-/** Chỉ cho phép redirect nội bộ (bắt đầu bằng "/") để tránh open-redirect. */
-function safeRedirect(value) {
-    return value && value.startsWith("/") && !value.startsWith("//") ? value : "/";
-}
+import { useT } from "../../../i18n/I18nContext";
+import { safeRedirect, withRedirect } from "../../../utils/authRedirect";
 
 function Login() {
+    const t = useT();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const { login } = useAuth();
+    const redirect = safeRedirect(searchParams.get("redirect"));
     const [account, setAccount] = useState({
         email: "",
         password: "",
@@ -24,7 +23,7 @@ function Login() {
     const handleLogin = async (e) => {
         e.preventDefault();
         if (!account.email.trim() || !account.password) {
-            setError("Vui lòng nhập email và mật khẩu.");
+            setError(t("auth.login.validation.emailAndPasswordRequired"));
             return;
         }
         setSubmitting(true);
@@ -32,11 +31,11 @@ function Login() {
             const user = await login(account.email.trim(), account.password);
             const roles = user?.roles || [];
             const fallback = roles.includes("ADMIN") ? "/admin" : roles.includes("HOTEL_MANAGER") ? "/manager" : "/";
-            navigate(searchParams.get("redirect") ? safeRedirect(searchParams.get("redirect")) : fallback, {
+            navigate(redirect || fallback, {
                 replace: true,
             });
         } catch (err) {
-            setError(err.message || "Đăng nhập thất bại.");
+            setError(err.message || t("auth.login.errors.failed"));
         } finally {
             setSubmitting(false);
         }
@@ -59,7 +58,7 @@ function Login() {
                 {/* Header thẻ Login */}
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-black text-[#003580] italic tracking-tighter mb-2">Tripnova</h1>
-                    <p className="text-gray-500 font-medium">Welcome back! Please enter your details.</p>
+                    <p className="text-gray-500 font-medium">{t("auth.login.subtitle")}</p>
                 </div>
 
                 {/* Form điền thông tin */}
@@ -67,16 +66,16 @@ function Login() {
                     <FormAlert>{error}</FormAlert>
 
                     <FormInput
-                        label="Email Address"
+                        label={t("auth.fields.emailAddress")}
                         type="email"
                         name="email"
-                        placeholder="Enter your email"
+                        placeholder={t("auth.fields.enterEmail")}
                         autoComplete="email"
                         value={account.email}
                         onChange={handleChange}
                     />
                     <FormInput
-                        label="Password"
+                        label={t("common.fields.password")}
                         type="password"
                         name="password"
                         placeholder="••••••••"
@@ -87,7 +86,7 @@ function Login() {
 
                     <div className="flex items-center justify-end text-sm">
                         <Link to="/forgot-password" className="font-bold text-[#003580] hover:text-blue-800 transition-colors">
-                            Forgot password?
+                            {t("auth.login.forgotPassword")}
                         </Link>
                     </div>
 
@@ -97,17 +96,17 @@ function Login() {
                         disabled={submitting}
                         className="w-full bg-[#003580] text-white py-3.5 rounded-lg font-bold tracking-wide shadow-md shadow-blue-900/20 hover:bg-blue-800 hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                        {submitting ? "Signing in..." : "Sign In"}
+                        {submitting ? t("auth.login.signingIn") : t("auth.login.signIn")}
                     </button>
                 </form>
 
-                <SocialLoginButtons redirect={searchParams.get("redirect") ? safeRedirect(searchParams.get("redirect")) : null} />
+                <SocialLoginButtons redirect={redirect} />
 
                 {/* Footer thẻ Login */}
                 <div className="mt-8 text-center text-sm text-gray-600 font-medium">
-                    Don't have an account?{" "}
-                    <Link to="/register" className="font-bold text-[#003580] hover:underline ml-1">
-                        Sign up
+                    {t("auth.login.noAccount")} {" "}
+                    <Link to={withRedirect("/register", redirect)} className="font-bold text-[#003580] hover:underline ml-1">
+                        {t("auth.login.signUp")}
                     </Link>
                 </div>
 
@@ -115,7 +114,7 @@ function Login() {
                 <div className="mt-8 text-center">
                     <Link to="/" className="inline-flex items-center gap-1 text-gray-400 hover:text-gray-600 font-bold text-sm transition-colors opacity-80 hover:opacity-100">
                         <span className="material-symbols-outlined text-sm">arrow_back</span>
-                        Back to Home
+                        {t("auth.backToHome")}
                     </Link>
                 </div>
             </div>

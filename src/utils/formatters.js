@@ -1,8 +1,11 @@
-/** Định dạng tiền tệ theo mã ISO (USD, VND...). */
-export function formatMoney(amount, currency = "USD") {
-    const value = Number(amount ?? 0);
+import { getCurrentLocale } from "../i18n/currentLocale";
+import { toDisplay } from "./currency";
+
+/** Định dạng tiền tệ theo mã ISO (USD, VND...); tiếng Việt hiển thị USD đã quy đổi sang VND. */
+export function formatMoney(amount, sourceCurrency = "USD") {
+    const { amount: value, currency } = toDisplay(amount, sourceCurrency || "USD");
     try {
-        return new Intl.NumberFormat("en-US", {
+        return new Intl.NumberFormat(getCurrentLocale(), {
             style: "currency",
             currency,
             maximumFractionDigits: currency === "VND" ? 0 : 2,
@@ -12,19 +15,19 @@ export function formatMoney(amount, currency = "USD") {
     }
 }
 
-/** "2027-01-10" -> "10 Jan 2027" */
+/** "2027-01-10" -> "10 Jan 2027" (theo ngôn ngữ đang chọn) */
 export function formatDate(value) {
     if (!value) return "";
     const date = new Date(value.length === 10 ? `${value}T00:00:00` : value);
     if (Number.isNaN(date.getTime())) return value;
-    return date.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+    return date.toLocaleDateString(getCurrentLocale(), { day: "2-digit", month: "short", year: "numeric" });
 }
 
 export function formatDateTime(value) {
     if (!value) return "";
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return value;
-    return date.toLocaleString("en-GB", {
+    return date.toLocaleString(getCurrentLocale(), {
         day: "2-digit",
         month: "short",
         year: "numeric",

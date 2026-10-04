@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { formatDate, formatMoney } from "../../utils/formatters";
+import { useT } from "../../i18n/I18nContext";
 
 const BAR_COLOR = "#003580";
 const HEIGHT = 200;
@@ -8,7 +9,8 @@ const HEIGHT = 200;
  * Cột doanh thu theo ngày (1 chuỗi, 1 màu — không cần chú giải).
  * Hover cột để xem tooltip; bảng số liệu nằm trong <details> cho người không đọc được biểu đồ.
  */
-function RevenueChart({ points, currency, emptyText = "Chưa có doanh thu trong 30 ngày qua" }) {
+function RevenueChart({ points, currency, emptyText }) {
+    const t = useT();
     const [hover, setHover] = useState(null);
     const max = Math.max(...points.map((p) => Number(p.revenue)), 0);
     const hasData = max > 0;
@@ -20,7 +22,7 @@ function RevenueChart({ points, currency, emptyText = "Chưa có doanh thu trong
                 <div className="absolute left-0 right-0 border-t border-gray-200" style={{ top: HEIGHT }} />
                 {!hasData && (
                     <p className="absolute inset-0 flex items-center justify-center text-sm text-gray-400" style={{ height: HEIGHT }}>
-                        {emptyText}
+                        {emptyText || t("admin.revenueChart.empty")}
                     </p>
                 )}
                 <div className="absolute inset-x-0 top-0 flex items-end gap-[2px]" style={{ height: HEIGHT }}>
@@ -58,18 +60,18 @@ function RevenueChart({ points, currency, emptyText = "Chưa có doanh thu trong
                     >
                         <p className="text-gray-500">{formatDate(points[hover].date)}</p>
                         <p className="font-bold text-gray-900">{formatMoney(points[hover].revenue, currency)}</p>
-                        <p className="text-gray-500">{points[hover].transactions} transactions</p>
+                        <p className="text-gray-500">{t("admin.revenueChart.transactions", { count: points[hover].transactions })}</p>
                     </div>
                 )}
             </div>
             <details className="mt-4 text-sm">
-                <summary className="cursor-pointer text-gray-500 font-semibold">Xem bảng số liệu</summary>
+                <summary className="cursor-pointer text-gray-500 font-semibold">{t("admin.revenueChart.viewData")}</summary>
                 <table className="mt-2 w-full text-left">
                     <thead>
                         <tr className="text-xs uppercase text-gray-500">
-                            <th className="py-1">Date</th>
-                            <th className="py-1 text-right">Revenue</th>
-                            <th className="py-1 text-right">Transactions</th>
+                            <th className="py-1">{t("common.fields.date")}</th>
+                            <th className="py-1 text-right">{t("admin.revenueChart.revenue")}</th>
+                            <th className="py-1 text-right">{t("admin.revenueChart.transactionsLabel")}</th>
                         </tr>
                     </thead>
                     <tbody>

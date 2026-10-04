@@ -1,0 +1,174 @@
+{
+  "clocks": {
+    "hanoi": "Hà Nội",
+    "newYork": "New York",
+    "london": "Luân Đôn",
+    "paris": "Paris",
+    "tokyo": "Tokyo"
+  },
+  "hero": {
+    "imageAlt": "Toàn cảnh hồ bơi vô cực sang trọng nhìn ra biển Địa Trung Hải lúc hoàng hôn với những đám mây ấn tượng",
+    "eyebrow": "Nghệ thuật du lịch",
+    "titleFirst": "Thế giới,",
+    "titleSecond": "Tuyển chọn.",
+    "description": "Trải nghiệm du lịch qua lăng kính biên tập. Chúng tôi thiết kế hành trình của bạn một cách chỉn chu và đầy cảm xúc, mang những điểm nghỉ dưỡng tuyệt vời nhất thế giới đến gần bạn hơn.",
+    "exploreDestinations": "Khám phá điểm đến",
+    "ourStory": "Câu chuyện của chúng tôi"
+  },
+  "services": {
+    "eyebrow": "Chuyên môn của chúng tôi",
+    "title": "Dịch vụ may đo cho du khách hiện đại",
+    "description": "Từ sân bay đến ban công khách sạn, chúng tôi lo chu đáo từng chi tiết cho chuyến đi của bạn.",
+    "hotels": {
+      "title": "Khách sạn cao cấp",
+      "description": "Những khách sạn boutique và 5 sao được tuyển chọn kỹ lưỡng, đỉnh cao về kiến trúc và lòng hiếu khách."
+    },
+    "cars": {
+      "title": "Thuê xe tiện lợi",
+      "description": "Đội xe đa dạng từ sedan hạng sang đến xe địa hình, giúp việc di chuyển liền mạch như chính kỳ nghỉ của bạn."
+    },
+    "flights": {
+      "title": "Đặt vé máy bay",
+      "description": "Lộ trình ưu tiên và giá vé độc quyền từ các hãng hàng không toàn cầu, đề cao sự thoải mái và tiết kiệm thời gian."
+    }
+  },
+  "destinations": {
+    "title": "Điểm đến nổi bật toàn cầu",
+    "description": "Những điểm đến đang thịnh hành do đội ngũ biên tập chọn lựa nhờ chiều sâu văn hoá và vẻ đẹp độc đáo.",
+    "explore": "Khám phá",
+    "hotels": "khách sạn",
+    "viewAll": "Xem tất cả điểm đến"
+  },
+  "globe": {
+    "title": "Khám phá thế giới",
+    "description": "Xoay quả địa cầu 3D và bấm vào ghim để xem ảnh, thời tiết hiện tại và giờ địa phương của các điểm đến nổi bật.",
+    "hint": "Bấm vào ghim hoặc tên địa điểm bên dưới để xem ảnh và thời tiết",
+    "loadingWeather": "Đang tải thời tiết…",
+    "weatherUnavailable": "Hiện chưa lấy được thời tiết.",
+    "feelsLike": "Cảm giác",
+    "humidity": "Độ ẩm",
+    "wind": "Gió",
+    "localTime": "Giờ địa phương",
+    "explore": "Khám phá điểm đến",
+    "photoCredit": "Ảnh: Wikimedia Commons",
+    "weather": {
+      "clear": "Trời quang",
+      "mainlyClear": "Ít mây",
+      "partlyCloudy": "Có mây",
+      "overcast": "Nhiều mây",
+      "fog": "Sương mù",
+      "drizzle": "Mưa phùn",
+      "rain": "Mưa",
+      "snow": "Tuyết",
+      "thunderstorm": "Dông",
+      "unknown": "—"
+    },
+    "places": {
+      "halong": {
+        "name": "Vịnh Hạ Long",
+        "country": "Việt Nam"
+      },
+      "hoian": {
+        "name": "Hội An",
+        "country": "Việt Nam"
+      },
+      "kyoto": {
+        "name": "Kyoto",
+        "country": "Nhật Bản"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Nhật Bản"
+      },
+      "bali": {
+        "name": "Bali",
+        "country": "Indonesia"
+      },
+      "sydney": {
+        "name": "Sydney",
+        "country": "Úc"
+      },
+      "maldives": {
+        "name": "Malé, Maldives",
+        "country": "Maldives"
+      },
+      "dubai": {
+        "name": "Dubai",
+        "country": "Các Tiểu vương quốc Ả Rập Thống nhất"
+      },
+      "santorini": {
+        "name": "Santorini",
+        "country": "Hy Lạp"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "Ý"
+      },
+      "amalfi": {
+        "name": "Bờ biển Amalfi",
+        "country": "Ý"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Pháp"
+      },
+      "london": {
+        "name": "London",
+        "country": "Vương quốc Anh"
+      },
+      "reykjavik": {
+        "name": "Reykjavík",
+        "country": "Iceland"
+      },
+      "marrakesh": {
+        "name": "Marrakesh",
+        "country": "Ma-rốc"
+      },
+      "capetown": {
+        "name": "Cape Town",
+        "country": "Nam Phi"
+      },
+      "nyc": {
+        "name": "Thành phố New York",
+        "country": "Hoa Kỳ"
+      },
+      "grandcanyon": {
+        "name": "Hẻm núi Grand Canyon",
+        "country": "Hoa Kỳ"
+      },
+      "banff": {
+        "name": "Banff",
+        "country": "Canada"
+      },
+      "machupicchu": {
+        "name": "Machu Picchu",
+        "country": "Peru"
+      },
+      "rio": {
+        "name": "Rio de Janeiro",
+        "country": "Brazil"
+      }
+    }
+  },
+  "newsletter": {
+    "imageAlt": "Du thuyền nhỏ sang trọng lướt qua vịnh hẹp giữa núi lúc hoàng hôn với bóng phản chiếu như gương",
+    "title": "Gia nhập cộng đồng Voyager",
+    "description": "Khám phá những viên ngọc ẩn của du lịch. Bản tin hằng tuần mang đến ưu đãi khách sạn độc quyền và những câu chuyện du lịch bạn không tìm thấy ở nơi khác.",
+    "emailPlaceholder": "Địa chỉ email của bạn",
+    "subscribe": "Đăng ký"
+  },
+  "trust": {
+    "curator": {
+      "title": "Tuyển chọn đã kiểm chứng",
+      "description": "Mọi khách sạn và trải nghiệm đều được đội ngũ chuyên gia toàn cầu của chúng tôi trực tiếp thẩm định."
+    },
+    "support": {
+      "title": "Hỗ trợ ưu tiên 24/7",
+      "description": "Đội ngũ hỗ trợ tận tâm luôn sẵn sàng suốt ngày đêm cho mọi tình huống bất ngờ."
+    },
+    "pricing": {
+      "title": "Giá minh bạch",
+      "description": "Không phí ẩn, không phụ thu bất ngờ. Giá bạn thấy là giá cuối cùng."
+    }
+  }
+}

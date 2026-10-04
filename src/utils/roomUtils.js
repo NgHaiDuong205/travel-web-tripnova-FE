@@ -1,8 +1,11 @@
 /** Chuẩn hóa nhãn status từ BE (enum, string) */
-export function formatRoomStatus(status) {
+export function formatRoomStatus(status, t) {
     if (status == null || status === "") return "";
     const raw = String(status).trim();
     if (!raw) return "";
+    const key = raw.toLowerCase().replace(/\s+/g, "_");
+    const translated = t?.(`hotels.roomStatus.${key}`, { defaultValue: null });
+    if (translated) return translated;
     return raw
         .replace(/_/g, " ")
         .toLowerCase()

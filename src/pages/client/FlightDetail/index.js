@@ -6,26 +6,34 @@ import FormAlert from "../../../components/common/FormAlert";
 import FavoriteButton from "../../../components/common/FavoriteButton";
 import AddToTripCartButton from "../../../components/catalog/AddToTripCartButton";
 import ReviewSection from "../../../components/client/ReviewSection";
+import PendingOrderNotice, { usePendingOrders } from "../../../components/catalog/PendingOrderNotice";
 import { PAYMENT_METHODS } from "../../../services/bookingService";
 import {
-    SEAT_CLASS_LABELS,
+    cancelFlightBooking,
     createFlightBooking,
     fetchFlight,
     fetchFlightSeats,
     fetchFlights,
-    formatDuration,
+    fetchMyFlightBookings,
 } from "../../../services/flightService";
 import { formatMoney } from "../../../utils/formatters";
 import { AirlineLogo, FlightTimeline } from "../../../components/catalog/FlightTimeline";
+import { getCurrentLocale } from "../../../i18n/currentLocale";
+import { useT } from "../../../i18n/I18nContext";
 
 const MAX_PASSENGERS = 9;
 const inputClass =
     "w-full bg-surface-container-low border-none rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-fixed-dim";
 const rowOf = (seatNumber) => Number(String(seatNumber).replace(/\D/g, "")) || 0;
 const letterOf = (seatNumber) => String(seatNumber).replace(/\d/g, "");
+const formatDurationLabel = (t, minutes) => {
+    const value = Number(minutes);
+    return Number.isNaN(value) ? "" : t("flights.duration", { h: Math.floor(value / 60), m: value % 60 });
+};
 
 /** Sơ đồ ghế: nhóm theo hàng, chữ cái chia hai nửa với lối đi ở giữa (theo FLIGHT_DETAIL.HTML). */
-function SeatMap({ seats, selected, onToggle, maxReached }) {
+function SeatMap({ seats, selected, onToggle, maxReached, heldByMe }) {
+    const t = useT();
     const letters = useMemo(() => [...new Set(seats.map((s) => letterOf(s.seatNumber)))].sort(), [seats]);
     const rows = useMemo(() => {
         const byRow = new Map();
@@ -40,7 +48,7 @@ function SeatMap({ seats, selected, onToggle, maxReached }) {
     const columns = [...letters.slice(0, half), "aisle", ...letters.slice(half)];
 
     if (seats.length === 0) {
-        return <p className="text-sm text-on-surface-variant text-center py-10">No seats in this cabin.</p>;
+        return <p className="text-sm text-on-surface-variant text-center py-10">{t("flights.seats.empty")}</p>;
     }
     return (
         <div className="overflow-x-auto">
@@ -66,6 +74,7 @@ function SeatMap({ seats, selected, onToggle, maxReached }) {
                         if (!seat) return <div key={`${row}-${col}`} />;
                         const isSelected = selected.some((s) => s.id === seat.id);
                         const free = seat.status === "available";
+                        const mine = !free && heldByMe.has(seat.id); // ghế của đơn mình chưa thanh toán
                         const disabled = !free || (!isSelected && maxReached);
                         return (
                             <button
@@ -73,16 +82,18 @@ function SeatMap({ seats, selected, onToggle, maxReached }) {
                                 type="button"
                                 disabled={disabled && !isSelected}
                                 onClick={() => onToggle(seat)}
-                                title={`${seat.seatNumber} · ${formatMoney(seat.price)}`}
+                                title={mine ? `${seat.seatNumber} · ${t("flights.seats.heldByYou")}` : `${seat.seatNumber} · ${formatMoney(seat.price)}`}
                                 className={`w-10 h-10 rounded-lg text-[10px] font-bold flex items-center justify-center transition-all ${
                                     isSelected
                                         ? "editorial-gradient text-white shadow-lg scale-105"
                                         : free
                                           ? "bg-surface-container-lowest border border-outline-variant hover:border-primary hover:text-primary disabled:opacity-40"
-                                          : "bg-surface-container-high text-outline cursor-not-allowed"
+                                          : mine
+                                            ? "bg-amber-100 border-2 border-amber-500 text-amber-900 cursor-not-allowed"
+                                            : "bg-surface-container-high text-outline cursor-not-allowed"
                                 }`}
                             >
-                                {isSelected ? (
+                                {isSelected || mine ? (
                                     seat.seatNumber
                                 ) : free ? (
                                     ""
@@ -100,6 +111,7 @@ function SeatMap({ seats, selected, onToggle, maxReached }) {
 
 /** Chi tiết chuyến bay: chuyến khác cùng chặng / ngày, chọn ghế, thông tin hành khách, đặt vé. */
 function FlightDetail() {
+    const t = useT();
     const { id } = useParams();
     const [params, setParams] = useSearchParams();
     const navigate = useNavigate();
@@ -116,6 +128,9 @@ function FlightDetail() {
     const [error, setError] = useState("");
     const [formError, setFormError] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    // Đơn đã đặt nhưng chưa thanh toán (VD bấm Back từ trang thanh toán): cho thanh toán tiếp / huỷ
+    const { orders: pendingOrders, reload: reloadPending } = usePendingOrders(fetchMyFlightBookings, (b) => b.flightId === id, id);
+    const heldByMe = useMemo(() => new Set(pendingOrders.flatMap((o) => o.bookings.map((b) => b.seatId))), [pendingOrders]);
 
     useEffect(() => {
         setFlight(null);
@@ -134,7 +149,8 @@ function FlightDetail() {
                 });
             })
             .then((list) => setAlternatives(list.items))
-            .catch((err) => setError(err.status === 404 ? "This flight is no longer on sale." : err.message));
+            .catch((err) => setError(err.status === 404 ? t("flights.detail.noLongerOnSale") : err.message));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- chạy 1 lần; đổi ngôn ngữ không cần gọi lại
     }, [id]);
 
     const loadSeats = () =>
@@ -175,11 +191,11 @@ function FlightDetail() {
     /** Body đặt vé (chưa có paymentMethod); ném Error nếu chưa chọn đủ ghế hoặc thiếu tên hành khách. */
     const buildBooking = () => {
         if (selected.length !== pax) {
-            throw new Error(`Please choose ${pax} seat${pax > 1 ? "s" : ""} on the map.`);
+            throw new Error(t("flights.validation.chooseSeats", { count: pax }));
         }
         const missing = selected.find((s, index) => !nameOf(s, index).trim());
         if (missing) {
-            throw new Error(`Enter the passenger name for seat ${missing.seatNumber}.`);
+            throw new Error(t("flights.validation.passengerName", { seat: missing.seatNumber }));
         }
         return {
             flightId: id,
@@ -222,7 +238,7 @@ function FlightDetail() {
     if (error) {
         return (
             <main className="max-w-screen-2xl mx-auto px-8 py-12">
-                <DetailBackLink to="/flights" label="Back to Flights" />
+                <DetailBackLink to="/flights" label={t("flights.detail.backToFlights")} />
                 <FormAlert>{error}</FormAlert>
             </main>
         );
@@ -240,7 +256,7 @@ function FlightDetail() {
         );
     }
 
-    const dateLabel = new Date(flight.departureTime).toLocaleDateString("en-GB", {
+    const dateLabel = new Date(flight.departureTime).toLocaleDateString(getCurrentLocale(), {
         day: "2-digit",
         month: "short",
         year: "numeric",
@@ -251,11 +267,11 @@ function FlightDetail() {
         <main className="max-w-screen-2xl mx-auto px-8 py-8">
             {/* Action bar */}
             <div className="flex flex-wrap items-center justify-between gap-6 mb-10">
-                <DetailBackLink to="/flights" label="Back to Flights" />
+                <DetailBackLink to="/flights" label={t("flights.detail.backToFlights")} />
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-6 bg-surface-container-low rounded-xl px-6 py-3">
                         <div>
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Route</p>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">{t("flights.detail.route")}</p>
                             <p className="font-headline font-bold text-on-surface">
                                 {flight.departureCity || flight.departureAirportCode} ({flight.departureAirportCode}) →{" "}
                                 {flight.arrivalCity || flight.arrivalAirportCode} ({flight.arrivalAirportCode})
@@ -263,7 +279,7 @@ function FlightDetail() {
                         </div>
                         <div className="w-px h-8 bg-outline-variant/40" />
                         <div>
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Date</p>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">{t("common.fields.date")}</p>
                             <p className="font-headline font-bold text-on-surface">{dateLabel}</p>
                         </div>
                     </div>
@@ -271,10 +287,20 @@ function FlightDetail() {
                 </div>
             </div>
 
+            <PendingOrderNotice
+                orders={pendingOrders}
+                describe={(bookings) => t("catalog.pending.flightSeats", { count: bookings.length, seats: bookings.map((b) => b.seatNumber).join(", ") })}
+                onCancel={(bookings) => cancelFlightBooking(bookings[0].id, "Cancelled by customer before payment")}
+                onChanged={() => {
+                    reloadPending();
+                    loadSeats();
+                }}
+            />
+
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 {/* Left: flight selection */}
                 <div className="lg:col-span-3 space-y-4">
-                    <h2 className="font-headline text-xl font-bold text-primary">Select Your Flight</h2>
+                    <h2 className="font-headline text-xl font-bold text-primary">{t("flights.detail.selectYourFlight")}</h2>
                     {alternatives.map((alt) => {
                         const active = alt.id === flight.id;
                         return (
@@ -299,7 +325,7 @@ function FlightDetail() {
                                 </div>
                                 <FlightTimeline flight={alt} compact />
                                 <div className="flex justify-between items-baseline mt-4">
-                                    <span className="text-xs text-on-surface-variant">From</span>
+                                    <span className="text-xs text-on-surface-variant">{t("flights.list.from")}</span>
                                     <span className="font-headline font-black text-primary">
                                         {formatMoney(alt.fromPrice, alt.currencyCode)}
                                     </span>
@@ -314,11 +340,11 @@ function FlightDetail() {
                     <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
                         <div>
                             <h3 className="font-headline text-2xl font-bold text-on-surface">
-                                {flight.aircraftType || "Cabin map"}
+                                {flight.aircraftType || t("flights.seats.cabinMap")}
                             </h3>
                             <p className="text-sm text-on-surface-variant">
-                                {flight.airline} {flight.flightNumber} · {formatDuration(flight.durationMinutes)} ·{" "}
-                                {flight.availableSeats} seats left
+                                {flight.airline} {flight.flightNumber} · {formatDurationLabel(t, flight.durationMinutes)} ·{" "}
+                                {t("flights.list.seatsLeft", { count: flight.availableSeats })}
                             </p>
                         </div>
                         <div className="flex items-center gap-2 bg-surface-container-low rounded-full px-2 py-1">
@@ -330,7 +356,7 @@ function FlightDetail() {
                                 −
                             </button>
                             <span className="text-sm font-bold px-1">
-                                {pax} passenger{pax > 1 ? "s" : ""}
+                                {t("common.units.passenger", { count: pax })}
                             </span>
                             <button
                                 type="button"
@@ -356,40 +382,45 @@ function FlightDetail() {
                                         : "border-outline-variant hover:border-primary"
                                 }`}
                             >
-                                {SEAT_CLASS_LABELS[cls] || cls}
+                                {t(`flights.classes.${cls}`, { defaultValue: cls })}
                             </button>
                         ))}
                         {flight.cabinClasses.length === 0 && (
-                            <p className="text-sm text-error font-bold">This flight is sold out.</p>
+                            <p className="text-sm text-error font-bold">{t("flights.detail.soldOut")}</p>
                         )}
                     </div>
                     <div className="flex flex-wrap gap-6 mb-8 text-xs font-bold text-on-surface-variant">
                         <span className="flex items-center gap-2">
                             <span className="w-5 h-5 rounded border border-outline-variant bg-surface-container-lowest" />{" "}
-                            Available
+                            {t("flights.seats.available")}
                         </span>
                         <span className="flex items-center gap-2">
                             <span className="w-5 h-5 rounded bg-surface-container-high flex items-center justify-center">
                                 <span className="material-symbols-outlined text-[12px] text-outline">close</span>
                             </span>
-                            Occupied
+                            {t("flights.seats.occupied")}
                         </span>
                         <span className="flex items-center gap-2">
-                            <span className="w-5 h-5 rounded editorial-gradient" /> Selected
+                            <span className="w-5 h-5 rounded editorial-gradient" /> {t("flights.seats.selected")}
                         </span>
+                        {heldByMe.size > 0 && (
+                            <span className="flex items-center gap-2">
+                                <span className="w-5 h-5 rounded bg-amber-100 border-2 border-amber-500" /> {t("flights.seats.heldByYou")}
+                            </span>
+                        )}
                     </div>
-                    <SeatMap seats={cabinSeats} selected={selected} onToggle={toggleSeat} maxReached={selected.length >= pax} />
+                    <SeatMap seats={cabinSeats} selected={selected} onToggle={toggleSeat} maxReached={selected.length >= pax} heldByMe={heldByMe} />
                 </div>
 
                 {/* Right: summary */}
                 <div className="lg:col-span-3 space-y-6 lg:sticky lg:top-24">
                     <div className="bg-surface-container-lowest rounded-xl p-6 shadow-[0_32px_48px_-12px_rgba(27,28,28,0.06)] border border-outline-variant/15">
-                        <h3 className="font-headline text-xl font-bold text-primary mb-6">Booking Summary</h3>
+                        <h3 className="font-headline text-xl font-bold text-primary mb-6">{t("flights.booking.summary")}</h3>
                         {selected.length === 0 ? (
                             <div className="flex items-start gap-3 bg-surface-container-low rounded-lg p-4 mb-6">
                                 <span className="material-symbols-outlined text-primary">airline_seat_recline_extra</span>
                                 <p className="text-sm text-on-surface-variant">
-                                    Choose {pax} seat{pax > 1 ? "s" : ""} on the cabin map.
+                                    {t("flights.booking.chooseSeats", { count: pax })}
                                 </p>
                             </div>
                         ) : (
@@ -398,7 +429,7 @@ function FlightDetail() {
                                     <div key={seat.id} className="bg-surface-container-low rounded-lg p-4 space-y-2">
                                         <div className="flex justify-between items-center">
                                             <p className="text-sm font-bold">
-                                                Seat {seat.seatNumber} · {SEAT_CLASS_LABELS[seat.seatClass]}
+                                                {t("flights.seats.seatClass", { seat: seat.seatNumber, className: t(`flights.classes.${seat.seatClass}`, { defaultValue: seat.seatClass }) })}
                                             </p>
                                             <span className="text-sm font-bold text-primary">
                                                 {formatMoney(seat.price, flight.currencyCode)}
@@ -406,7 +437,7 @@ function FlightDetail() {
                                         </div>
                                         <input
                                             className={inputClass}
-                                            placeholder="Passenger full name *"
+                                            placeholder={t("flights.passengers.fullName")}
                                             maxLength={150}
                                             value={nameOf(seat, index)}
                                             onChange={(e) => setPassenger(seat.id, "passengerName", e.target.value)}
@@ -414,7 +445,7 @@ function FlightDetail() {
                                         <div className="grid grid-cols-2 gap-2">
                                             <input
                                                 className={inputClass}
-                                                placeholder="Email"
+                                                placeholder={t("common.fields.email")}
                                                 type="email"
                                                 maxLength={150}
                                                 value={passengers[seat.id]?.passengerEmail || ""}
@@ -422,7 +453,7 @@ function FlightDetail() {
                                             />
                                             <input
                                                 className={inputClass}
-                                                placeholder="Passport no."
+                                                placeholder={t("flights.passengers.passportNumber")}
                                                 maxLength={30}
                                                 value={passengers[seat.id]?.passportNo || ""}
                                                 onChange={(e) => setPassenger(seat.id, "passportNo", e.target.value)}
@@ -434,16 +465,16 @@ function FlightDetail() {
                         )}
                         <div className="space-y-3 text-sm">
                             <div className="flex justify-between">
-                                <span className="text-on-surface-variant">Flight fare × {selected.length || pax}</span>
+                                <span className="text-on-surface-variant">{t("flights.booking.flightFare", { count: selected.length || pax })}</span>
                                 <span className="font-bold">{formatMoney(total, flight.currencyCode)}</span>
                             </div>
                             <div className="flex justify-between">
-                                <span className="text-on-surface-variant">Taxes &amp; fees</span>
-                                <span className="font-bold">Included</span>
+                                <span className="text-on-surface-variant">{t("flights.booking.taxesFees")}</span>
+                                <span className="font-bold">{t("flights.booking.included")}</span>
                             </div>
                             <label className="block">
                                 <span className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">
-                                    Payment
+                                    {t("flights.booking.payment")}
                                 </span>
                                 <select
                                     className={inputClass}
@@ -452,13 +483,13 @@ function FlightDetail() {
                                 >
                                     {PAYMENT_METHODS.map((m) => (
                                         <option key={m.value} value={m.value}>
-                                            {m.label}
+                                            {t(`common.paymentMethods.${m.value}`, { defaultValue: m.value })}
                                         </option>
                                     ))}
                                 </select>
                             </label>
                             <div className="pt-4 border-t border-outline-variant/20 flex justify-between items-baseline">
-                                <span className="font-bold text-on-surface">Total</span>
+                                <span className="font-bold text-on-surface">{t("common.fields.total")}</span>
                                 <span className="text-2xl font-black text-primary font-headline">
                                     {formatMoney(total, flight.currencyCode)}
                                 </span>
@@ -471,7 +502,7 @@ function FlightDetail() {
                             onClick={handleBook}
                             className="w-full mt-6 bg-gradient-to-br from-primary to-primary-container text-on-primary py-4 rounded-lg font-bold font-headline shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
                         >
-                            {submitting ? "Processing..." : "Continue to Payment"}
+                            {submitting ? t("common.state.processing") : t("flights.booking.continueToPayment")}
                         </button>
                         <div className="mt-3">
                             <AddToTripCartButton
@@ -482,23 +513,23 @@ function FlightDetail() {
                         </div>
                         <p className="text-center text-[10px] text-on-surface-variant font-medium uppercase tracking-tighter mt-4">
                             <span className="material-symbols-outlined text-[14px] align-text-top mr-1">verified_user</span>
-                            Free cancellation until 24h before departure
+                            {t("flights.booking.freeCancellation")}
                         </p>
                     </div>
                     <div className="bg-surface-container-low rounded-xl p-6">
                         <div className="flex items-center gap-2 mb-3">
                             <span className="material-symbols-outlined text-primary">luggage</span>
-                            <h4 className="font-bold text-sm">Included Baggage</h4>
+                            <h4 className="font-bold text-sm">{t("flights.booking.includedBaggage")}</h4>
                         </div>
                         <p className="text-sm text-on-surface-variant whitespace-pre-line">
-                            {flight.baggagePolicy || "Standard carry-on allowance applies. Contact us for checked baggage."}
+                            {flight.baggagePolicy || t("flights.booking.defaultBaggage")}
                         </p>
                     </div>
                 </div>
             </div>
 
             <div className="max-w-4xl mt-16">
-                <ReviewSection entityType="flight" entityId={flight.id} title="Passenger Reviews" />
+                <ReviewSection entityType="flight" entityId={flight.id} title={t("flights.reviews.title")} />
             </div>
         </main>
     );

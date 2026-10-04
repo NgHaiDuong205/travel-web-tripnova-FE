@@ -41,8 +41,7 @@ export function resultLink(result) {
         case "flight":
             return `/flights/${result.id}`;
         case "destination":
-            // Trang chi tiết điểm đến cũ dùng dữ liệu tĩnh -> xem khách sạn tại điểm đến đó ngay trong trang tìm kiếm.
-            return `/search?type=hotel&q=${encodeURIComponent(result.title)}`;
+            return `/destinations/${result.id}`;
         case "city":
             return `/flights?to=${encodeURIComponent(result.subtitle || result.title)}`;
         default:

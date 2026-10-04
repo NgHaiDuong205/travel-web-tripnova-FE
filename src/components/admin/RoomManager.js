@@ -3,6 +3,7 @@ import FormAlert from "../common/FormAlert";
 import RoomAvailabilityPanel from "./RoomAvailabilityPanel";
 import { ROOM_STATUSES } from "../../services/adminHotelService";
 import { useHotelApi } from "../../context/HotelApiContext";
+import { useT } from "../../i18n/I18nContext";
 
 const inputClass = "rounded-lg border border-gray-300 px-2 py-1.5 text-sm";
 
@@ -13,6 +14,7 @@ const STATUS_STYLES = {
 };
 
 function RoomRowForm({ initial, roomTypes, onSave, onCancel }) {
+    const t = useT();
     const [form, setForm] = useState(initial);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
@@ -33,32 +35,32 @@ function RoomRowForm({ initial, roomTypes, onSave, onCancel }) {
     return (
         <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-3 bg-blue-50/40 border border-blue-100 rounded-xl p-3">
             <label className="text-xs font-bold text-gray-600">
-                Room no. *
+                {t("admin.rooms.roomNumber")} *
                 <input required maxLength={10} value={form.roomNumber} onChange={set("roomNumber")} className={`${inputClass} block w-24`} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Floor
+                {t("admin.rooms.floor")}
                 <input type="number" min={-5} max={200} value={form.floor ?? ""} onChange={set("floor")} className={`${inputClass} block w-20`} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Room type *
+                {t("admin.rooms.roomType")} *
                 <select required value={form.roomTypeId} onChange={set("roomTypeId")} className={`${inputClass} block`}>
                     <option value="">—</option>
                     {roomTypes.map((rt) => (
-                        <option key={rt.id} value={rt.id}>{rt.name}{rt.isActive ? "" : " (hidden)"}</option>
+                        <option key={rt.id} value={rt.id}>{rt.name}{rt.isActive ? "" : t("admin.rooms.hiddenSuffix")}</option>
                     ))}
                 </select>
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Status
+                {t("common.fields.status")}
                 <select value={form.status} onChange={set("status")} className={`${inputClass} block`}>
-                    {ROOM_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                    {ROOM_STATUSES.map((s) => <option key={s} value={s}>{t(`admin.status.${s}`, { defaultValue: s })}</option>)}
                 </select>
             </label>
             <button type="submit" disabled={saving} className="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold disabled:opacity-50">
-                {saving ? "Saving..." : "Save"}
+                {saving ? t("common.state.saving") : t("common.actions.save")}
             </button>
-            <button type="button" onClick={onCancel} className="px-3 py-2 rounded-lg text-xs font-bold text-gray-500">Cancel</button>
+            <button type="button" onClick={onCancel} className="px-3 py-2 rounded-lg text-xs font-bold text-gray-500">{t("common.actions.cancel")}</button>
             {error && <div className="w-full"><FormAlert>{error}</FormAlert></div>}
         </form>
     );
@@ -66,6 +68,7 @@ function RoomRowForm({ initial, roomTypes, onSave, onCancel }) {
 
 /** Danh sách + thêm/sửa/xoá phòng, mở lịch khoá ngày cho từng phòng. */
 function RoomManager({ hotelId, roomTypes, onChanged }) {
+    const t = useT();
     const api = useHotelApi();
     const [filterType, setFilterType] = useState("");
     const [rooms, setRooms] = useState([]);
@@ -99,7 +102,7 @@ function RoomManager({ hotelId, roomTypes, onChanged }) {
     };
 
     const handleDelete = async (room) => {
-        if (!window.confirm(`Xoá phòng ${room.roomNumber}? Chỉ xoá được phòng chưa từng được đặt.`)) return;
+        if (!window.confirm(t("admin.rooms.confirmDelete", { room: room.roomNumber }))) return;
         setBusyId(room.id);
         setError("");
         try {
@@ -118,19 +121,19 @@ function RoomManager({ hotelId, roomTypes, onChanged }) {
     return (
         <section className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
             <div className="flex flex-wrap items-center gap-3">
-                <h2 className="text-xl font-extrabold text-primary mr-auto">Rooms</h2>
+                <h2 className="text-xl font-extrabold text-primary mr-auto">{t("admin.rooms.title")}</h2>
                 <select value={filterType} onChange={(e) => setFilterType(e.target.value)} className={inputClass}>
-                    <option value="">All room types</option>
+                    <option value="">{t("admin.rooms.allRoomTypes")}</option>
                     {roomTypes.map((rt) => <option key={rt.id} value={rt.id}>{rt.name}</option>)}
                 </select>
                 {editing !== "new" && roomTypes.length > 0 && (
                     <button type="button" onClick={() => setEditing("new")} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold border border-blue-200 text-primary hover:bg-blue-50">
                         <span className="material-symbols-outlined text-base">add</span>
-                        Add room
+                        {t("admin.rooms.addRoom")}
                     </button>
                 )}
             </div>
-            <p className="text-xs text-gray-500">Phòng đã từng có booking không xoá được — chuyển sang <b>maintenance</b> để ngừng cho đặt.</p>
+            <p className="text-xs text-gray-500">{t("admin.rooms.deleteNotice")}</p>
             <FormAlert>{error}</FormAlert>
 
             {editing === "new" && (
@@ -141,17 +144,17 @@ function RoomManager({ hotelId, roomTypes, onChanged }) {
                 <table className="w-full text-left text-sm min-w-[640px]">
                     <thead className="bg-gray-50">
                         <tr className="text-xs uppercase text-gray-500">
-                            <th className="px-3 py-2">Room</th>
-                            <th className="px-3 py-2">Floor</th>
-                            <th className="px-3 py-2">Room type</th>
-                            <th className="px-3 py-2">Status</th>
-                            <th className="px-3 py-2 text-right">Actions</th>
+                            <th className="px-3 py-2">{t("admin.rooms.room")}</th>
+                            <th className="px-3 py-2">{t("admin.rooms.floor")}</th>
+                            <th className="px-3 py-2">{t("admin.rooms.roomType")}</th>
+                            <th className="px-3 py-2">{t("common.fields.status")}</th>
+                            <th className="px-3 py-2 text-right">{t("admin.rooms.actions")}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {loading && <tr><td colSpan={5} className="px-3 py-6 text-center text-gray-500">Đang tải...</td></tr>}
+                        {loading && <tr><td colSpan={5} className="px-3 py-6 text-center text-gray-500">{t("common.state.loading")}</td></tr>}
                         {!loading && rooms.length === 0 && (
-                            <tr><td colSpan={5} className="px-3 py-6 text-center text-gray-500">Chưa có phòng nào.</td></tr>
+                            <tr><td colSpan={5} className="px-3 py-6 text-center text-gray-500">{t("admin.rooms.empty")}</td></tr>
                         )}
                         {!loading &&
                             rooms.map((room) => (
@@ -172,7 +175,7 @@ function RoomManager({ hotelId, roomTypes, onChanged }) {
                                             <td className="px-3 py-2 font-bold">{room.roomNumber}</td>
                                             <td className="px-3 py-2">{room.floor ?? "—"}</td>
                                             <td className="px-3 py-2">{room.roomTypeName}</td>
-                                            <td className={`px-3 py-2 text-xs font-bold ${STATUS_STYLES[room.status] || ""}`}>{room.status}</td>
+                                            <td className={`px-3 py-2 text-xs font-bold ${STATUS_STYLES[room.status] || ""}`}>{t(`admin.status.${room.status}`, { defaultValue: room.status })}</td>
                                             <td className="px-3 py-2">
                                                 <div className="flex justify-end gap-2">
                                                     <button
@@ -180,10 +183,10 @@ function RoomManager({ hotelId, roomTypes, onChanged }) {
                                                         onClick={() => setCalendarId(calendarId === room.id ? null : room.id)}
                                                         className="px-3 py-1 rounded-lg text-xs font-bold border border-gray-200 text-gray-700 hover:bg-gray-50"
                                                     >
-                                                        Calendar
+                                                        {t("admin.rooms.calendar")}
                                                     </button>
                                                     <button type="button" onClick={() => setEditing(room.id)} className="px-3 py-1 rounded-lg text-xs font-bold border border-blue-200 text-primary hover:bg-blue-50">
-                                                        Edit
+                                                        {t("common.actions.edit")}
                                                     </button>
                                                     <button
                                                         type="button"
@@ -191,7 +194,7 @@ function RoomManager({ hotelId, roomTypes, onChanged }) {
                                                         onClick={() => handleDelete(room)}
                                                         className="px-3 py-1 rounded-lg text-xs font-bold border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50"
                                                     >
-                                                        Delete
+                                                        {t("common.actions.delete")}
                                                     </button>
                                                 </div>
                                             </td>

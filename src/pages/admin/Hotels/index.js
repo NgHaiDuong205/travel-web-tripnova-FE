@@ -10,10 +10,12 @@ import {
     updateAdminHotel,
 } from "../../../services/adminHotelService";
 import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 20;
 
 function AdminHotels() {
+    const t = useT();
     const [filters, setFilters] = useState({ q: "", status: "all" });
     const [keyword, setKeyword] = useState("");
     const [page, setPage] = useState(1);
@@ -44,7 +46,7 @@ function AdminHotels() {
     };
 
     const handleToggleActive = async (hotel) => {
-        if (hotel.isActive && !window.confirm(`Ẩn khách sạn "${hotel.name}"? Khách sạn sẽ không hiện ở trang public và không nhận đặt phòng mới. Booking cũ giữ nguyên.`)) {
+        if (hotel.isActive && !window.confirm(t("admin.hotels.confirmHide", { name: hotel.name }))) {
             return;
         }
         setBusyId(hotel.id);
@@ -68,10 +70,10 @@ function AdminHotels() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between gap-4">
-                <h1 className="text-3xl font-extrabold text-primary">Hotels</h1>
+                <h1 className="text-3xl font-extrabold text-primary">{t("admin.hotels.title")}</h1>
                 <Link to="/admin/hotels/new" className="inline-flex items-center gap-1 bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold">
                     <span className="material-symbols-outlined text-base">add</span>
-                    New hotel
+                    {t("admin.hotels.newHotel")}
                 </Link>
             </div>
 
@@ -88,17 +90,17 @@ function AdminHotels() {
                     <input
                         value={keyword}
                         onChange={(e) => setKeyword(e.target.value)}
-                        placeholder="Hotel name, address..."
+                        placeholder={t("admin.hotels.searchPlaceholder")}
                         className="rounded-lg border-gray-200 text-sm w-64"
                     />
-                    <button type="submit" className="bg-primary text-white px-4 rounded-lg text-sm font-bold">Search</button>
+                    <button type="submit" className="bg-primary text-white px-4 rounded-lg text-sm font-bold">{t("common.actions.search")}</button>
                 </form>
                 <select value={filters.status} onChange={(e) => changeFilter("status", e.target.value)} className="rounded-lg border-gray-200 text-sm">
-                    <option value="all">All statuses</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Hidden</option>
+                    <option value="all">{t("common.status.all")}</option>
+                    <option value="active">{t("common.status.active")}</option>
+                    <option value="inactive">{t("admin.hotels.hidden")}</option>
                 </select>
-                <span className="ml-auto text-sm text-gray-500">{result.total.toLocaleString()} hotels</span>
+                <span className="ml-auto text-sm text-gray-500">{t("admin.hotels.count", { count: result.total })}</span>
             </div>
 
             <FormAlert>{error}</FormAlert>
@@ -107,18 +109,18 @@ function AdminHotels() {
                 <table className="w-full text-left text-sm min-w-[900px]">
                     <thead className="bg-gray-50">
                         <tr className="text-xs uppercase text-gray-500">
-                            <th className="px-4 py-3">Hotel</th>
-                            <th className="px-4 py-3">Destination</th>
-                            <th className="px-4 py-3">Stars</th>
-                            <th className="px-4 py-3">Room types / Rooms</th>
-                            <th className="px-4 py-3">Status</th>
-                            <th className="px-4 py-3 text-right">Actions</th>
+                            <th className="px-4 py-3">{t("admin.hotels.hotel")}</th>
+                            <th className="px-4 py-3">{t("common.fields.destination")}</th>
+                            <th className="px-4 py-3">{t("admin.hotels.stars")}</th>
+                            <th className="px-4 py-3">{t("admin.hotels.roomTypesRooms")}</th>
+                            <th className="px-4 py-3">{t("common.fields.status")}</th>
+                            <th className="px-4 py-3 text-right">{t("admin.hotels.actions")}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {loading && <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-500">Đang tải...</td></tr>}
+                        {loading && <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-500">{t("common.state.loading")}</td></tr>}
                         {!loading && result.items.length === 0 && (
-                            <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-500">Không có khách sạn nào.</td></tr>
+                            <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-500">{t("admin.hotels.empty")}</td></tr>
                         )}
                         {!loading &&
                             result.items.map((h) => (
@@ -147,13 +149,13 @@ function AdminHotels() {
                                     <td className="px-4 py-3">
                                         <span className={`inline-flex items-center gap-1 text-xs font-bold ${h.isActive ? "text-green-700" : "text-gray-500"}`}>
                                             <span className="material-symbols-outlined text-sm">{h.isActive ? "check_circle" : "visibility_off"}</span>
-                                            {h.isActive ? "Active" : "Hidden"}
+                                            {h.isActive ? t("common.status.active") : t("admin.hotels.hidden")}
                                         </span>
                                     </td>
                                     <td className="px-4 py-3">
                                         <div className="flex justify-end gap-2">
                                             <Link to={`/admin/hotels/${h.id}`} className="px-3 py-1 rounded-lg text-xs font-bold border border-blue-200 text-primary hover:bg-blue-50">
-                                                Edit
+                                                {t("common.actions.edit")}
                                             </Link>
                                             <button
                                                 type="button"
@@ -163,7 +165,7 @@ function AdminHotels() {
                                                     h.isActive ? "border-red-200 text-red-600 hover:bg-red-50" : "border-green-200 text-green-700 hover:bg-green-50"
                                                 }`}
                                             >
-                                                {h.isActive ? "Hide" : "Restore"}
+                                                {h.isActive ? t("admin.hotels.hide") : t("admin.hotels.restore")}
                                             </button>
                                         </div>
                                     </td>

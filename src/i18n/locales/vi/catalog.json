@@ -1,0 +1,23 @@
+{
+  "filters": {
+    "refineSelection": "Tinh chỉnh lựa chọn"
+  },
+  "tripCart": {
+    "adding": "Đang thêm…",
+    "add": "Thêm vào giỏ chuyến đi",
+    "added": "Đã thêm vào giỏ chuyến đi.",
+    "viewCart": "Xem giỏ hàng"
+  },
+  "flight": {
+    "nonStop": "Bay thẳng"
+  },
+  "pending": {
+    "title": "Bạn có đơn chưa thanh toán ở đây",
+    "heldUntil": "giữ chỗ đến {{time}}",
+    "cancel": "Huỷ đơn",
+    "cancelConfirm": "Huỷ đơn chưa thanh toán này và trả lại ghế / lịch đã giữ?",
+    "continuePayment": "Tiếp tục thanh toán",
+    "flightSeats_other": "Ghế {{seats}}",
+    "cartTitle": "Đơn chưa thanh toán - hoàn tất trước khi hết hạn giữ chỗ"
+  }
+}

@@ -20,6 +20,12 @@ export async function fetchMyInvoice(invoiceId) {
     return data;
 }
 
+/** Update billing details (name / address / tax code) of one of the current user's invoices. */
+export async function updateMyInvoiceBilling(invoiceId, body) {
+    const { data } = await apiClient.put(`/api/me/invoices/${invoiceId}/billing/`, body);
+    return data;
+}
+
 /** Download one of the current user's invoices. */
 export async function downloadMyInvoice(invoiceId) {
     return downloadFile(`/api/me/invoices/${invoiceId}/download/`);

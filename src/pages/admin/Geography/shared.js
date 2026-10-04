@@ -1,5 +1,6 @@
 import { useState } from "react";
 import FormAlert from "../../../components/common/FormAlert";
+import { useT } from "../../../i18n/I18nContext";
 
 export const inputClass = "w-full rounded-lg border-gray-200 text-sm";
 
@@ -17,6 +18,7 @@ export function Field({ label, children, className = "" }) {
  * children(form, set, setForm) render các ô nhập.
  */
 export function InlineForm({ initial, onSave, onCancel, children }) {
+    const t = useT();
     const [form, setForm] = useState(initial);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
@@ -42,9 +44,9 @@ export function InlineForm({ initial, onSave, onCancel, children }) {
             {children(form, set, setForm)}
             <FormAlert>{error}</FormAlert>
             <div className="flex justify-end gap-2">
-                <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg text-sm font-bold text-gray-500">Cancel</button>
+                <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg text-sm font-bold text-gray-500">{t("common.actions.cancel")}</button>
                 <button type="submit" disabled={saving} className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold disabled:opacity-50">
-                    {saving ? "Saving..." : "Save"}
+                    {saving ? t("common.state.saving") : t("common.actions.save")}
                 </button>
             </div>
         </form>
@@ -52,10 +54,11 @@ export function InlineForm({ initial, onSave, onCancel, children }) {
 }
 
 export function StatusLabel({ active }) {
+    const t = useT();
     return (
         <span className={`inline-flex items-center gap-1 text-xs font-bold ${active ? "text-green-700" : "text-gray-500"}`}>
             <span className="material-symbols-outlined text-sm">{active ? "check_circle" : "visibility_off"}</span>
-            {active ? "Active" : "Hidden"}
+            {active ? t("common.status.active") : t("admin.geography.hidden")}
         </span>
     );
 }
@@ -90,6 +93,7 @@ export function Thumbnail({ url, icon }) {
 
 /** Ô tìm kiếm + nút Search, gọi onSearch khi submit. */
 export function SearchBox({ placeholder, onSearch }) {
+    const t = useT();
     const [keyword, setKeyword] = useState("");
     return (
         <form
@@ -100,7 +104,7 @@ export function SearchBox({ placeholder, onSearch }) {
             className="flex gap-2"
         >
             <input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder={placeholder} className="rounded-lg border-gray-200 text-sm w-56" />
-            <button type="submit" className="bg-primary text-white px-4 rounded-lg text-sm font-bold">Search</button>
+            <button type="submit" className="bg-primary text-white px-4 rounded-lg text-sm font-bold">{t("common.actions.search")}</button>
         </form>
     );
 }

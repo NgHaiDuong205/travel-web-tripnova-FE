@@ -1,5 +1,8 @@
+import { useT } from "../../i18n/I18nContext";
+
 /** Tiêu đề và điều khiển sắp xếp danh sách. */
 function ListHeader({ eyebrow, title, sortOptions = [], sort, onSortChange }) {
+    const t = useT();
     return (
         <div className="flex justify-between items-end mb-10">
             <div>
@@ -11,7 +14,7 @@ function ListHeader({ eyebrow, title, sortOptions = [], sort, onSortChange }) {
                 <h2 className="font-headline text-3xl font-bold text-on-surface">{title}</h2>
             </div>
             <label className="flex items-center gap-2 text-sm font-bold text-primary">
-                Sort by:
+                {t("common.fields.sortBy")}:
                 <select
                     value={sort}
                     onChange={(e) => onSortChange?.(e.target.value)}

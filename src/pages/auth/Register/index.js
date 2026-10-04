@@ -1,24 +1,29 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import FormInput from "../../../components/common/FormInput";
 import FormAlert from "../../../components/common/FormAlert";
+import { useT } from "../../../i18n/I18nContext";
+import { safeRedirect, withRedirect } from "../../../utils/authRedirect";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function validate(form) {
+function validate(form, t) {
     const errors = {};
-    if (!form.fullName.trim()) errors.fullName = "Vui lòng nhập họ tên.";
-    if (!EMAIL_REGEX.test(form.email.trim())) errors.email = "Email không hợp lệ.";
-    if (form.password.length < 6) errors.password = "Mật khẩu tối thiểu 6 ký tự.";
-    if (form.confirmPassword !== form.password) errors.confirmPassword = "Mật khẩu xác nhận không khớp.";
-    if (!form.agree) errors.agree = "Bạn cần đồng ý điều khoản.";
+    if (!form.fullName.trim()) errors.fullName = t("auth.validation.fullNameRequired");
+    if (!EMAIL_REGEX.test(form.email.trim())) errors.email = t("auth.validation.emailInvalid");
+    if (form.password.length < 6) errors.password = t("auth.validation.passwordMinLength");
+    if (form.confirmPassword !== form.password) errors.confirmPassword = t("auth.validation.passwordsDoNotMatch");
+    if (!form.agree) errors.agree = t("auth.validation.termsRequired");
     return errors;
 }
 
 function Register() {
+    const t = useT();
     const navigate = useNavigate();
     const { register } = useAuth();
+    const [searchParams] = useSearchParams();
+    const redirect = safeRedirect(searchParams.get("redirect"));
     const [form, setForm] = useState({
         fullName: "",
         email: "",
@@ -40,7 +45,7 @@ function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const validation = validate(form);
+        const validation = validate(form, t);
         setErrors(validation);
         if (Object.keys(validation).length) return;
 
@@ -52,9 +57,9 @@ function Register() {
                 phone: form.phone.trim() || undefined,
                 password: form.password,
             });
-            navigate("/", { replace: true });
+            navigate(redirect || "/", { replace: true });
         } catch (err) {
-            setServerError(err.message || "Đăng ký thất bại.");
+            setServerError(err.message || t("auth.register.errors.failed"));
         } finally {
             setSubmitting(false);
         }
@@ -68,7 +73,7 @@ function Register() {
                 {/* Header thẻ Register */}
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-black text-[#003580] italic tracking-tighter mb-2">Tripnova</h1>
-                    <p className="text-gray-500 font-medium">Create an account to start your journey.</p>
+                    <p className="text-gray-500 font-medium">{t("auth.register.subtitle")}</p>
                 </div>
 
                 {/* Form điền thông tin */}
@@ -76,35 +81,35 @@ function Register() {
                     <FormAlert>{serverError}</FormAlert>
 
                     <FormInput
-                        label="Full Name"
+                        label={t("common.fields.fullName")}
                         name="fullName"
-                        placeholder="Enter your full name"
+                        placeholder={t("auth.fields.enterFullName")}
                         autoComplete="name"
                         value={form.fullName}
                         onChange={handleChange}
                         error={errors.fullName}
                     />
                     <FormInput
-                        label="Email Address"
+                        label={t("auth.fields.emailAddress")}
                         type="email"
                         name="email"
-                        placeholder="Enter your email"
+                        placeholder={t("auth.fields.enterEmail")}
                         autoComplete="email"
                         value={form.email}
                         onChange={handleChange}
                         error={errors.email}
                     />
                     <FormInput
-                        label="Phone (optional)"
+                        label={t("auth.fields.phoneOptional")}
                         type="tel"
                         name="phone"
-                        placeholder="Enter your phone number"
+                        placeholder={t("auth.fields.enterPhone")}
                         autoComplete="tel"
                         value={form.phone}
                         onChange={handleChange}
                     />
                     <FormInput
-                        label="Password"
+                        label={t("common.fields.password")}
                         type="password"
                         name="password"
                         placeholder="••••••••"
@@ -114,7 +119,7 @@ function Register() {
                         error={errors.password}
                     />
                     <FormInput
-                        label="Confirm Password"
+                        label={t("auth.fields.confirmPassword")}
                         type="password"
                         name="confirmPassword"
                         placeholder="••••••••"
@@ -135,8 +140,8 @@ function Register() {
                                 className="rounded text-[#003580] focus:ring-[#003580] w-4 h-4 mt-0.5 cursor-pointer"
                             />
                             <span className="text-gray-600 font-medium group-hover:text-gray-900 transition-colors leading-relaxed">
-                                I agree to the <Link to="#" className="font-bold text-[#003580] hover:underline">Terms of Service</Link> and{" "}
-                                <Link to="#" className="font-bold text-[#003580] hover:underline">Privacy Policy</Link>
+                                {t("auth.register.agreePrefix")} <Link to="#" className="font-bold text-[#003580] hover:underline">{t("auth.register.termsOfService")}</Link> {t("auth.register.agreeAnd")} {" "}
+                                <Link to="#" className="font-bold text-[#003580] hover:underline">{t("auth.register.privacyPolicy")}</Link>
                             </span>
                         </label>
                         {errors.agree && <p className="mt-1 text-xs font-medium text-red-600">{errors.agree}</p>}
@@ -148,15 +153,15 @@ function Register() {
                         disabled={submitting}
                         className="w-full bg-[#003580] text-white py-3.5 rounded-lg font-bold tracking-wide shadow-md shadow-blue-900/20 hover:bg-blue-800 hover:shadow-lg transition-all active:scale-[0.98] mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                        {submitting ? "Creating account..." : "Create Account"}
+                        {submitting ? t("auth.register.creatingAccount") : t("auth.register.createAccount")}
                     </button>
                 </form>
 
                 {/* Footer thẻ Register */}
                 <div className="mt-8 text-center text-sm text-gray-600 font-medium">
-                    Already have an account?{" "}
-                    <Link to="/login" className="font-bold text-[#003580] hover:underline ml-1">
-                        Sign in
+                    {t("auth.register.hasAccount")} {" "}
+                    <Link to={withRedirect("/login", redirect)} className="font-bold text-[#003580] hover:underline ml-1">
+                        {t("auth.login.signIn")}
                     </Link>
                 </div>
 
@@ -164,7 +169,7 @@ function Register() {
                 <div className="mt-8 text-center">
                     <Link to="/" className="inline-flex items-center gap-1 text-gray-400 hover:text-gray-600 font-bold text-sm transition-colors opacity-80 hover:opacity-100">
                         <span className="material-symbols-outlined text-sm">arrow_back</span>
-                        Back to Home
+                        {t("auth.backToHome")}
                     </Link>
                 </div>
             </div>

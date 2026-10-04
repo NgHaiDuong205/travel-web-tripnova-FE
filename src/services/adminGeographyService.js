@@ -72,7 +72,7 @@ export async function deactivateAdminLandmark(id) {
     await apiClient.delete(`/api/admin/landmarks/${id}/`);
 }
 
-export const LANDMARK_CATEGORIES = ["beach", "temple", "museum", "park", "mountain", "market", "restaurant", "entertainment", "historical", "other"];
+export const LANDMARK_CATEGORIES = ["beach", "temple", "museum", "park", "mountain", "market", "restaurant", "entertainment", "historical", "wellness", "sport", "other"];
 
 /** "" / null → null, còn lại → Number (cho lat/long, phí...). */
 export function toNumberOrNull(value) {

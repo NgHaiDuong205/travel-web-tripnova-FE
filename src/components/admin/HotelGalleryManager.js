@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import FormAlert from "../common/FormAlert";
 import { useHotelApi } from "../../context/HotelApiContext";
 import { IMAGE_ACCEPT, uploadImage, validateImageFile } from "../../services/accountService";
+import { useT } from "../../i18n/I18nContext";
 
 /**
  * Thư viện ảnh của một khách sạn: thêm (tải file / URL), sửa chú thích, đổi thứ tự, đặt ảnh bìa, xoá.
@@ -9,6 +10,7 @@ import { IMAGE_ACCEPT, uploadImage, validateImageFile } from "../../services/acc
  * onCoverChanged(url) báo cho trang cha cập nhật ảnh bìa đang hiển thị.
  */
 function HotelGalleryManager({ hotel, onCoverChanged }) {
+    const t = useT();
     const api = useHotelApi();
     const hotelId = hotel.id;
     const [images, setImages] = useState([]);
@@ -45,7 +47,7 @@ function HotelGalleryManager({ hotel, onCoverChanged }) {
             await api.addHotelImage(hotelId, { url: imageUrl, caption: caption.trim() });
             setUrl("");
             setCaption("");
-            setNotice("Image added.");
+            setNotice(t("admin.gallery.imageAdded"));
             await loadImages();
         } catch (err) {
             setError(err.message);
@@ -79,19 +81,19 @@ function HotelGalleryManager({ hotel, onCoverChanged }) {
         try {
             await api.setHotelCover(hotelId, image.id);
             onCoverChanged?.(image.url);
-            setNotice("Cover image updated.");
+            setNotice(t("admin.gallery.coverUpdated"));
         } catch (err) {
             setError(err.message);
         }
     };
 
     const remove = async (image) => {
-        if (!window.confirm("Delete this image?")) return;
+        if (!window.confirm(t("admin.gallery.confirmDelete"))) return;
         setError("");
         try {
             await api.deleteHotelImage(hotelId, image.id);
             setImages((prev) => prev.filter((item) => item.id !== image.id));
-            setNotice("Image deleted.");
+            setNotice(t("admin.gallery.imageDeleted"));
         } catch (err) {
             setError(err.message);
         }
@@ -125,10 +127,10 @@ function HotelGalleryManager({ hotel, onCoverChanged }) {
             <FormAlert type="success">{notice}</FormAlert>
             <FormAlert>{error}</FormAlert>
             <section className="p-4 rounded-xl border border-gray-100 bg-white mb-6">
-                <h3 className="font-bold mb-3">Add image</h3>
+                <h3 className="font-bold mb-3">{t("admin.gallery.addImage")}</h3>
                 <div className="flex flex-wrap gap-3 items-end">
                     <label className="text-xs font-semibold text-gray-500">
-                        Upload file
+                        {t("admin.gallery.uploadFile")}
                         <input
                             type="file"
                             accept={IMAGE_ACCEPT}
@@ -138,7 +140,7 @@ function HotelGalleryManager({ hotel, onCoverChanged }) {
                         />
                     </label>
                     <label className="text-xs font-semibold text-gray-500 flex-1 min-w-[180px]">
-                        Image URL
+                        {t("admin.gallery.imageUrl")}
                         <input
                             type="url"
                             value={url}
@@ -148,7 +150,7 @@ function HotelGalleryManager({ hotel, onCoverChanged }) {
                         />
                     </label>
                     <label className="text-xs font-semibold text-gray-500">
-                        Caption
+                        {t("admin.gallery.caption")}
                         <input
                             value={caption}
                             onChange={(event) => setCaption(event.target.value)}
@@ -161,14 +163,14 @@ function HotelGalleryManager({ hotel, onCoverChanged }) {
                         onClick={() => add(url.trim())}
                         className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white disabled:opacity-50"
                     >
-                        {uploading ? "Uploading..." : "Add URL"}
+                        {uploading ? t("admin.gallery.uploading") : t("admin.gallery.addUrl")}
                     </button>
                 </div>
             </section>
             {loading ? (
-                <p className="text-gray-500">Loading gallery...</p>
+                <p className="text-gray-500">{t("admin.gallery.loading")}</p>
             ) : images.length === 0 ? (
-                <p className="py-12 text-center rounded-xl bg-gray-50 text-gray-500">No gallery images yet.</p>
+                <p className="py-12 text-center rounded-xl bg-gray-50 text-gray-500">{t("admin.gallery.empty")}</p>
             ) : (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {images.map((image, index) => (
@@ -194,6 +196,7 @@ function HotelGalleryManager({ hotel, onCoverChanged }) {
 }
 
 function ImageCard({ image, coverUrl, first, last, onCover, onDelete, onMoveUp, onMoveDown, hotelId, onSaved, onError }) {
+    const t = useT();
     const api = useHotelApi();
     const [caption, setCaption] = useState(image.caption || "");
     const save = async () => {
@@ -206,20 +209,20 @@ function ImageCard({ image, coverUrl, first, last, onCover, onDelete, onMoveUp, 
     };
     return (
         <article className="relative rounded-xl overflow-hidden border border-gray-100 bg-white">
-            <img src={image.url} alt={image.caption || "Hotel"} className="h-40 w-full object-cover" />
+            <img src={image.url} alt={image.caption || t("admin.gallery.hotelImage")} className="h-40 w-full object-cover" />
             {image.url === coverUrl && (
-                <span className="absolute top-2 left-2 px-2 py-1 rounded bg-primary text-white text-xs font-bold">Cover</span>
+                <span className="absolute top-2 left-2 px-2 py-1 rounded bg-primary text-white text-xs font-bold">{t("admin.gallery.cover")}</span>
             )}
             <div className="p-3">
                 <input
                     value={caption}
                     onChange={(event) => setCaption(event.target.value)}
-                    placeholder="Caption"
+                    placeholder={t("admin.gallery.caption")}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
                 />
                 <div className="flex flex-wrap gap-2 mt-2">
                     <button type="button" onClick={save} className="text-xs font-bold text-primary">
-                        Save
+                        {t("common.actions.save")}
                     </button>
                     <button type="button" disabled={first} onClick={onMoveUp} className="text-xs disabled:opacity-40">
                         ↑
@@ -228,10 +231,10 @@ function ImageCard({ image, coverUrl, first, last, onCover, onDelete, onMoveUp, 
                         ↓
                     </button>
                     <button type="button" onClick={onCover} className="text-xs font-bold text-primary">
-                        Set as cover
+                        {t("admin.gallery.setAsCover")}
                     </button>
                     <button type="button" onClick={onDelete} className="text-xs font-bold text-red-600">
-                        Delete
+                        {t("common.actions.delete")}
                     </button>
                 </div>
             </div>

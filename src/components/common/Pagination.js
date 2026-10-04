@@ -1,5 +1,8 @@
+import { useT } from "../../i18n/I18nContext";
+
 /** Phân trang đơn giản: « 1 2 3 » (page bắt đầu từ 1). */
 function Pagination({ page, total, limit, onChange }) {
+    const t = useT();
     const totalPages = Math.max(1, Math.ceil(total / limit));
     if (totalPages <= 1) return null;
 
@@ -14,7 +17,7 @@ function Pagination({ page, total, limit, onChange }) {
                 disabled={page <= 1}
                 onClick={() => onChange(page - 1)}
                 className={`${buttonClass} hover:bg-surface-container-low disabled:opacity-30`}
-                aria-label="Previous page"
+                aria-label={t("common.pagination.previous")}
             >
                 <span className="material-symbols-outlined">chevron_left</span>
             </button>
@@ -33,7 +36,7 @@ function Pagination({ page, total, limit, onChange }) {
                 disabled={page >= totalPages}
                 onClick={() => onChange(page + 1)}
                 className={`${buttonClass} hover:bg-surface-container-low disabled:opacity-30`}
-                aria-label="Next page"
+                aria-label={t("common.pagination.next")}
             >
                 <span className="material-symbols-outlined">chevron_right</span>
             </button>

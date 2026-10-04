@@ -5,9 +5,13 @@ import apiClient from "../config/axiosConfig";
  * nhưng BE chỉ cho thao tác trên khách sạn mình quản lý (khách sạn khác → 404).
  */
 
-export async function fetchManagerHotels() {
-    const { data } = await apiClient.get("/api/manager/hotels/");
-    return data;
+/** Khách sạn do tài khoản quản lý (phân trang, q = tên / địa chỉ) → { items, total }. */
+export async function fetchManagerHotels({ q, page = 1, limit = 20 } = {}) {
+    const response = await apiClient.get("/api/manager/hotels/", {
+        params: { q: q || undefined, page, limit },
+    });
+    const total = Number(response.headers?.["x-total-count"]);
+    return { items: response.data, total: Number.isNaN(total) ? response.data.length : total };
 }
 
 export async function fetchManagerHotel(hotelId) {

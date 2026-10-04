@@ -5,9 +5,11 @@ import HotelForm from "../../../components/admin/HotelForm";
 import RoomManager from "../../../components/admin/RoomManager";
 import RoomTypeManager from "../../../components/admin/RoomTypeManager";
 import { createAdminHotel, fetchAdminHotel, fetchAdminRoomTypes, updateAdminHotel } from "../../../services/adminHotelService";
+import { useT } from "../../../i18n/I18nContext";
 
 /** /admin/hotels/new (tạo) và /admin/hotels/:hotelId (sửa + hạng phòng + phòng). */
 function AdminHotelEdit() {
+    const t = useT();
     const { hotelId } = useParams();
     const isNew = !hotelId;
     const navigate = useNavigate();
@@ -56,16 +58,16 @@ function AdminHotelEdit() {
                 <Link to="/admin/hotels" className="text-gray-500 hover:text-primary">
                     <span className="material-symbols-outlined">arrow_back</span>
                 </Link>
-                <h1 className="text-3xl font-extrabold text-primary">{isNew ? "New hotel" : hotel?.name || "Hotel"}</h1>
+                <h1 className="text-3xl font-extrabold text-primary">{isNew ? t("admin.hotelEdit.newHotel") : hotel?.name || t("admin.hotelEdit.hotel")}</h1>
                 {hotel && (
                     <span className="ml-auto text-sm text-gray-500">
-                        {hotel.roomTypeCount} room types · {hotel.totalRooms} rooms · {hotel.isActive ? "Active" : "Hidden"}
+                        {t("admin.hotelEdit.summary", { roomTypes: hotel.roomTypeCount, rooms: hotel.totalRooms, status: hotel.isActive ? t("common.status.active") : t("admin.hotelEdit.hidden") })}
                     </span>
                 )}
             </div>
 
             <FormAlert>{error}</FormAlert>
-            {loading && <p className="text-gray-500">Đang tải...</p>}
+            {loading && <p className="text-gray-500">{t("common.state.loading")}</p>}
 
             {!loading && (isNew || hotel) && (
                 // key: khởi tạo lại form khi chuyển từ "new" sang khách sạn vừa tạo

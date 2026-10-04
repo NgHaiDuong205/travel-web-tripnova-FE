@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import FormAlert from "../common/FormAlert";
 import { fetchAmenities } from "../../services/lookupService";
 import { CANCELLATION_POLICIES, fetchDestinationOptions, hotelToPayload } from "../../services/adminHotelService";
+import { useT } from "../../i18n/I18nContext";
 
 const EMPTY_HOTEL = {
     destinationId: "",
@@ -71,6 +72,7 @@ export function AmenityPicker({ amenities, selected, onChange }) {
  * canChangeStatus = false (trang quản lý khách sạn): ẩn ô "Active" — BE cũng bỏ qua trường này.
  */
 function HotelForm({ hotel, onSubmit, canChangeStatus = true }) {
+    const t = useT();
     const [form, setForm] = useState(() => (hotel ? { ...EMPTY_HOTEL, ...hotelToPayload(hotel) } : EMPTY_HOTEL));
     const [destinations, setDestinations] = useState([]);
     const [amenities, setAmenities] = useState([]);
@@ -120,7 +122,7 @@ function HotelForm({ hotel, onSubmit, canChangeStatus = true }) {
                 latitude: toNumber(form.latitude),
                 longitude: toNumber(form.longitude),
             });
-            setSuccess("Đã lưu khách sạn.");
+            setSuccess(t("admin.hotelForm.saved"));
         } catch (err) {
             setError(err.message);
         } finally {
@@ -131,57 +133,57 @@ function HotelForm({ hotel, onSubmit, canChangeStatus = true }) {
     return (
         <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
             <div className="grid md:grid-cols-2 gap-4">
-                <Field label="Hotel name *">
+                <Field label={`${t("admin.hotelForm.hotelName")} *`}>
                     <input required maxLength={200} value={form.name} onChange={set("name")} className={inputClass} />
                 </Field>
-                <Field label="Destination *">
+                <Field label={`${t("common.fields.destination")} *`}>
                     <select required value={form.destinationId || ""} onChange={set("destinationId")} className={inputClass}>
-                        <option value="">— Chọn điểm đến —</option>
+                        <option value="">{t("admin.hotelForm.chooseDestination")}</option>
                         {destinationGroups.map(([country, items]) => (
-                            <optgroup key={country} label={country || "Khác"}>
+                            <optgroup key={country} label={country || t("admin.hotelForm.other")}>
                                 {items.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
                             </optgroup>
                         ))}
                     </select>
                 </Field>
-                <Field label="Address *" className="md:col-span-2">
+                <Field label={`${t("admin.hotelForm.address")} *`} className="md:col-span-2">
                     <input required value={form.address} onChange={set("address")} className={inputClass} />
                 </Field>
-                <Field label="Description" className="md:col-span-2">
+                <Field label={t("admin.hotelForm.description")} className="md:col-span-2">
                     <textarea rows={3} value={form.description || ""} onChange={set("description")} className={inputClass} />
                 </Field>
-                <Field label="Star rating *">
+                <Field label={`${t("admin.hotelForm.starRating")} *`}>
                     <select value={form.starRating} onChange={set("starRating")} className={inputClass}>
                         {[1, 2, 3, 4, 5].map((s) => <option key={s} value={s}>{s} ★</option>)}
                     </select>
                 </Field>
-                <Field label="Cover image URL">
+                <Field label={t("admin.hotelForm.coverImageUrl")}>
                     <input type="url" value={form.coverImageUrl || ""} onChange={set("coverImageUrl")} className={inputClass} />
                 </Field>
-                <Field label="Phone">
+                <Field label={t("common.fields.phone")}>
                     <input maxLength={20} value={form.phone || ""} onChange={set("phone")} className={inputClass} />
                 </Field>
-                <Field label="Email">
+                <Field label={t("common.fields.email")}>
                     <input type="email" value={form.email || ""} onChange={set("email")} className={inputClass} />
                 </Field>
-                <Field label="Check-in time">
+                <Field label={t("admin.hotelForm.checkInTime")}>
                     <input type="time" value={form.checkInTime || ""} onChange={set("checkInTime")} className={inputClass} />
                 </Field>
-                <Field label="Check-out time">
+                <Field label={t("admin.hotelForm.checkOutTime")}>
                     <input type="time" value={form.checkOutTime || ""} onChange={set("checkOutTime")} className={inputClass} />
                 </Field>
-                <Field label="Cancellation policy">
+                <Field label={t("admin.hotelForm.cancellationPolicy")}>
                     <select value={form.cancellationPolicy} onChange={set("cancellationPolicy")} className={inputClass}>
-                        {CANCELLATION_POLICIES.map((p) => <option key={p} value={p}>{p}</option>)}
+                        {CANCELLATION_POLICIES.map((p) => <option key={p} value={p}>{t(`admin.status.${p}`, { defaultValue: p })}</option>)}
                     </select>
                 </Field>
-                <Field label="Free cancellation (hours before check-in)">
+                <Field label={t("admin.hotelForm.freeCancellationHours")}>
                     <input type="number" min={0} max={720} value={form.cancellationHours ?? ""} onChange={set("cancellationHours")} className={inputClass} />
                 </Field>
-                <Field label="Latitude">
+                <Field label={t("admin.hotelForm.latitude")}>
                     <input type="number" step="any" min={-90} max={90} value={form.latitude ?? ""} onChange={set("latitude")} className={inputClass} />
                 </Field>
-                <Field label="Longitude">
+                <Field label={t("admin.hotelForm.longitude")}>
                     <input type="number" step="any" min={-180} max={180} value={form.longitude ?? ""} onChange={set("longitude")} className={inputClass} />
                 </Field>
             </div>
@@ -189,22 +191,22 @@ function HotelForm({ hotel, onSubmit, canChangeStatus = true }) {
             <div className="flex flex-wrap gap-6">
                 <label className="flex items-center gap-2 text-sm font-semibold">
                     <input type="checkbox" checked={!!form.breakfastIncluded} onChange={set("breakfastIncluded")} />
-                    Breakfast included
+                    {t("admin.hotelForm.breakfastIncluded")}
                 </label>
                 <label className="flex items-center gap-2 text-sm font-semibold">
                     <input type="checkbox" checked={!!form.petFriendly} onChange={set("petFriendly")} />
-                    Pet friendly
+                    {t("admin.hotelForm.petFriendly")}
                 </label>
                 {canChangeStatus && (
                     <label className="flex items-center gap-2 text-sm font-semibold">
                         <input type="checkbox" checked={!!form.isActive} onChange={set("isActive")} />
-                        Active (hiện ở trang public)
+                        {t("admin.hotelForm.activePublic")}
                     </label>
                 )}
             </div>
 
             <div>
-                <p className="text-sm font-bold text-gray-700 mb-2">Hotel amenities</p>
+                <p className="text-sm font-bold text-gray-700 mb-2">{t("admin.hotelForm.amenities")}</p>
                 <AmenityPicker
                     amenities={amenities}
                     selected={form.amenityIds || []}
@@ -221,7 +223,7 @@ function HotelForm({ hotel, onSubmit, canChangeStatus = true }) {
                     disabled={saving || destinations.length === 0}
                     className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-bold disabled:opacity-50"
                 >
-                    {saving ? "Saving..." : hotel ? "Save changes" : "Create hotel"}
+                    {saving ? t("common.state.saving") : hotel ? t("common.actions.saveChanges") : t("admin.hotelForm.createHotel")}
                 </button>
             </div>
         </form>

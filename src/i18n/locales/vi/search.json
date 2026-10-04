@@ -1,0 +1,1 @@
+{"title":"Tìm kiếm TripNova","placeholder":"Bạn muốn đi đâu?","emptyPrompt":"Tìm khách sạn, tour, xe, chuyến bay và điểm đến.","noResults":"Không có kết quả cho \"{{query}}\"","seeAll":"Xem tất cả {{count}}","fromPrice":"Từ {{price}} / {{unit}}","types":{"all":"Tất cả","destination":"Điểm đến","hotel":"Khách sạn","tour":"Tour","car":"Xe","flight":"Chuyến bay"}}

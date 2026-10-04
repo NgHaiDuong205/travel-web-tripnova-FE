@@ -5,12 +5,17 @@ import FormAlert from "../../../components/common/FormAlert";
 import Pagination from "../../../components/common/Pagination";
 import PostCard from "../../../components/client/PostCard";
 import { POST_STATUS_LABELS, fetchMyPosts } from "../../../services/postService";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 10;
-const TABS = [{ value: "", label: "All" }, ...Object.entries(POST_STATUS_LABELS).map(([value, cfg]) => ({ value, label: cfg.label }))];
 
 /** Đánh giá của chính mình ở mọi trạng thái (chờ duyệt / đã đăng / bị từ chối). */
 function MyReviews() {
+    const t = useT();
+    const tabs = [
+        { value: "", label: t("common.status.all") },
+        ...Object.keys(POST_STATUS_LABELS).map((value) => ({ value, label: t(`reviews.status.${value}`) })),
+    ];
     const [status, setStatus] = useState("");
     const [page, setPage] = useState(1);
     const [result, setResult] = useState({ items: [], total: 0 });
@@ -37,13 +42,13 @@ function MyReviews() {
     return (
         <DashboardLayout>
             <section className="mb-10">
-                <span className="text-[0.75rem] uppercase tracking-[0.2em] text-on-tertiary-fixed-variant mb-2 block">Community</span>
-                <h1 className="font-headline text-5xl font-extrabold text-on-surface tracking-tight mb-2">My Reviews</h1>
-                <p className="text-on-surface-variant text-lg">Reviews you wrote. New and edited reviews appear publicly after approval.</p>
+                <span className="text-[0.75rem] uppercase tracking-[0.2em] text-on-tertiary-fixed-variant mb-2 block">{t("reviews.myReviews.community")}</span>
+                <h1 className="font-headline text-5xl font-extrabold text-on-surface tracking-tight mb-2">{t("reviews.myReviews.title")}</h1>
+                <p className="text-on-surface-variant text-lg">{t("reviews.myReviews.subtitle")}</p>
             </section>
 
             <div className="flex flex-wrap gap-2 mb-6">
-                {TABS.map((tab) => (
+                {tabs.map((tab) => (
                     <button
                         key={tab.value}
                         type="button"
@@ -71,8 +76,8 @@ function MyReviews() {
             ) : result.items.length === 0 ? (
                 <div className="text-center py-16 bg-surface-container-low rounded-xl">
                     <span className="material-symbols-outlined text-5xl text-outline mb-3">rate_review</span>
-                    <p className="text-on-surface-variant mb-4">You haven't written any reviews{status ? " in this status" : ""} yet.</p>
-                    <Link to="/hotels" className="text-sm font-bold text-primary hover:underline">Find a hotel you stayed at</Link>
+                    <p className="text-on-surface-variant mb-4">{t(status ? "reviews.myReviews.emptyFiltered" : "reviews.myReviews.empty")}</p>
+                    <Link to="/hotels" className="text-sm font-bold text-primary hover:underline">{t("reviews.myReviews.findHotel")}</Link>
                 </div>
             ) : (
                 <div className="space-y-6">

@@ -7,11 +7,13 @@ import {
     saveAdminRole,
     updateAdminRolePermissions,
 } from "../../../services/adminService";
+import { useT } from "../../../i18n/I18nContext";
 
 const EMPTY = { name: "", description: "" };
 const inputClass = "rounded-lg border-gray-200 text-sm";
 
 function RoleForm({ initial, isSystem, onSave, onCancel }) {
+    const t = useT();
     const [form, setForm] = useState(initial);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
@@ -32,31 +34,32 @@ function RoleForm({ initial, isSystem, onSave, onCancel }) {
     return (
         <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-3 bg-blue-50/40 border border-blue-100 rounded-xl p-3">
             <label className="text-xs font-bold text-gray-600">
-                Name *
+                {t("admin.roles.name")} *
                 <input
                     required
                     disabled={isSystem}
                     pattern="[A-Za-z][A-Za-z0-9_]{1,49}"
-                    title="Chữ, số, dấu _ (2-50 ký tự), bắt đầu bằng chữ"
+                    title={t("admin.roles.nameHint")}
                     value={form.name}
                     onChange={set("name")}
                     className={`${inputClass} block w-56 uppercase disabled:bg-gray-100`}
                 />
             </label>
             <label className="text-xs font-bold text-gray-600 flex-1 min-w-[220px]">
-                Description
+                {t("admin.roles.description")}
                 <input maxLength={500} value={form.description || ""} onChange={set("description")} className={`${inputClass} block w-full`} />
             </label>
             <button type="submit" disabled={saving} className="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold disabled:opacity-50">
-                {saving ? "Saving..." : "Save"}
+                {saving ? t("common.state.saving") : t("common.actions.save")}
             </button>
-            <button type="button" onClick={onCancel} className="px-3 py-2 rounded-lg text-xs font-bold text-gray-500">Cancel</button>
+            <button type="button" onClick={onCancel} className="px-3 py-2 rounded-lg text-xs font-bold text-gray-500">{t("common.actions.cancel")}</button>
             {error && <div className="w-full"><FormAlert>{error}</FormAlert></div>}
         </form>
     );
 }
 
 function PermissionEditor({ role, permissions, onSave, onCancel }) {
+    const t = useT();
     const [selected, setSelected] = useState(role.permissionIds);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
@@ -88,9 +91,9 @@ function PermissionEditor({ role, permissions, onSave, onCancel }) {
             </div>
             <FormAlert>{error}</FormAlert>
             <div className="flex gap-2 justify-end">
-                <button type="button" onClick={onCancel} className="px-3 py-1.5 rounded-lg text-xs font-bold text-gray-500">Cancel</button>
+                <button type="button" onClick={onCancel} className="px-3 py-1.5 rounded-lg text-xs font-bold text-gray-500">{t("common.actions.cancel")}</button>
                 <button type="button" disabled={saving} onClick={handleSave} className="bg-primary text-white px-4 py-1.5 rounded-lg text-xs font-bold disabled:opacity-50">
-                    {saving ? "Saving..." : "Save permissions"}
+                    {saving ? t("common.state.saving") : t("admin.roles.savePermissions")}
                 </button>
             </div>
         </div>
@@ -98,6 +101,7 @@ function PermissionEditor({ role, permissions, onSave, onCancel }) {
 }
 
 function AdminRoles() {
+    const t = useT();
     const [roles, setRoles] = useState([]);
     const [permissions, setPermissions] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -142,7 +146,7 @@ function AdminRoles() {
     };
 
     const handleDelete = async (role) => {
-        if (!window.confirm(`Xoá role ${role.name}?`)) return;
+        if (!window.confirm(t("admin.roles.confirmDelete", { name: role.name }))) return;
         setBusyId(role.id);
         setError("");
         try {
@@ -160,21 +164,20 @@ function AdminRoles() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between gap-4">
-                <h1 className="text-3xl font-extrabold text-primary">Roles &amp; permissions</h1>
+                <h1 className="text-3xl font-extrabold text-primary">{t("admin.roles.title")}</h1>
                 {editing !== "new" && (
                     <button type="button" onClick={() => setEditing("new")} className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold">
-                        + New role
+                        {t("admin.roles.newRole")}
                     </button>
                 )}
             </div>
             <p className="text-xs text-gray-500">
-                Quyền truy cập API hiện dựa trên role hệ thống (USER, ADMIN, HOTEL_MANAGER). Danh mục permission dùng để mô tả / chuẩn bị
-                phân quyền chi tiết. Gán role cho người dùng tại trang Users.
+                {t("admin.roles.descriptionNote")}
             </p>
 
             <FormAlert>{error}</FormAlert>
             {editing === "new" && <RoleForm initial={EMPTY} onSave={handleSave} onCancel={() => setEditing(null)} />}
-            {loading && <p className="text-gray-500">Đang tải...</p>}
+            {loading && <p className="text-gray-500">{t("common.state.loading")}</p>}
 
             <div className="space-y-4">
                 {!loading &&
@@ -193,30 +196,30 @@ function AdminRoles() {
                                         <p className="font-bold text-gray-900 font-mono">
                                             {role.name}
                                             {role.system && (
-                                                <span className="ml-2 text-[10px] font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded align-middle">SYSTEM</span>
+                                                <span className="ml-2 text-[10px] font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded align-middle">{t("admin.roles.system")}</span>
                                             )}
                                         </p>
                                         <p className="text-sm text-gray-500">{role.description || "—"}</p>
-                                        <p className="text-xs text-gray-500 mt-1">{role.userCount} users</p>
+                                        <p className="text-xs text-gray-500 mt-1">{t("admin.roles.userCount", { count: role.userCount })}</p>
                                     </div>
                                     <div className="flex gap-2">
                                         <button type="button" onClick={() => setEditing(role.id)} className="px-3 py-1 rounded-lg text-xs font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">
-                                            Edit
+                                            {t("common.actions.edit")}
                                         </button>
                                         {permissionRoleId !== role.id && (
                                             <button type="button" onClick={() => setPermissionRoleId(role.id)} className="px-3 py-1 rounded-lg text-xs font-bold border border-blue-200 text-primary hover:bg-blue-50">
-                                                Permissions
+                                                {t("admin.roles.permissions")}
                                             </button>
                                         )}
                                         {!role.system && (
                                             <button
                                                 type="button"
                                                 disabled={busyId === role.id || role.userCount > 0}
-                                                title={role.userCount > 0 ? "Role đang được gán cho người dùng" : ""}
+                                                title={role.userCount > 0 ? t("admin.roles.assignedRole") : ""}
                                                 onClick={() => handleDelete(role)}
                                                 className="px-3 py-1 rounded-lg text-xs font-bold border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50"
                                             >
-                                                Delete
+                                                {t("common.actions.delete")}
                                             </button>
                                         )}
                                     </div>
@@ -232,7 +235,7 @@ function AdminRoles() {
                                 />
                             ) : (
                                 <div className="flex flex-wrap gap-1 mt-3">
-                                    {role.permissionIds.length === 0 && <span className="text-xs text-gray-400">No permissions</span>}
+                                    {role.permissionIds.length === 0 && <span className="text-xs text-gray-400">{t("admin.roles.noPermissions")}</span>}
                                     {role.permissionIds.map((id) => (
                                         <span key={id} className="text-[11px] font-semibold bg-blue-50 text-primary px-2 py-0.5 rounded">
                                             {permissionName(id)}

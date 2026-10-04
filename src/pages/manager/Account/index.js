@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import FormAlert from "../../../components/common/FormAlert";
 import { useAuth } from "../../../context/AuthContext";
 import { changeMyPassword, fetchMyProfile, updateMyProfile } from "../../../services/meService";
+import { useT } from "../../../i18n/I18nContext";
 
 const inputClass = "block mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm";
 const EMPTY_PASSWORDS = { current: "", next: "", confirm: "" };
@@ -11,6 +12,7 @@ const EMPTY_PASSWORDS = { current: "", next: "", confirm: "" };
  * Tài khoản do admin tạo, thường với mật khẩu tạm → nhắc đổi mật khẩu ở đây.
  */
 function ManagerAccount() {
+    const t = useT();
     const { user, refreshUser } = useAuth();
     const [profile, setProfile] = useState(null);
     const [form, setForm] = useState({ fullName: "", phone: "" });
@@ -44,7 +46,7 @@ function ManagerAccount() {
             });
             setProfile(updated);
             await refreshUser();
-            setProfileMsg({ type: "success", text: "Đã lưu thông tin." });
+            setProfileMsg({ type: "success", text: t("manager.account.profileSaved") });
         } catch (err) {
             setProfileMsg({ type: "error", text: err.details?.length ? err.details.join(" · ") : err.message });
         } finally {
@@ -56,14 +58,14 @@ function ManagerAccount() {
         e.preventDefault();
         setPasswordMsg({ type: "", text: "" });
         if (passwords.next !== passwords.confirm) {
-            setPasswordMsg({ type: "error", text: "Mật khẩu nhập lại không khớp." });
+            setPasswordMsg({ type: "error", text: t("manager.account.passwordMismatch") });
             return;
         }
         setSavingPassword(true);
         try {
             await changeMyPassword(passwords.current, passwords.next);
             setPasswords(EMPTY_PASSWORDS);
-            setPasswordMsg({ type: "success", text: "Đã đổi mật khẩu." });
+            setPasswordMsg({ type: "success", text: t("manager.account.passwordChanged") });
         } catch (err) {
             setPasswordMsg({ type: "error", text: err.details?.length ? err.details.join(" · ") : err.message });
         } finally {
@@ -75,16 +77,16 @@ function ManagerAccount() {
 
     return (
         <div className="space-y-6 max-w-2xl">
-            <h1 className="text-3xl font-extrabold text-primary">Account</h1>
+            <h1 className="text-3xl font-extrabold text-primary">{t("manager.account.title")}</h1>
 
             <form onSubmit={saveProfile} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
-                <h2 className="text-lg font-bold text-gray-900">Thông tin người quản lý</h2>
+                <h2 className="text-lg font-bold text-gray-900">{t("manager.account.profile")}</h2>
                 <label className="text-xs font-semibold text-gray-500 block">
-                    Email (đăng nhập)
+                    {t("manager.account.emailLogin")}
                     <input value={user?.email || ""} disabled className={`${inputClass} bg-gray-50 text-gray-500`} />
                 </label>
                 <label className="text-xs font-semibold text-gray-500 block">
-                    Full name *
+                    {t("common.fields.fullName")} *
                     <input
                         required
                         maxLength={255}
@@ -94,7 +96,7 @@ function ManagerAccount() {
                     />
                 </label>
                 <label className="text-xs font-semibold text-gray-500 block">
-                    Phone
+                    {t("common.fields.phone")}
                     <input
                         maxLength={20}
                         value={form.phone}
@@ -109,16 +111,16 @@ function ManagerAccount() {
                         disabled={savingProfile || !profile}
                         className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-bold disabled:opacity-50"
                     >
-                        {savingProfile ? "Saving..." : "Save"}
+                        {savingProfile ? t("common.state.saving") : t("common.actions.save")}
                     </button>
                 </div>
             </form>
 
             <form onSubmit={savePassword} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
-                <h2 className="text-lg font-bold text-gray-900">Đổi mật khẩu</h2>
-                <p className="text-sm text-gray-500 -mt-2">Nếu bạn đang dùng mật khẩu tạm do quản trị viên cấp, hãy đổi ngay.</p>
+                <h2 className="text-lg font-bold text-gray-900">{t("manager.account.changePassword")}</h2>
+                <p className="text-sm text-gray-500 -mt-2">{t("manager.account.passwordAdvice")}</p>
                 <label className="text-xs font-semibold text-gray-500 block">
-                    Current password *
+                    {t("manager.account.currentPassword")} *
                     <input
                         type="password"
                         required
@@ -129,7 +131,7 @@ function ManagerAccount() {
                     />
                 </label>
                 <label className="text-xs font-semibold text-gray-500 block">
-                    New password *
+                    {t("manager.account.newPassword")} *
                     <input
                         type="password"
                         required
@@ -142,7 +144,7 @@ function ManagerAccount() {
                     />
                 </label>
                 <label className="text-xs font-semibold text-gray-500 block">
-                    Confirm new password *
+                    {t("manager.account.confirmNewPassword")} *
                     <input
                         type="password"
                         required
@@ -159,7 +161,7 @@ function ManagerAccount() {
                         disabled={savingPassword}
                         className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-bold disabled:opacity-50"
                     >
-                        {savingPassword ? "Saving..." : "Change password"}
+                        {savingPassword ? t("common.state.saving") : t("manager.account.changePassword")}
                     </button>
                 </div>
             </form>

@@ -4,11 +4,13 @@ import Pagination from "../../../components/common/Pagination";
 import { fetchAuditActions, fetchAuditLogs } from "../../../services/adminLogService";
 import { formatDateTime } from "../../../utils/formatters";
 import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 25;
 const EMPTY_FILTERS = { userId: "", action: "", from: "", to: "" };
 
 function AdminAuditLogs() {
+    const t = useT();
     const [form, setForm] = useState(EMPTY_FILTERS);
     const [filters, setFilters] = useState(EMPTY_FILTERS);
     const [page, setPage] = useState(1);
@@ -55,7 +57,7 @@ function AdminAuditLogs() {
 
     return (
         <div className="space-y-6">
-            <h1 className="text-3xl font-extrabold text-primary">Audit Logs</h1>
+            <h1 className="text-3xl font-extrabold text-primary">{t("admin.auditLogs.title")}</h1>
             <AdminStatsPanel section="audit" />
             <form
                 onSubmit={(event) => {
@@ -66,13 +68,13 @@ function AdminAuditLogs() {
                 className="flex flex-wrap items-end gap-3"
             >
                 <label className="text-xs font-semibold text-gray-500">
-                    Action
+                    {t("admin.auditLogs.action")}
                     <select
                         value={form.action}
                         onChange={set("action")}
                         className="block mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"
                     >
-                        <option value="">All actions</option>
+                        <option value="">{t("admin.auditLogs.allActions")}</option>
                         {actionOptions.prefixes.map((prefix) => (
                             <option key={prefix} value={prefix}>
                                 {prefix}.*
@@ -86,7 +88,7 @@ function AdminAuditLogs() {
                     </select>
                 </label>
                 <label className="text-xs font-semibold text-gray-500">
-                    User ID
+                    {t("admin.auditLogs.userId")}
                     <input
                         value={form.userId}
                         onChange={set("userId")}
@@ -95,7 +97,7 @@ function AdminAuditLogs() {
                     />
                 </label>
                 <label className="text-xs font-semibold text-gray-500">
-                    From
+                    {t("common.fields.from")}
                     <input
                         type="date"
                         value={form.from}
@@ -104,7 +106,7 @@ function AdminAuditLogs() {
                     />
                 </label>
                 <label className="text-xs font-semibold text-gray-500">
-                    To
+                    {t("common.fields.to")}
                     <input
                         type="date"
                         value={form.to}
@@ -114,7 +116,7 @@ function AdminAuditLogs() {
                     />
                 </label>
                 <button type="submit" className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white">
-                    Filter
+                    {t("admin.auditLogs.filter")}
                 </button>
                 <button
                     type="button"
@@ -125,25 +127,25 @@ function AdminAuditLogs() {
                     }}
                     className="px-4 py-2 rounded-lg text-sm border border-gray-300 text-gray-600"
                 >
-                    Reset
+                    {t("common.actions.reset")}
                 </button>
-                <span className="ml-auto text-sm text-gray-500">{result.total.toLocaleString()} entries</span>
+                <span className="ml-auto text-sm text-gray-500">{t("admin.auditLogs.entries", { count: result.total })}</span>
             </form>
             <FormAlert>{error}</FormAlert>
             {loading ? (
-                <p className="text-gray-500">Loading...</p>
+                <p className="text-gray-500">{t("common.state.loading")}</p>
             ) : result.items.length === 0 ? (
-                <p className="text-gray-500">No audit entries.</p>
+                <p className="text-gray-500">{t("admin.auditLogs.empty")}</p>
             ) : (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
                     <table className="w-full min-w-[900px] text-sm">
                         <thead className="bg-gray-50 text-xs uppercase text-gray-500">
                             <tr>
-                                <th className="px-4 py-3 text-left">Time</th>
-                                <th className="px-4 py-3 text-left">User</th>
-                                <th className="px-4 py-3 text-left">Action</th>
-                                <th className="px-4 py-3 text-left">Request</th>
-                                <th className="px-4 py-3 text-left">Status</th>
+                                <th className="px-4 py-3 text-left">{t("admin.auditLogs.time")}</th>
+                                <th className="px-4 py-3 text-left">{t("admin.auditLogs.user")}</th>
+                                <th className="px-4 py-3 text-left">{t("admin.auditLogs.action")}</th>
+                                <th className="px-4 py-3 text-left">{t("admin.auditLogs.request")}</th>
+                                <th className="px-4 py-3 text-left">{t("common.fields.status")}</th>
                                 <th className="px-4 py-3" />
                             </tr>
                         </thead>
@@ -167,6 +169,7 @@ function AdminAuditLogs() {
 }
 
 function AuditRow({ item, open, onToggle, onUser }) {
+    const t = useT();
     const statusClass =
         item.status >= 500
             ? "bg-red-100 text-red-700"
@@ -203,7 +206,7 @@ function AuditRow({ item, open, onToggle, onUser }) {
                 </td>
                 <td className="px-4 py-3">
                     <button type="button" onClick={onToggle} className="text-xs font-bold text-primary">
-                        {open ? "Hide" : "Details"}
+                        {open ? t("admin.auditLogs.hide") : t("admin.auditLogs.details")}
                     </button>
                 </td>
             </tr>
@@ -212,13 +215,13 @@ function AuditRow({ item, open, onToggle, onUser }) {
                     <td colSpan={6} className="px-6 py-4">
                         <div className="grid sm:grid-cols-3 gap-3 text-sm mb-3">
                             <p>
-                                <b>Entity type:</b> {item.entityType || "—"}
+                                <b>{t("admin.auditLogs.entityType")}:</b> {item.entityType || "—"}
                             </p>
                             <p>
-                                <b>Entity ID:</b> {item.entityId || "—"}
+                                <b>{t("admin.auditLogs.entityId")}:</b> {item.entityId || "—"}
                             </p>
                             <p>
-                                <b>IP address:</b> {item.ipAddress || "—"}
+                                <b>{t("admin.auditLogs.ipAddress")}:</b> {item.ipAddress || "—"}
                             </p>
                         </div>
                         <pre className="p-3 rounded bg-white border border-gray-200 overflow-auto text-xs">{details}</pre>

@@ -5,8 +5,9 @@ import FormAlert from "../../../components/common/FormAlert";
 import StatusBadge from "../../../components/common/StatusBadge";
 import { useAuth } from "../../../context/AuthContext";
 import { fetchMyDashboard } from "../../../services/meService";
-import { BOOKING_STATUS_LABELS } from "../../../services/bookingService";
 import { formatDate, formatMoney } from "../../../utils/formatters";
+import { useT } from "../../../i18n/I18nContext";
+import { getCurrentLocale } from "../../../i18n/currentLocale";
 
 function StatCard({ icon, label, value, footer }) {
     return (
@@ -24,6 +25,7 @@ function StatCard({ icon, label, value, footer }) {
 }
 
 function Profile() {
+    const t = useT();
     const { user } = useAuth();
     const [dashboard, setDashboard] = useState(null);
     const [error, setError] = useState("");
@@ -41,23 +43,23 @@ function Profile() {
             <section className="mb-12">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div>
-                        <span className="text-xs font-bold text-secondary uppercase tracking-[0.2em] mb-3 block">Member Overview</span>
+                        <span className="text-xs font-bold text-secondary uppercase tracking-[0.2em] mb-3 block">{t("account.profile.memberOverview")}</span>
                         <h1 className="text-4xl lg:text-5xl font-headline font-extrabold text-on-surface tracking-tight leading-tight">
-                            Welcome back, <br />
+                            {t("account.profile.welcomeBack")} <br />
                             {user?.fullName}
                         </h1>
                     </div>
                     {next && (
                         <Link to={`/bookings/${next.id}`} className="bg-surface-container-lowest p-6 rounded-xl flex items-center gap-8 shadow-sm hover:shadow-md transition-shadow">
                             <div className="flex flex-col">
-                                <span className="text-xs text-on-surface-variant font-medium">NEXT ADVENTURE</span>
+                                <span className="text-xs text-on-surface-variant font-medium">{t("account.profile.nextAdventure")}</span>
                                 <span className="text-primary font-bold">{next.hotelName}</span>
                             </div>
                             <div className="w-px h-10 bg-outline-variant/30"></div>
                             <div className="flex flex-col">
-                                <span className="text-xs text-on-surface-variant font-medium">DAYS UNTIL</span>
+                                <span className="text-xs text-on-surface-variant font-medium">{t("account.profile.daysUntil")}</span>
                                 <span className="text-primary font-bold">
-                                    {dashboard.daysUntilNextTrip === 0 ? "Today" : `${dashboard.daysUntilNextTrip} Days`}
+                                    {dashboard.daysUntilNextTrip === 0 ? t("account.profile.today") : t("account.profile.days", { count: dashboard.daysUntilNextTrip })}
                                 </span>
                             </div>
                         </Link>
@@ -70,11 +72,11 @@ function Profile() {
             <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
                 <StatCard
                     icon="travel_explore"
-                    label="Upcoming Bookings"
+                    label={t("account.profile.upcomingBookings")}
                     value={dashboard ? String(dashboard.upcomingBookings).padStart(2, "0") : "–"}
                     footer={
                         <Link to="/booking-history" className="flex items-center gap-1">
-                            VIEW DETAILS <span className="material-symbols-outlined text-xs">chevron_right</span>
+                            {t("common.actions.viewDetails")} <span className="material-symbols-outlined text-xs">chevron_right</span>
                         </Link>
                     }
                 />
@@ -86,44 +88,44 @@ function Profile() {
                         <span className="material-symbols-outlined text-on-tertiary-fixed mb-4" style={{ fontSize: "32px", fontVariationSettings: "'FILL' 1" }}>
                             stars
                         </span>
-                        <h4 className="text-on-tertiary-fixed-variant text-sm font-medium mb-1 uppercase tracking-wider">Loyalty Points</h4>
+                        <h4 className="text-on-tertiary-fixed-variant text-sm font-medium mb-1 uppercase tracking-wider">{t("account.profile.loyaltyPoints")}</h4>
                         <p className="text-3xl font-headline font-bold text-on-tertiary-fixed">
-                            {dashboard ? `${dashboard.loyaltyPoints.toLocaleString()} pts` : "–"}
+                            {dashboard ? t("account.profile.points", { count: dashboard.loyaltyPoints.toLocaleString(getCurrentLocale()) }) : "–"}
                         </p>
                     </div>
                 </div>
                 <StatCard
                     icon="payments"
-                    label="Total Spent"
+                    label={t("account.profile.totalSpent")}
                     value={dashboard ? formatMoney(dashboard.totalSpent, dashboard.currencyCode) : "–"}
-                    footer={dashboard ? `${dashboard.completedBookings} completed · ${dashboard.cancelledBookings} cancelled` : null}
+                    footer={dashboard ? t("account.profile.bookingSummary", { completed: dashboard.completedBookings, cancelled: dashboard.cancelledBookings }) : null}
                 />
             </section>
 
             <section>
                 <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-headline font-bold text-on-surface">Recent Bookings</h3>
+                    <h3 className="text-xl font-headline font-bold text-on-surface">{t("account.profile.recentBookings")}</h3>
                     <Link to="/booking-history" className="text-sm font-bold text-secondary hover:underline">
-                        View All History
+                        {t("account.profile.viewAllHistory")}
                     </Link>
                 </div>
                 <div className="bg-surface-container-lowest rounded-xl overflow-x-auto shadow-sm">
                     <table className="w-full text-left min-w-[640px]">
                         <thead>
                             <tr className="bg-surface-container-low/50">
-                                <th className="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Property</th>
-                                <th className="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Date</th>
-                                <th className="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider text-right">Price</th>
+                                <th className="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">{t("account.profile.property")}</th>
+                                <th className="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">{t("common.fields.date")}</th>
+                                <th className="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">{t("common.fields.status")}</th>
+                                <th className="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider text-right">{t("common.fields.price")}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-outline-variant/10">
                             {dashboard?.recentBookings.length === 0 && (
                                 <tr>
                                     <td colSpan={4} className="px-6 py-10 text-center text-on-surface-variant">
-                                        Chưa có đặt phòng nào.{" "}
+                                        {t("account.profile.noBookings")} {" "}
                                         <Link to="/hotels" className="font-bold text-primary hover:underline">
-                                            Tìm khách sạn
+                                            {t("account.profile.findHotels")}
                                         </Link>
                                     </td>
                                 </tr>
@@ -144,7 +146,7 @@ function Profile() {
                                         {formatDate(b.checkInDate)} – {formatDate(b.checkOutDate)}
                                     </td>
                                     <td className="px-6 py-5">
-                                        <StatusBadge status={b.status} labels={BOOKING_STATUS_LABELS} />
+                                        <StatusBadge status={b.status} />
                                     </td>
                                     <td className="px-6 py-5 text-sm font-bold text-on-surface text-right">
                                         {formatMoney(b.totalPrice, b.currencyCode)}

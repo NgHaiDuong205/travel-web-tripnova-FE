@@ -3,15 +3,17 @@ import { Link, useSearchParams } from "react-router-dom";
 import FormAlert from "../../../components/common/FormAlert";
 import { useAuth } from "../../../context/AuthContext";
 import { verifyEmail } from "../../../services/accountService";
+import { useT } from "../../../i18n/I18nContext";
 
 /** Mở từ link trong email: /verify-email?token=... (link hiện được in ra log BE). */
 function VerifyEmail() {
+    const t = useT();
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token") || "";
     const { isLoggedIn, refreshUser } = useAuth();
     const [state, setState] = useState({
         status: token ? "loading" : "error",
-        message: token ? "" : "The verification link is invalid.",
+        message: token ? "" : t("auth.verifyEmail.invalidLink"),
     });
     const started = useRef(false);
 
@@ -21,10 +23,11 @@ function VerifyEmail() {
         started.current = true;
         verifyEmail(token)
             .then((user) => {
-                setState({ status: "done", message: `${user.email} is verified.` });
+                setState({ status: "done", message: t("auth.verifyEmail.verified", { email: user.email }) });
                 if (isLoggedIn) refreshUser().catch(() => {});
             })
             .catch((err) => setState({ status: "error", message: err.message }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- chạy 1 lần; đổi ngôn ngữ không cần gọi lại
     }, [token, isLoggedIn, refreshUser]);
 
     return (
@@ -35,18 +38,18 @@ function VerifyEmail() {
                 >
                     {state.status === "error" ? "link_off" : state.status === "done" ? "mark_email_read" : "hourglass_top"}
                 </span>
-                <h1 className="text-3xl font-black text-[#003580] tracking-tight mb-4">Email verification</h1>
-                {state.status === "loading" && <p className="text-gray-500 font-medium">Verifying your email...</p>}
+                <h1 className="text-3xl font-black text-[#003580] tracking-tight mb-4">{t("auth.verifyEmail.title")}</h1>
+                {state.status === "loading" && <p className="text-gray-500 font-medium">{t("auth.verifyEmail.verifying")}</p>}
                 {state.status === "done" && <FormAlert type="success">{state.message}</FormAlert>}
                 {state.status === "error" && <FormAlert>{state.message}</FormAlert>}
                 <div className="mt-8 text-sm font-medium">
                     {isLoggedIn ? (
                         <Link to="/account/security" className="font-bold text-[#003580] hover:underline">
-                            Go to Login & Security
+                            {t("auth.verifyEmail.goToSecurity")}
                         </Link>
                     ) : (
                         <Link to="/login" className="font-bold text-[#003580] hover:underline">
-                            Sign in
+                            {t("auth.login.signIn")}
                         </Link>
                     )}
                 </div>

@@ -19,13 +19,16 @@ import {
 import FormAlert from "../common/FormAlert";
 import { fetchAdminStats } from "../../services/adminService";
 import { formatMoney, isoDateFromToday } from "../../utils/formatters";
+import { toDisplay } from "../../utils/currency";
 import { ADMIN_STATS } from "./adminStatsConfig";
+import { getCurrentLocale } from "../../i18n/currentLocale";
+import { useT } from "../../i18n/I18nContext";
 
 const PERIODS = [
-    { key: "7d", label: "7 days", days: 7, granularity: "day" },
-    { key: "30d", label: "30 days", days: 30, granularity: "day" },
-    { key: "90d", label: "90 days", days: 90, granularity: "week" },
-    { key: "12m", label: "12 months", days: 365, granularity: "month" },
+    { key: "7d", labelKey: "admin.stats.period7d", days: 7, granularity: "day" },
+    { key: "30d", labelKey: "admin.stats.period30d", days: 30, granularity: "day" },
+    { key: "90d", labelKey: "admin.stats.period90d", days: 90, granularity: "week" },
+    { key: "12m", labelKey: "admin.stats.period12m", days: 365, granularity: "month" },
 ];
 const PALETTE = ["#003580", "#0071c2", "#febb02", "#16a34a", "#7c3aed", "#0891b2", "#f97316", "#dc2626", "#64748b", "#db2777"];
 /** Màu cố định cho sản phẩm và các trạng thái hay gặp, để cùng một khoá luôn cùng màu giữa các biểu đồ. */
@@ -98,20 +101,28 @@ function formatValue(value, format, currency) {
         case "money":
             return formatMoney(n, currency);
         case "percent":
-            return `${n.toLocaleString("en-US", { maximumFractionDigits: 1 })}%`;
+            return `${n.toLocaleString(getCurrentLocale(), { maximumFractionDigits: 1 })}%`;
         case "decimal":
-            return n.toLocaleString("en-US", { maximumFractionDigits: 2 });
+            return n.toLocaleString(getCurrentLocale(), { maximumFractionDigits: 2 });
         case "hours":
-            return `${n.toLocaleString("en-US", { maximumFractionDigits: 1 })} h`;
+            return `${n.toLocaleString(getCurrentLocale(), { maximumFractionDigits: 1 })} h`;
         default:
-            return n.toLocaleString("en-US");
+            return n.toLocaleString(getCurrentLocale());
     }
 }
 
 /** Nhãn trục số gọn (1.2K, 3.4M). */
 function compact(value, format) {
-    const text = Number(value).toLocaleString("en-US", { notation: "compact", maximumFractionDigits: 1 });
-    return format === "money" ? `$${text}` : text;
+    if (format !== "money") {
+        return Number(value).toLocaleString(getCurrentLocale(), { notation: "compact", maximumFractionDigits: 1 });
+    }
+    const { amount, currency } = toDisplay(value);
+    return amount.toLocaleString(getCurrentLocale(), {
+        notation: "compact",
+        maximumFractionDigits: 1,
+        style: "currency",
+        currency,
+    });
 }
 
 function periodLabel(iso, granularity) {
@@ -128,14 +139,15 @@ function colorFor(key, index) {
 }
 
 function EmptyChart() {
+    const t = useT();
     return (
         <div className="flex items-center justify-center text-sm text-gray-400" style={{ height: CHART_HEIGHT }}>
-            Chưa có dữ liệu trong kỳ này
+            {t("admin.stats.empty")}
         </div>
     );
 }
 
-function SeriesChart({ chart, stats }) {
+function SeriesChart({ chart, stats, t }) {
     const data = stats.series.map((p) => ({ label: periodLabel(p.period, stats.granularity), ...p.values }));
     const hasData = stats.series.some((p) => chart.series.some((s) => Number(p.values[s.key]) > 0));
     if (!hasData) return <EmptyChart />;
@@ -169,7 +181,7 @@ function SeriesChart({ chart, stats }) {
                             key={s.key}
                             type="monotone"
                             dataKey={s.key}
-                            name={s.label}
+                            name={t(s.labelKey)}
                             stroke={color(s, i)}
                             fill={color(s, i)}
                             fillOpacity={0.15}
@@ -185,7 +197,7 @@ function SeriesChart({ chart, stats }) {
                             key={s.key}
                             type="monotone"
                             dataKey={s.key}
-                            name={s.label}
+                            name={t(s.labelKey)}
                             stroke={color(s, i)}
                             strokeWidth={2}
                             dot={false}
@@ -199,7 +211,7 @@ function SeriesChart({ chart, stats }) {
                         <Bar
                             key={s.key}
                             dataKey={s.key}
-                            name={s.label}
+                            name={t(s.labelKey)}
                             fill={color(s, i)}
                             stackId={chart.stacked ? "stack" : undefined}
                             radius={chart.stacked ? 0 : [3, 3, 0, 0]}
@@ -212,11 +224,29 @@ function SeriesChart({ chart, stats }) {
     );
 }
 
-function BreakdownChart({ chart, stats }) {
+// Khoảng BE trả về dạng "2 nights", "3-4 days", "31+ days", "5 star" → dịch đơn vị, giữ số
+const BUCKET_PATTERN = /^(\d+(?:-\d+)?\+?) (night|nights|day|days|people|star)$/;
+
+/**
+ * Nhãn breakdown từ BE: mã cố định (trạng thái, sản phẩm, phương thức thanh toán, loại xe, hạng ghế, giới tính,
+ * vai trò...) → admin.stats.values.<mã>; khoảng số → admin.stats.bucket.<đơn vị>. Tên riêng (khách sạn, email...) giữ nguyên.
+ */
+function localizeBreakdownLabel(t, item) {
+    const raw = String(item.label ?? "");
+    const fallback = /^[A-Za-z_]+$/.test(raw) ? prettify(raw) : raw;
+    if (/^[A-Za-z_]+$/.test(String(item.key))) {
+        return t(`admin.stats.values.${String(item.key).toLowerCase()}`, { defaultValue: fallback });
+    }
+    const bucket = BUCKET_PATTERN.exec(raw);
+    if (bucket) return t(`admin.stats.bucket.${bucket[2]}`, { n: bucket[1] });
+    return fallback;
+}
+
+function BreakdownChart({ chart, stats, t }) {
     const slices = (stats.breakdowns[chart.name] || [])
         .map((s) => ({
             key: s.key,
-            label: /^[A-Za-z_]+$/.test(s.label) ? prettify(s.label) : s.label,
+            label: localizeBreakdownLabel(t, s),
             value: Number(chart.value === "amount" ? s.amount : s.count) || 0,
         }))
         .filter((s) => chart.kind !== "pie" || s.value > 0);
@@ -262,7 +292,7 @@ function BreakdownChart({ chart, stats }) {
                         axisLine={false}
                         tickFormatter={(v) => truncate(v)}
                     />
-                    <Tooltip formatter={(v) => [fmt(v), chart.value === "amount" ? "Amount" : "Count"]} />
+                    <Tooltip formatter={(v) => [fmt(v), t(chart.value === "amount" ? "admin.stats.amount" : "admin.stats.count")]} />
                     <Bar dataKey="value" fill={PALETTE[0]} radius={[0, 3, 3, 0]} maxBarSize={20} />
                 </BarChart>
             </ResponsiveContainer>
@@ -288,7 +318,7 @@ function BreakdownChart({ chart, stats }) {
                     allowDecimals={chart.format !== "number"}
                     tickFormatter={(v) => compact(v, chart.format)}
                 />
-                <Tooltip formatter={(v) => [fmt(v), chart.value === "amount" ? "Amount" : "Count"]} />
+                <Tooltip formatter={(v) => [fmt(v), t(chart.value === "amount" ? "admin.stats.amount" : "admin.stats.count")]} />
                 <Bar dataKey="value" radius={[3, 3, 0, 0]} maxBarSize={48}>
                     {slices.map((s, i) => (
                         <Cell key={s.key} fill={colorFor(s.key, i)} />
@@ -305,6 +335,7 @@ function BreakdownChart({ chart, stats }) {
  * Trang khác (VD quản lý khách sạn) truyền `config` + `load(params)` riêng; `load` phải ổn định (useCallback).
  */
 function AdminStatsPanel({ section, config: configProp, load }) {
+    const t = useT();
     const config = configProp || ADMIN_STATS[section];
     const [periodKey, setPeriodKey] = useState("30d");
     const [collapsed, setCollapsed] = useState(() => Boolean(readCollapsed()[section]));
@@ -341,14 +372,14 @@ function AdminStatsPanel({ section, config: configProp, load }) {
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <button type="button" onClick={toggle} className="flex items-center gap-2 text-left" aria-expanded={!collapsed}>
                     <span className="material-symbols-outlined text-primary">monitoring</span>
-                    <h2 className="text-lg font-bold text-gray-900">{config.title}</h2>
+                    <h2 className="text-lg font-bold text-gray-900">{t(config.titleKey)}</h2>
                     <span className="material-symbols-outlined text-gray-400">{collapsed ? "expand_more" : "expand_less"}</span>
                 </button>
                 {!collapsed && (
                     <div
                         className="flex flex-wrap w-full sm:w-auto rounded-lg border border-gray-200 overflow-hidden"
                         role="group"
-                        aria-label="Chọn khoảng thời gian"
+                        aria-label={t("admin.stats.selectPeriod")}
                     >
                         {PERIODS.map((p) => (
                             <button
@@ -358,7 +389,7 @@ function AdminStatsPanel({ section, config: configProp, load }) {
                                 onClick={() => setPeriodKey(p.key)}
                                 className={`flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold whitespace-nowrap ${p.key === periodKey ? "bg-primary text-white" : "text-gray-600 hover:bg-gray-50"}`}
                             >
-                                {p.label}
+                                {t(p.labelKey)}
                             </button>
                         ))}
                     </div>
@@ -376,7 +407,7 @@ function AdminStatsPanel({ section, config: configProp, load }) {
                             >
                                 {config.kpis.map((k) => (
                                     <div key={k.key} className="rounded-xl border border-gray-100 p-4 min-w-0">
-                                        <p className="text-xs text-gray-500 font-medium">{k.label}</p>
+                                        <p className="text-xs text-gray-500 font-medium">{t(k.labelKey)}</p>
                                         <p className="text-xl sm:text-2xl font-extrabold text-gray-900 mt-1 truncate">
                                             {formatValue(stats.kpis[k.key], k.format, stats.currencyCode)}
                                         </p>
@@ -386,28 +417,27 @@ function AdminStatsPanel({ section, config: configProp, load }) {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                 {config.charts.map((chart) => (
                                     <div
-                                        key={chart.title}
+                                        key={chart.titleKey}
                                         className={`rounded-xl border border-gray-100 p-4 min-w-0 ${chart.span === 2 ? "lg:col-span-2" : ""}`}
                                     >
-                                        <h3 className="text-sm font-bold text-gray-700 mb-3">{chart.title}</h3>
+                                        <h3 className="text-sm font-bold text-gray-700 mb-3">{t(chart.titleKey)}</h3>
                                         {chart.type === "series" ? (
-                                            <SeriesChart chart={chart} stats={stats} />
+                                            <SeriesChart chart={chart} stats={stats} t={t} />
                                         ) : (
-                                            <BreakdownChart chart={chart} stats={stats} />
+                                            <BreakdownChart chart={chart} stats={stats} t={t} />
                                         )}
                                     </div>
                                 ))}
                             </div>
                             <p className="text-xs text-gray-400">
-                                Số liệu {period.label} gần nhất
+                                {t("admin.stats.latestData", { period: t(period.labelKey) })}
                                 {period.granularity === "week"
-                                    ? ", gom theo tuần (bắt đầu thứ Hai)"
+                                    ? t("admin.stats.weekly")
                                     : period.granularity === "month"
-                                      ? ", gom theo tháng"
+                                      ? t("admin.stats.monthly")
                                       : ""}
                                 .{" "}
-                                {config.note ||
-                                    "Doanh thu tính trên booking đã thanh toán tạo trong kỳ; khối xếp hạng lấy tối đa 10 mục."}
+                                {config.noteKey ? t(config.noteKey) : t("admin.stats.defaultNote")}
                             </p>
                         </div>
                     )}

@@ -3,10 +3,12 @@ import { useSearchParams } from "react-router-dom";
 import FormAlert from "../../../components/common/FormAlert";
 import HotelGalleryManager from "../../../components/admin/HotelGalleryManager";
 import { fetchAdminHotel, fetchAdminHotels } from "../../../services/adminHotelService";
+import { useT } from "../../../i18n/I18nContext";
 
 const HOTEL_LIMIT = 50;
 
 function AdminHotelImages() {
+    const t = useT();
     const [searchParams, setSearchParams] = useSearchParams();
     const hotelId = searchParams.get("hotelId") || "";
     const [hotelQuery, setHotelQuery] = useState("");
@@ -54,22 +56,22 @@ function AdminHotelImages() {
 
     return (
         <div className="space-y-6">
-            <h1 className="text-3xl font-extrabold text-primary">Hotel Images</h1>
+            <h1 className="text-3xl font-extrabold text-primary">{t("admin.hotelImages.title")}</h1>
             <FormAlert>{error}</FormAlert>
             <div className="grid lg:grid-cols-[20rem_1fr] gap-6">
                 <aside className="rounded-xl border border-gray-100 bg-white p-4">
                     <label className="text-xs font-semibold text-gray-500">
-                        Find hotel
+                        {t("admin.hotelImages.findHotel")}
                         <input
                             value={hotelQuery}
                             onChange={(event) => setHotelQuery(event.target.value)}
-                            placeholder="Hotel name"
+                            placeholder={t("admin.hotelImages.hotelName")}
                             className="block mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
                         />
                     </label>
                     <div className="mt-4 space-y-2 max-h-[580px] overflow-y-auto">
                         {loading ? (
-                            <p className="text-sm text-gray-500">Loading...</p>
+                            <p className="text-sm text-gray-500">{t("common.state.loading")}</p>
                         ) : (
                             hotels.map((hotel) => (
                                 <button
@@ -85,19 +87,19 @@ function AdminHotelImages() {
                                         <span
                                             className={`inline-block mt-1 text-xs font-bold ${hotel.isActive ? "text-green-700" : "text-gray-500"}`}
                                         >
-                                            {hotel.isActive ? "Active" : "Inactive"}
+                                            {hotel.isActive ? t("common.status.active") : t("common.status.inactive")}
                                         </span>
                                     )}
                                 </button>
                             ))
                         )}
-                        {!loading && hotels.length === 0 && <p className="text-sm text-gray-500">No hotels found.</p>}
+                        {!loading && hotels.length === 0 && <p className="text-sm text-gray-500">{t("admin.hotelImages.empty")}</p>}
                     </div>
                 </aside>
                 <main>
                     {!selectedHotel ? (
                         <div className="py-20 text-center rounded-xl bg-gray-50 text-gray-500">
-                            Select a hotel to manage its gallery.
+                            {t("admin.hotelImages.selectHotel")}
                         </div>
                     ) : (
                         <>
@@ -106,7 +108,7 @@ function AdminHotelImages() {
                                     {selectedHotel.coverImageUrl ? (
                                         <img
                                             src={selectedHotel.coverImageUrl}
-                                            alt="Current cover"
+                                            alt={t("admin.hotelImages.currentCover")}
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
@@ -115,7 +117,7 @@ function AdminHotelImages() {
                                 </div>
                                 <div>
                                     <h2 className="text-2xl font-extrabold">{selectedHotel.name}</h2>
-                                    <p className="text-sm text-gray-500">Current cover image</p>
+                                    <p className="text-sm text-gray-500">{t("admin.hotelImages.currentCover")}</p>
                                 </div>
                             </div>
                             <HotelGalleryManager

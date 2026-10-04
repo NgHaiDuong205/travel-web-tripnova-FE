@@ -1,9 +1,11 @@
 import { formatRoomStatus, getRoomStatusStyle } from "../../utils/roomUtils";
+import { useT } from "../../i18n/I18nContext";
 
 function RoomStatusBadge({ status, variant = "badge", className = "" }) {
+    const t = useT();
     if (status == null || status === "") return null;
 
-    const label = formatRoomStatus(status);
+    const label = formatRoomStatus(status, t);
     const styles = getRoomStatusStyle(status);
 
     if (variant === "pill") {

@@ -1,0 +1,96 @@
+{
+  "hero": {
+    "imageAlt": "Cánh máy bay trên mây",
+    "titleLineOne": "Vươn tới bầu trời.",
+    "titleLineTwo": "Thanh lịch trên mỗi chuyến bay.",
+    "subtitle": "So sánh lịch bay, chọn ghế trên sơ đồ khoang và thanh toán an toàn trong vài phút."
+  },
+  "search": {
+    "roundTrip": "Khứ hồi",
+    "oneWay": "Một chiều",
+    "submit": "Tìm chuyến bay",
+    "from": "Từ (khởi hành)",
+    "fromPlaceholder": "Thành phố hoặc mã sân bay",
+    "to": "Đến (điểm đến)",
+    "toPlaceholder": "Bạn muốn đi đâu?",
+    "departureDate": "Ngày khởi hành",
+    "returnDate": "Ngày về"
+  },
+  "filters": {
+    "title": "Bộ lọc",
+    "airlines": "Hãng bay",
+    "priceRange": "Khoảng giá",
+    "flightTimes": "Giờ bay",
+    "upTo": "tối đa {{price}}"
+  },
+  "times": {
+    "morning": "Buổi sáng",
+    "afternoon": "Buổi chiều",
+    "evening": "Buổi tối",
+    "night": "Ban đêm"
+  },
+  "sort": {
+    "departure": "Khởi hành sớm nhất",
+    "price_asc": "Giá tốt nhất",
+    "price_desc": "Giá cao nhất",
+    "duration": "Ngắn nhất"
+  },
+  "classes": {
+    "economy": "Phổ thông",
+    "premium_economy": "Phổ thông đặc biệt",
+    "business": "Thương gia",
+    "first": "Hạng nhất"
+  },
+  "list": {
+    "from": "Từ",
+    "seatsLeft_other": "Còn {{count}} ghế",
+    "selectFlight": "Chọn chuyến bay",
+    "empty": "Không có chuyến bay phù hợp. Hãy thử ngày khác hoặc bớt bộ lọc.",
+    "allRoutes": "Tất cả chặng bay",
+    "finding": "Đang tìm chuyến bay…",
+    "matches_other": "Hiển thị {{count}} chuyến bay phù hợp",
+    "outbound": "Chiều đi",
+    "return": "Chiều về · {{route}}"
+  },
+  "detail": {
+    "backToFlights": "Quay lại chuyến bay",
+    "noLongerOnSale": "Chuyến bay này không còn được bán.",
+    "route": "Chặng bay",
+    "selectYourFlight": "Chọn chuyến bay",
+    "soldOut": "Chuyến bay này đã hết chỗ."
+  },
+  "seats": {
+    "empty": "Không có ghế trong khoang này.",
+    "cabinMap": "Sơ đồ khoang",
+    "available": "Còn trống",
+    "occupied": "Đã có người",
+    "selected": "Đã chọn",
+    "seatClass": "Ghế {{seat}} · {{className}}",
+    "heldByYou": "Bạn đang giữ (chưa thanh toán)"
+  },
+  "passengers": {
+    "fullName": "Họ tên hành khách *",
+    "passportNumber": "Số hộ chiếu"
+  },
+  "booking": {
+    "summary": "Tóm tắt đặt chỗ",
+    "chooseSeats_other": "Chọn {{count}} ghế trên sơ đồ khoang.",
+    "flightFare": "Giá vé × {{count}}",
+    "taxesFees": "Thuế & phí",
+    "included": "Đã bao gồm",
+    "payment": "Thanh toán",
+    "continueToPayment": "Tiếp tục thanh toán",
+    "freeCancellation": "Hủy miễn phí đến 24 giờ trước giờ khởi hành",
+    "includedBaggage": "Hành lý bao gồm",
+    "defaultBaggage": "Áp dụng hành lý xách tay tiêu chuẩn. Liên hệ chúng tôi về hành lý ký gửi."
+  },
+  "reviews": {
+    "title": "Đánh giá của hành khách"
+  },
+  "validation": {
+    "returnDate": "Ngày về phải cùng hoặc sau ngày khởi hành.",
+    "chooseSeats_other": "Vui lòng chọn {{count}} ghế trên sơ đồ.",
+    "passengerName": "Nhập tên hành khách cho ghế {{seat}}."
+  },
+  "duration": "{{h}} giờ {{m}} phút"
+}

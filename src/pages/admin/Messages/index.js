@@ -11,10 +11,18 @@ import {
 } from "../../../services/adminService";
 import { formatDateTime } from "../../../utils/formatters";
 import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 20;
 
 function AdminMessages() {
+    const t = useT();
+    const statusLabels = Object.fromEntries(
+        Object.entries(CONTACT_STATUS_LABELS).map(([value, cfg]) => [
+            value,
+            { ...cfg, label: t(`admin.status.${value}`, { defaultValue: cfg.label }) },
+        ]),
+    );
     const [status, setStatus] = useState("new");
     const [page, setPage] = useState(1);
     const [result, setResult] = useState({ items: [], total: 0 });
@@ -45,7 +53,7 @@ function AdminMessages() {
     };
 
     const handleDelete = async (message) => {
-        if (!window.confirm(`Xoá tin nhắn của ${message.fullName}?`)) return;
+        if (!window.confirm(t("admin.messages.confirmDelete", { name: message.fullName }))) return;
         setBusyId(message.id);
         setError("");
         try {
@@ -85,7 +93,7 @@ function AdminMessages() {
 
     return (
         <div className="space-y-6">
-            <h1 className="text-3xl font-extrabold text-primary">Contact messages</h1>
+            <h1 className="text-3xl font-extrabold text-primary">{t("admin.messages.title")}</h1>
             <AdminStatsPanel section="messages" />
 
             <div className="flex items-center gap-3">
@@ -97,18 +105,18 @@ function AdminMessages() {
                     }}
                     className="rounded-lg border-gray-200 text-sm"
                 >
-                    <option value="all">All statuses</option>
+                    <option value="all">{t("common.status.all")}</option>
                     {Object.entries(CONTACT_STATUS_LABELS).map(([value, cfg]) => (
-                        <option key={value} value={value}>{cfg.label}</option>
+                        <option key={value} value={value}>{t(`admin.status.${value}`, { defaultValue: cfg.label })}</option>
                     ))}
                 </select>
-                <span className="ml-auto text-sm text-gray-500">{result.total.toLocaleString()} messages</span>
+                <span className="ml-auto text-sm text-gray-500">{t("admin.messages.count", { count: result.total })}</span>
             </div>
 
             <FormAlert>{error}</FormAlert>
 
-            {loading && <p className="text-gray-500">Đang tải...</p>}
-            {!loading && result.items.length === 0 && <p className="text-gray-500">Không có tin nhắn nào.</p>}
+            {loading && <p className="text-gray-500">{t("common.state.loading")}</p>}
+            {!loading && result.items.length === 0 && <p className="text-gray-500">{t("admin.messages.empty")}</p>}
 
             <div className="space-y-4">
                 {!loading &&
@@ -116,24 +124,24 @@ function AdminMessages() {
                         <article key={m.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                             <div className="flex flex-wrap items-start justify-between gap-4 mb-3">
                                 <div>
-                                    <p className="font-bold text-gray-900">{m.subject || "(No subject)"}</p>
+                                    <p className="font-bold text-gray-900">{m.subject || t("admin.messages.noSubject")}</p>
                                     <p className="text-sm text-gray-500">
                                         {m.fullName} · <a href={`mailto:${m.email}`} className="text-primary hover:underline">{m.email}</a>
                                         {m.phone ? ` · ${m.phone}` : ""} · {formatDateTime(m.createdAt)}
-                                        {m.userId ? " · registered user" : ""}
+                                        {m.userId ? t("admin.messages.registeredUser") : ""}
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <StatusBadge status={m.status} labels={CONTACT_STATUS_LABELS} />
+                                    <StatusBadge status={m.status} labels={statusLabels} />
                                     <select
                                         value={m.status}
                                         disabled={busyId === m.id}
                                         onChange={(e) => handleStatusChange(m, e.target.value)}
                                         className="rounded-lg border-gray-200 text-xs"
-                                        aria-label="Change status"
+                                        aria-label={t("admin.messages.changeStatus")}
                                     >
                                         {Object.entries(CONTACT_STATUS_LABELS).map(([value, cfg]) => (
-                                            <option key={value} value={value}>{cfg.label}</option>
+                                            <option key={value} value={value}>{t(`admin.status.${value}`, { defaultValue: cfg.label })}</option>
                                         ))}
                                     </select>
                                 </div>
@@ -142,7 +150,7 @@ function AdminMessages() {
 
                             {m.replyContent && (
                                 <div className="mt-4 border-l-4 border-green-300 bg-green-50 rounded-r-lg px-4 py-3">
-                                    <p className="text-xs font-semibold text-green-800 mb-1">Replied {formatDateTime(m.repliedAt)}</p>
+                                    <p className="text-xs font-semibold text-green-800 mb-1">{t("admin.messages.replied", { date: formatDateTime(m.repliedAt) })}</p>
                                     <p className="text-sm text-gray-700 whitespace-pre-line">{m.replyContent}</p>
                                 </div>
                             )}
@@ -154,7 +162,7 @@ function AdminMessages() {
                                         onChange={(e) => setReplyText(e.target.value)}
                                         rows={4}
                                         maxLength={5000}
-                                        placeholder={`Reply to ${m.email}...`}
+                                        placeholder={t("admin.messages.replyPlaceholder", { email: m.email })}
                                         className="w-full rounded-lg border-gray-200 text-sm"
                                         autoFocus
                                     />
@@ -164,14 +172,14 @@ function AdminMessages() {
                                             onClick={() => setReplyingId(null)}
                                             className="px-4 py-1.5 rounded-lg text-sm border border-gray-200 text-gray-600"
                                         >
-                                            Cancel
+                                            {t("common.actions.cancel")}
                                         </button>
                                         <button
                                             type="submit"
                                             disabled={busyId === m.id || !replyText.trim()}
                                             className="px-4 py-1.5 rounded-lg text-sm font-bold bg-primary text-white disabled:opacity-50"
                                         >
-                                            Send reply
+                                            {t("admin.messages.sendReply")}
                                         </button>
                                     </div>
                                 </form>
@@ -186,7 +194,7 @@ function AdminMessages() {
                                             }}
                                             className="px-3 py-1 rounded-lg text-xs font-bold border border-blue-200 text-primary hover:bg-blue-50"
                                         >
-                                            {m.replyContent ? "Reply again" : "Reply"}
+                                            {m.replyContent ? t("admin.messages.replyAgain") : t("common.actions.reply")}
                                         </button>
                                     )}
                                     <button
@@ -195,7 +203,7 @@ function AdminMessages() {
                                         onClick={() => handleDelete(m)}
                                         className="px-3 py-1 rounded-lg text-xs font-bold border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50"
                                     >
-                                        Delete
+                                        {t("common.actions.delete")}
                                     </button>
                                 </div>
                             )}

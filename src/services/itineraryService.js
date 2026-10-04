@@ -41,6 +41,12 @@ export async function addItineraryItem(id, body) {
 }
 
 /** Delete an itinerary item. */
+/** Sửa hoạt động (ghi đè toàn bộ); trả về lịch trình đầy đủ. */
+export async function updateItineraryItem(id, itemId, body) {
+    const { data } = await apiClient.put(`/api/me/itineraries/${id}/items/${itemId}/`, body);
+    return data;
+}
+
 export async function deleteItineraryItem(id, itemId) {
     await apiClient.delete(`/api/me/itineraries/${id}/items/${itemId}/`);
 }

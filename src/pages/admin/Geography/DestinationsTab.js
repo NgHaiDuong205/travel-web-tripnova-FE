@@ -9,6 +9,7 @@ import {
     toNumberOrNull,
 } from "../../../services/adminGeographyService";
 import { ActionButton, AddButton, Field, InlineForm, SearchBox, StatusLabel, Thumbnail, inputClass } from "./shared";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 20;
 const EMPTY = { countryId: "", name: "", description: "", coverImageUrl: "", latitude: "", longitude: "", isPopular: false, isActive: true };
@@ -27,39 +28,40 @@ function toPayload(form) {
 }
 
 function DestinationForm({ initial, countries, onSave, onCancel }) {
+    const t = useT();
     return (
         <InlineForm initial={initial} onSave={(f) => onSave(toPayload(f))} onCancel={onCancel}>
             {(form, set) => (
                 <>
                     <div className="grid md:grid-cols-3 gap-3">
-                        <Field label="Name *">
+                        <Field label={`${t("admin.geography.name")} *`}>
                             <input required maxLength={150} value={form.name} onChange={set("name")} className={inputClass} />
                         </Field>
-                        <Field label="Country *">
+                        <Field label={`${t("admin.geography.country")} *`}>
                             <select required value={form.countryId} onChange={set("countryId")} className={inputClass}>
                                 <option value="">—</option>
                                 {countries.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                             </select>
                         </Field>
-                        <Field label="Cover image URL">
+                        <Field label={t("admin.geography.coverImageUrl")}>
                             <input type="url" value={form.coverImageUrl || ""} onChange={set("coverImageUrl")} className={inputClass} />
                         </Field>
-                        <Field label="Latitude">
+                        <Field label={t("admin.geography.latitude")}>
                             <input type="number" step="any" min={-90} max={90} value={form.latitude ?? ""} onChange={set("latitude")} className={inputClass} />
                         </Field>
-                        <Field label="Longitude">
+                        <Field label={t("admin.geography.longitude")}>
                             <input type="number" step="any" min={-180} max={180} value={form.longitude ?? ""} onChange={set("longitude")} className={inputClass} />
                         </Field>
                         <div className="flex items-end gap-4 pb-2">
                             <label className="flex items-center gap-2 text-sm font-semibold">
-                                <input type="checkbox" checked={!!form.isPopular} onChange={set("isPopular")} /> Popular
+                                <input type="checkbox" checked={!!form.isPopular} onChange={set("isPopular")} /> {t("admin.geography.popular")}
                             </label>
                             <label className="flex items-center gap-2 text-sm font-semibold">
-                                <input type="checkbox" checked={!!form.isActive} onChange={set("isActive")} /> Active
+                                <input type="checkbox" checked={!!form.isActive} onChange={set("isActive")} /> {t("common.status.active")}
                             </label>
                         </div>
                     </div>
-                    <Field label="Description">
+                    <Field label={t("admin.geography.description")}>
                         <textarea rows={2} value={form.description || ""} onChange={set("description")} className={inputClass} />
                     </Field>
                 </>
@@ -69,6 +71,7 @@ function DestinationForm({ initial, countries, onSave, onCancel }) {
 }
 
 function DestinationsTab() {
+    const t = useT();
     const [filters, setFilters] = useState({ q: "", countryId: "", status: "all" });
     const [page, setPage] = useState(1);
     const [countries, setCountries] = useState([]);
@@ -110,7 +113,7 @@ function DestinationsTab() {
     };
 
     const handleToggleActive = async (d) => {
-        if (d.isActive && !window.confirm(`Ẩn điểm đến "${d.name}"? Điểm đến sẽ không hiện ở trang public.`)) return;
+        if (d.isActive && !window.confirm(t("admin.geography.confirmHideDestination", { name: d.name }))) return;
         setBusyId(d.id);
         setError("");
         try {
@@ -130,18 +133,16 @@ function DestinationsTab() {
     return (
         <div className="space-y-4">
             <div className="flex flex-wrap gap-3 items-center">
-                <SearchBox placeholder="Destination name..." onSearch={(q) => changeFilter("q", q)} />
+                <SearchBox placeholder={t("admin.geography.destinationSearchPlaceholder")} onSearch={(q) => changeFilter("q", q)} />
                 <select value={filters.countryId} onChange={(e) => changeFilter("countryId", e.target.value)} className="rounded-lg border-gray-200 text-sm">
-                    <option value="">All countries</option>
+                    <option value="">{t("admin.geography.allCountries")}</option>
                     {countries.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
                 <select value={filters.status} onChange={(e) => changeFilter("status", e.target.value)} className="rounded-lg border-gray-200 text-sm">
-                    <option value="all">All statuses</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Hidden</option>
+                    <option value="all">{t("common.status.all")}</option><option value="active">{t("common.status.active")}</option><option value="inactive">{t("admin.geography.hidden")}</option>
                 </select>
-                <span className="text-sm text-gray-500">{result.total.toLocaleString()} destinations</span>
-                {editing !== "new" && <div className="ml-auto"><AddButton onClick={() => setEditing("new")}>New destination</AddButton></div>}
+                <span className="text-sm text-gray-500">{t("admin.geography.destinationCount", { count: result.total })}</span>
+                {editing !== "new" && <div className="ml-auto"><AddButton onClick={() => setEditing("new")}>{t("admin.geography.newDestination")}</AddButton></div>}
             </div>
             <FormAlert>{error}</FormAlert>
             {editing === "new" && (
@@ -152,19 +153,13 @@ function DestinationsTab() {
                 <table className="w-full text-left text-sm min-w-[860px]">
                     <thead className="bg-gray-50">
                         <tr className="text-xs uppercase text-gray-500">
-                            <th className="px-4 py-3">Destination</th>
-                            <th className="px-4 py-3">Country</th>
-                            <th className="px-4 py-3">Hotels</th>
-                            <th className="px-4 py-3">Landmarks</th>
-                            <th className="px-4 py-3">Popular</th>
-                            <th className="px-4 py-3">Status</th>
-                            <th className="px-4 py-3 text-right">Actions</th>
+                            <th className="px-4 py-3">{t("admin.geography.destination")}</th><th className="px-4 py-3">{t("admin.geography.country")}</th><th className="px-4 py-3">{t("admin.geography.hotels")}</th><th className="px-4 py-3">{t("admin.geography.landmarks")}</th><th className="px-4 py-3">{t("admin.geography.popular")}</th><th className="px-4 py-3">{t("common.fields.status")}</th><th className="px-4 py-3 text-right">{t("admin.geography.actions")}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {loading && <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-500">Đang tải...</td></tr>}
+                        {loading && <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-500">{t("common.state.loading")}</td></tr>}
                         {!loading && result.items.length === 0 && (
-                            <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-500">Không có điểm đến nào.</td></tr>
+                            <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-500">{t("admin.geography.emptyDestinations")}</td></tr>
                         )}
                         {!loading &&
                             result.items.map((d) => (
@@ -190,9 +185,9 @@ function DestinationsTab() {
                                             <td className="px-4 py-3"><StatusLabel active={d.isActive} /></td>
                                             <td className="px-4 py-3">
                                                 <div className="flex justify-end gap-2">
-                                                    <ActionButton onClick={() => setEditing(d.id)}>Edit</ActionButton>
+                                                    <ActionButton onClick={() => setEditing(d.id)}>{t("common.actions.edit")}</ActionButton>
                                                     <ActionButton tone={d.isActive ? "danger" : "success"} disabled={busyId === d.id} onClick={() => handleToggleActive(d)}>
-                                                        {d.isActive ? "Hide" : "Restore"}
+                                                        {d.isActive ? t("admin.geography.hide") : t("admin.geography.restore")}
                                                     </ActionButton>
                                                 </div>
                                             </td>

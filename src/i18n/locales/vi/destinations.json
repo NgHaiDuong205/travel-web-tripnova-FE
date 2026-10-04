@@ -1,0 +1,475 @@
+{
+  "hero": {
+    "eyebrow": "Khám phá thế giới",
+    "titleFirst": "Điểm đến",
+    "titleSecond": "tuyển chọn",
+    "description": "Tuyển tập biên tập những cảnh quan gợi cảm nhất thế giới, từ bờ biển ngập nắng đến đỉnh núi phủ sương.",
+    "imageAlt": "Du khách ngắm hồ trên núi"
+  },
+  "filters": {
+    "country": "Quốc gia",
+    "city": "Thành phố",
+    "selectCountry": "Chọn quốc gia",
+    "selectCity": "Chọn thành phố"
+  },
+  "categories": {
+    "all": "Tất cả chuyến đi",
+    "coastal": "Ven biển",
+    "historical": "Lịch sử",
+    "mountain": "Núi",
+    "urban": "Đô thị sang trọng",
+    "hidden": "Viên ngọc ẩn"
+  },
+  "actions": {
+    "find": "Tìm điểm đến",
+    "learnMore": "Tìm hiểu thêm",
+    "consult": "Tư vấn cùng chuyên gia"
+  },
+  "results": {
+    "count_other": "{{count}} điểm đến tuyển chọn",
+    "inLocation_other": "{{count}} điểm đến tuyển chọn tại {{location}}"
+  },
+  "empty": {
+    "title": "Không tìm thấy điểm đến",
+    "description": "Hãy thử quốc gia hoặc thành phố khác, đổi bộ lọc hoặc xóa tìm kiếm."
+  },
+  "cta": {
+    "title": "Chưa tìm được chuyến đi lý tưởng?",
+    "description": "Chuyên gia du lịch của chúng tôi có thể thiết kế hành trình riêng cho bạn."
+  },
+  "detail": {
+    "backToDestinations": "Quay lại danh sách điểm đến",
+    "curatorPerspective": "Góc nhìn của biên tập viên",
+    "curatorImageAlt": "Biên tập viên",
+    "essentialExperiences": "Trải nghiệm không thể bỏ lỡ.",
+    "experiencesDescription": "Danh sách những điều nhất định phải thử.",
+    "refinedStays": "Nơi lưu trú tinh tế gần đây.",
+    "staysDescription": "Những khách sạn được chúng tôi tuyển chọn, thể hiện tinh thần miền biển qua dịch vụ và kiến trúc.",
+    "viewAllAccommodations": "Xem tất cả nơi lưu trú",
+    "newsletter": {
+      "title": "Muốn nhận thêm cẩm nang tuyển chọn?",
+      "description": "Tham gia cộng đồng của chúng tôi để nhận bản tin du lịch hằng tuần, những địa điểm ẩn và giá khách sạn độc quyền cho thành viên.",
+      "emailPlaceholder": "Địa chỉ email",
+      "joinNow": "Tham gia ngay"
+    }
+  },
+  "content": {
+    "amalfi": {
+      "list": {
+        "badge": "Truy cập độc quyền",
+        "title": "Bờ biển Amalfi",
+        "description": "Cảnh quan vách đá gợi cảm xúc nhất nước Ý.",
+        "alt": "Toàn cảnh bờ biển Amalfi lúc hoàng hôn, ánh đèn ấm áp từ những biệt thự Địa Trung Hải nhìn ra biển xanh thẳm"
+      },
+      "detail": {
+        "heroTitle": [
+          "Bờ biển",
+          "Amalfi."
+        ],
+        "heroAlt": "Thị trấn Amalfi với những ngôi nhà đầy màu sắc đổ dốc xuống biển Địa Trung Hải xanh thẳm lúc hoàng hôn",
+        "badge": "ĐIỂM ĐẾN HUYỀN THOẠI",
+        "bestTime": "THỜI ĐIỂM ĐẸP NHẤT: THÁNG 5 – 9",
+        "curatorQuote": "\"Một cảnh quan thẳng đứng, nơi những vườn chanh gặp sắc xanh thẳm của biển Tyrrhenian.\"",
+        "curator": {
+          "name": "Elena Moretti",
+          "role": "Trưởng nhóm thiết kế điểm đến",
+          "note": "\"Bờ biển Amalfi không chỉ là một địa điểm; đó là bản giao hưởng của mọi giác quan. Từ hương chanh Sfusato Amalfitano đến cung đường SS163 vừa đáng sợ vừa tuyệt đẹp.\""
+        },
+        "paragraphs": [
+          "Lơ lửng giữa bầu trời xanh và mặt biển lấp lánh, bờ biển Amalfi như sinh ra từ bảng màu của một hoạ sĩ muốn vẽ nên chốn thần tiên. Đây là dải bờ biển không nơi nào sánh được — di sản thế giới UNESCO, nơi núi non đổ thẳng xuống biển trong chuỗi vách đá và rừng cây ngoạn mục.",
+          "Positano, viên ngọc quý nhất, là thị trấn thẳng đứng thách thức trọng lực. Những ngôi nhà màu phấn như xếp chồng lên nhau, nối bằng các bậc thang dốc và con hẻm phủ hoa giấy. Chính tại đây, tinh thần 'La Dolce Vita' thật sự hiện hữu, giữa những cửa hiệu sang trọng và hương muối biển hoà cùng Aperol.",
+          "Xa hơn, Amalfi là trái tim lịch sử với nhà thờ lớn có mặt tiền Byzantine lộng lẫy ngự trị quảng trường chính. Với những ai tìm sự tĩnh lặng, Ravello trên cao là chốn nghỉ dưỡng thanh lịch, quý phái với những khu vườn như trôi giữa mây trời và mặt nước bên dưới."
+        ],
+        "experiences": [
+          {
+            "tag": "Viên ngọc ven biển",
+            "title": "Cocktail hoàng hôn ở Positano",
+            "alt": "Bãi biển Positano với hàng dù cam, làn nước xanh ngọc và những ngôi nhà nhiều màu trên vách đá"
+          },
+          {
+            "tag": "Phiêu lưu",
+            "title": "Đi bộ Con đường của các vị thần",
+            "alt": "Đường mòn trên cao nhìn xuống bờ biển Amalfi và biển cả, phía trước là núi đá"
+          },
+          {
+            "title": "Vườn Villa Cimbrone",
+            "alt": "Khu vườn Địa Trung Hải xanh tươi với cột đá cổ và toàn cảnh biển dưới bầu trời trong xanh"
+          },
+          {
+            "title": "Tour vườn chanh Amalfi",
+            "alt": "Cận cảnh những quả chanh vàng rực trên cây xanh trong vườn cây ngập nắng nước Ý"
+          }
+        ],
+        "hotels": [
+          {
+            "name": "Palazzo Avino",
+            "location": "Ravello, bờ biển Amalfi",
+            "price": "TỪ 32.500.000 ₫",
+            "description": "Cung điện màu hồng từ thế kỷ 12 ẩn mình trên đồi, mang đến tầm nhìn thơ mộng nhất ra bờ biển.",
+            "alt": "Cung điện khách sạn màu hồng với cửa sổ trắng nhìn ra hồ bơi xanh và bờ biển Địa Trung Hải"
+          },
+          {
+            "name": "Le Sirenuse",
+            "location": "Positano, bờ biển Amalfi",
+            "price": "TỪ 46.800.000 ₫",
+            "description": "Biểu tượng hiếu khách của Ý, nơi vẻ quyến rũ cổ điển gặp vị trí đắc địa bậc nhất Positano.",
+            "alt": "Ban công khách sạn tường đỏ cổ điển, cây xanh và bàn ghế sắt trắng nhìn ra vịnh Positano"
+          },
+          {
+            "name": "Monastero Santa Rosa",
+            "location": "Conca dei Marini",
+            "price": "TỪ 28.600.000 ₫",
+            "description": "Tu viện xưa được biến thành chốn bình yên với hồ bơi vô cực hoà vào bầu trời.",
+            "alt": "Hồ bơi vô cực sang trọng nhô ra từ vách đá dựng đứng, biển trải dài tới chân trời"
+          }
+        ]
+      }
+    },
+    "agra": {
+      "list": {
+        "tag": "Lịch sử",
+        "title": "Di sản Agra",
+        "description": "\"Giọt lệ trên gò má của vĩnh hằng.\" Chiêm ngưỡng kiến trúc tuyệt mỹ của đế chế Mughal.",
+        "alt": "Kiến trúc đối xứng của đền Taj Mahal ở Agra, Ấn Độ lúc bình minh với bầu trời hồng dịu và sương sớm"
+      },
+      "detail": {
+        "heroTitle": [
+          "Di sản",
+          "Agra."
+        ],
+        "heroAlt": "Kiến trúc đối xứng của đền Taj Mahal ở Agra, Ấn Độ lúc bình minh",
+        "badge": "DI SẢN THẾ GIỚI UNESCO",
+        "bestTime": "THỜI ĐIỂM ĐẸP NHẤT: THÁNG 10 – 3",
+        "curatorQuote": "\"Nơi đá cẩm thạch hoá thành thơ và bình minh nhuộm mái vòm sắc vàng hồng.\"",
+        "curator": {
+          "name": "Rajesh Verma",
+          "role": "Chuyên gia di sản Nam Á",
+          "note": "\"Hãy đến khi trời vừa hửng sáng, lúc đám đông còn say ngủ — Taj Mahal thuộc về những ai đến với sự kiên nhẫn và lòng tôn kính.\""
+        },
+        "paragraphs": [
+          "Agra là trái tim rực rỡ của Ấn Độ thời Mughal, nơi các hoàng đế cho xây những công trình trường tồn hơn cả đế chế. Taj Mahal vẫn là biểu tượng kiến trúc của tình yêu nổi tiếng nhất thế giới — bản giao hưởng của cẩm thạch trắng, khảm đá quý và sự đối xứng hoàn hảo in bóng trên mặt nước tĩnh lặng.",
+          "Ngoài Taj Mahal, Pháo đài Agra hé lộ nhiều thế kỷ quyền lực và mưu toan sau những bức tường sa thạch đỏ. Từ tường thành, góc nhìn hướng về lăng mộ bên kia sông Yamuna là điều ít du khách dừng lại để khám phá.",
+          "Những khu chợ phố cổ rộn ràng nghề thủ công truyền qua bao thế hệ: khảm cẩm thạch, đồ da và hương liệu toả hương khắp các con hẻm nhỏ. Agra luôn đền đáp những du khách tò mò nhìn xa hơn tấm bưu thiếp."
+        ],
+        "experiences": [
+          {
+            "tag": "Biểu tượng",
+            "title": "Bình minh ở Taj Mahal",
+            "alt": "Taj Mahal lúc bình minh với bầu trời hồng dịu"
+          },
+          {
+            "tag": "Lịch sử",
+            "title": "Tour riêng Pháo đài Agra",
+            "alt": "Kiến trúc pháo đài cổ ở Ấn Độ"
+          },
+          {
+            "title": "Workshop khảm cẩm thạch",
+            "alt": "Nghệ nhân đang khảm cẩm thạch"
+          },
+          {
+            "title": "Vườn Mehtab Bagh",
+            "alt": "Khu vườn bên kia sông nhìn về Taj Mahal"
+          }
+        ],
+        "hotels": [
+          {
+            "name": "The Oberoi Amarvilas",
+            "location": "Agra, Uttar Pradesh",
+            "price": "TỪ 16.900.000 ₫",
+            "description": "Mọi phòng đều nhìn thẳng ra Taj Mahal — sự sang trọng đến từ khoảng cách gần với kỳ quan.",
+            "alt": "Khách sạn sang trọng nhìn ra Taj Mahal"
+          },
+          {
+            "name": "ITC Mughal",
+            "location": "Agra, Uttar Pradesh",
+            "price": "TỪ 7.280.000 ₫",
+            "description": "Vườn rộng mang phong cách Mughal và phòng nghỉ như cung điện, cách các di tích vài phút.",
+            "alt": "Vườn và kiến trúc khu nghỉ dưỡng"
+          },
+          {
+            "name": "Trident Agra",
+            "location": "Agra, Uttar Pradesh",
+            "price": "TỪ 4.680.000 ₫",
+            "description": "Tiện nghi hiện đại với hoạ tiết Mughal, dễ dàng đến Taj Mahal.",
+            "alt": "Mặt tiền khách sạn thanh lịch có hồ bơi"
+          }
+        ]
+      }
+    },
+    "london": {
+      "list": {
+        "title": "Sương mù London",
+        "description": "Khám phá đô thị theo phong cách riêng qua khu West End lịch sử.",
+        "alt": "Bốt điện thoại London giữa sương mù, vỉa hè ướt và ánh đèn thành phố phía sau"
+      },
+      "detail": {
+        "heroTitle": [
+          "Sương mù",
+          "London."
+        ],
+        "heroAlt": "Bốt điện thoại London giữa sương mù và vỉa hè ướt",
+        "badge": "ĐÔ THỊ SANG TRỌNG",
+        "bestTime": "THỜI ĐIỂM ĐẸP NHẤT: THÁNG 4 – 6",
+        "curatorQuote": "\"Một thành phố nhiều tầng lớp — vẻ tráng lệ thời Victoria, bóng dáng văn chương và kịch tính bất tận của sông Thames.\"",
+        "curator": {
+          "name": "James Whitfield",
+          "role": "Chuyên gia đô thị châu Âu",
+          "note": "\"London hiện rõ nhất trong mưa — West End rực sáng, khán giả nhà hát tràn ra vỉa hè ướt, và góc phố nào cũng như bước ra từ một cuốn tiểu thuyết.\""
+        },
+        "paragraphs": [
+          "London không phải một thành phố duy nhất mà là những lớp lịch sử chồng lên nhau — nền móng La Mã dưới quảng trường thời Georgia, chợ thời Victoria bên cạnh toà nhà kính chọc trời. West End vẫn là trái tim của sân khấu, ẩm thực và cuộc sống về đêm thanh lịch.",
+          "Từ những phòng trưng bày tĩnh lặng ở Mayfair đến không khí sáng tạo sôi động ở Shoreditch, mỗi khu phố mang một cá tính riêng. Lộ trình tuyển chọn của chúng tôi ưu tiên sự riêng tư: buổi xem riêng, câu lạc bộ thành viên và những con ngõ ẩn khỏi dòng khách du lịch.",
+          "Hãy băng qua sông Thames lúc chạng vạng khi mái vòm nhà thờ St Paul bắt lấy tia nắng vàng cuối ngày, hoặc dạo South Bank nơi nghệ sĩ đường phố và quầy sách cũ giữ gìn tinh thần phóng khoáng giữa đường chân trời hiện đại."
+        ],
+        "experiences": [
+          {
+            "tag": "Sân khấu",
+            "title": "Đêm công diễn ở West End",
+            "alt": "Khu nhà hát West End của London về đêm"
+          },
+          {
+            "tag": "Văn hoá",
+            "title": "Tour riêng Bảo tàng Anh",
+            "alt": "Đại sảnh bên trong Bảo tàng Anh"
+          },
+          {
+            "title": "Trà chiều tại Claridge's",
+            "alt": "Tiệc trà chiều thanh lịch"
+          },
+          {
+            "title": "Du thuyền hoàng hôn trên sông Thames",
+            "alt": "Sông Thames lúc hoàng hôn với đường chân trời London"
+          }
+        ],
+        "hotels": [
+          {
+            "name": "Claridge's",
+            "location": "Mayfair, London",
+            "price": "TỪ 24.700.000 ₫",
+            "description": "Vẻ lộng lẫy Art Deco và dịch vụ hoàn hảo giữa lòng Mayfair.",
+            "alt": "Sảnh khách sạn sang trọng ở Mayfair"
+          },
+          {
+            "name": "The Savoy",
+            "location": "Strand, London",
+            "price": "TỪ 18.720.000 ₫",
+            "description": "Nét thanh lịch thời Edward bên sông Thames với quầy bar huyền thoại và tầm nhìn ra sông.",
+            "alt": "Mặt tiền khách sạn The Savoy"
+          },
+          {
+            "name": "Shangri-La The Shard",
+            "location": "Southwark, London",
+            "price": "TỪ 15.080.000 ₫",
+            "description": "Phòng nghỉ trên cao với toàn cảnh từ toà nhà cao nhất Tây Âu.",
+            "alt": "Tầm nhìn từ phòng khách sạn ở toà Shard"
+          }
+        ]
+      }
+    },
+    "cinqueTerre": {
+      "list": {
+        "title": "Cinque Terre",
+        "description": "Năm ngôi làng cổ nơi núi gặp biển.",
+        "alt": "Những ngôi nhà nhiều màu trên vách đá Cinque Terre, Ý, với làn nước xanh ngọc và nắng chiều vàng óng"
+      },
+      "detail": {
+        "heroTitle": [
+          "Cinque",
+          "Terre."
+        ],
+        "heroAlt": "Những ngôi nhà nhiều màu trên vách đá Cinque Terre, Ý",
+        "badge": "VIÊN NGỌC VEN BIỂN",
+        "bestTime": "THỜI ĐIỂM ĐẸP NHẤT: THÁNG 5 – 10",
+        "curatorQuote": "\"Năm ngôi làng lơ lửng giữa bầu trời và sắc xanh Liguria — nước Ý đẹp như tranh vẽ.\"",
+        "curator": {
+          "name": "Elena Moretti",
+          "role": "Trưởng nhóm thiết kế điểm đến",
+          "note": "\"Hãy đi bộ trên con đường ven biển vào giờ vàng, khi Vernazza lấp lánh như hộp trang sức và mặt biển chuyển sắc đồng nóng chảy.\""
+        },
+        "paragraphs": [
+          "Cinque Terre — Monterosso, Vernazza, Corniglia, Manarola và Riomaggiore — là năm ngôi làng thời trung cổ tạc vào vách đá trên biển Liguria. Sự bảo tồn của UNESCO đã giữ nguyên những mặt tiền rực màu và ruộng nho bậc thang.",
+          "Đường mòn ven biển Sentiero Azzurro nối các ngôi làng với khung cảnh đã truyền cảm hứng cho giới hoạ sĩ suốt nhiều thế kỷ. Mỗi làng có nét riêng: hoàng hôn Manarola, bến cảng Vernazza, bãi cát Monterosso.",
+          "Ẩm thực địa phương tôn vinh biển cả — cá cơm ướp chanh, mì trofie sốt pesto và rượu Sciacchetrà từ những sườn đồi bậc thang như thách thức trọng lực. Đây là nước Ý giản dị mà đầy chất thơ."
+        ],
+        "experiences": [
+          {
+            "tag": "Ven biển",
+            "title": "Đi bộ Đường mòn Xanh ven biển",
+            "alt": "Khung cảnh đường mòn ven biển Cinque Terre"
+          },
+          {
+            "tag": "Ẩm thực",
+            "title": "Thưởng thức pesto & rượu vang",
+            "alt": "Sốt pesto Ý và rượu vang địa phương"
+          },
+          {
+            "title": "Hoàng hôn ở Manarola",
+            "alt": "Làng Manarola lúc hoàng hôn"
+          },
+          {
+            "title": "Tour thuyền giữa các làng",
+            "alt": "Thuyền dọc bờ biển Liguria"
+          }
+        ],
+        "hotels": [
+          {
+            "name": "Grand Hotel Portovenere",
+            "location": "Portovenere, Liguria",
+            "price": "TỪ 10.920.000 ₫",
+            "description": "Nét thanh lịch lịch sử bên bờ nước, cửa ngõ vào Cinque Terre.",
+            "alt": "Khách sạn bên bờ nước ở Liguria"
+          },
+          {
+            "name": "La Spezia Boutique",
+            "location": "La Spezia, Liguria",
+            "price": "TỪ 5.720.000 ₫",
+            "description": "Điểm dừng chân phong cách cho những chuyến đi thăm làng dọc bờ biển mỗi ngày.",
+            "alt": "Phòng khách sạn boutique"
+          },
+          {
+            "name": "Vernazza Sea View",
+            "location": "Vernazza, Cinque Terre",
+            "price": "TỪ 8.060.000 ₫",
+            "description": "Phòng nghỉ ấm cúng nhìn ra bến cảng nơi thuyền đánh cá vẫn neo đậu.",
+            "alt": "Phòng nhìn ra bến cảng Vernazza"
+          }
+        ]
+      }
+    },
+    "fuji": {
+      "list": {
+        "title": "Núi Phú Sĩ",
+        "description": "Sự tĩnh tại tâm linh giữa vùng núi cao của Nhật Bản.",
+        "alt": "Đỉnh núi Phú Sĩ phủ tuyết phía sau ngôi chùa tháp đỏ, phía trước là hoa anh đào"
+      },
+      "detail": {
+        "heroTitle": [
+          "Núi",
+          "Phú Sĩ."
+        ],
+        "heroAlt": "Núi Phú Sĩ cùng chùa tháp và hoa anh đào",
+        "badge": "BIỂU TƯỢNG TÂM LINH",
+        "bestTime": "THỜI ĐIỂM ĐẸP NHẤT: THÁNG 7 – 8",
+        "curatorQuote": "\"Ngọn núi thiêng của Nhật Bản — nơi người hành hương, thi sĩ và nhiếp ảnh gia tìm kiếm sự thanh tịnh suốt nhiều thế kỷ.\"",
+        "curator": {
+          "name": "Yuki Tanaka",
+          "role": "Chuyên gia vùng núi Nhật Bản",
+          "note": "\"Hãy leo xuyên đêm để đón bình minh trên đỉnh — khoảnh khắc Fuji-san cho bạn thấy vì sao ngọn núi được tôn thờ như một vị thần.\""
+        },
+        "paragraphs": [
+          "Núi Phú Sĩ cao 3.776 mét trên đồng bằng Kanto, hình nón cân đối có thể nhìn thấy từ Tokyo vào ngày trời quang. Là di sản thế giới UNESCO, Phú Sĩ vừa là kỳ quan thiên nhiên vừa là biểu tượng tâm linh trong văn hoá Nhật Bản.",
+          "Vùng Ngũ Hồ dưới chân phía bắc núi có suối nước nóng, bảo tàng và những góc phản chiếu mà nhiếp ảnh gia săn lùng quanh năm. Hoa anh đào mùa xuân, mũ tuyết mùa đông — mỗi khung hình kể một câu chuyện khác nhau.",
+          "Hakone và bán đảo Izu gần đó nối dài hành trình với các khu nghỉ onsen, thung lũng núi lửa và nghệ thuật ẩm thực kaiseki. Đây là Nhật Bản trầm mặc và tuyệt mỹ nhất."
+        ],
+        "experiences": [
+          {
+            "tag": "Phiêu lưu",
+            "title": "Leo đỉnh đón bình minh",
+            "alt": "Đỉnh núi Phú Sĩ lúc bình minh"
+          },
+          {
+            "tag": "Chăm sóc sức khoẻ",
+            "title": "Nghỉ dưỡng onsen Hakone",
+            "alt": "Suối nước nóng onsen truyền thống Nhật Bản"
+          },
+          {
+            "title": "Ngắm cảnh chùa tháp Chureito",
+            "alt": "Chùa tháp với núi Phú Sĩ phía sau"
+          },
+          {
+            "title": "Du thuyền hồ Kawaguchi",
+            "alt": "Hồ Kawaguchi in bóng núi Phú Sĩ"
+          }
+        ],
+        "hotels": [
+          {
+            "name": "Fufu Kawaguchiko",
+            "location": "Hồ Kawaguchi, Yamanashi",
+            "price": "TỪ 23.140.000 ₫",
+            "description": "Biệt thự có onsen riêng, tầm nhìn trọn vẹn ra Phú Sĩ và ẩm thực kaiseki tuyệt hảo.",
+            "alt": "Ryokan sang trọng nhìn ra núi Phú Sĩ"
+          },
+          {
+            "name": "Hoshinoya Fuji",
+            "location": "Ngũ Hồ Phú Sĩ",
+            "price": "TỪ 31.200.000 ₫",
+            "description": "Glamping theo cách mới — cabin giữa mây và bữa tối trong rừng dưới chân núi thiêng.",
+            "alt": "Cabin glamping trong rừng gần Phú Sĩ"
+          },
+          {
+            "name": "Gora Kadan",
+            "location": "Hakone, Kanagawa",
+            "price": "TỪ 19.500.000 ₫",
+            "description": "Chốn nghỉ xưa của hoàng gia giữa núi rừng — chiếu tatami, vườn cảnh và sự tĩnh lặng tuyệt đối.",
+            "alt": "Nhà trọ truyền thống Nhật Bản ở Hakone"
+          }
+        ]
+      }
+    }
+  },
+  "live": {
+    "landmarksTitle": "Địa danh",
+    "landmarksSubtitle": "Những nơi đáng ghé thăm ở {{name}}.",
+    "freeEntry": "Miễn phí vào cửa",
+    "hotelsTitle": "Nơi lưu trú tại {{name}}",
+    "viewAllHotels_other": "Xem tất cả {{count}} khách sạn",
+    "noHotels": "Hiện chưa có khách sạn nào tại đây.",
+    "toursTitle": "Tour tại {{name}}",
+    "viewAllTours_other": "Xem tất cả {{count}} tour",
+    "reviewsTitle": "Đánh giá của du khách",
+    "notFound": "Không tìm thấy điểm đến",
+    "loadError": "Không tải được điểm đến này",
+    "popular": "Điểm đến nổi bật",
+    "about": "Giới thiệu {{name}}",
+    "allCategories": "Tất cả",
+    "showMore": "Xem thêm {{n}} địa điểm",
+    "viewMap": "Xem bản đồ",
+    "landmarkCategories": {
+      "beach": "Bãi biển",
+      "temple": "Đền chùa",
+      "museum": "Bảo tàng",
+      "park": "Thiên nhiên & công viên",
+      "mountain": "Núi & hang động",
+      "market": "Mua sắm",
+      "restaurant": "Ẩm thực",
+      "entertainment": "Vui chơi giải trí",
+      "historical": "Di tích lịch sử",
+      "wellness": "Chăm sóc sức khoẻ",
+      "sport": "Thể thao",
+      "other": "Khác"
+    }
+  },
+  "directory": {
+    "title": "Tất cả điểm đến",
+    "subtitle": "Mọi điểm đến có khách sạn và tour để đặt.",
+    "count": "{{n}} điểm đến",
+    "all": "Tất cả",
+    "popularOnly": "Nổi bật",
+    "loadMore": "Tải thêm {{n}} điểm đến",
+    "empty": "Không có điểm đến phù hợp.",
+    "error": "Không tải được danh sách điểm đến."
+  },
+  "landmarkDetail": {
+    "backTo": "Quay lại {{name}}",
+    "backToDestination": "Quay lại điểm đến",
+    "notFound": "Không tìm thấy địa điểm",
+    "about": "Giới thiệu",
+    "noDescription": "Chưa có mô tả.",
+    "map": "Vị trí",
+    "mapNote": "Vị trí được xác định từ địa chỉ trên OpenStreetMap nên có thể chỉ gần đúng.",
+    "info": "Thông tin tham quan",
+    "address": "Địa chỉ",
+    "openingHours": "Giờ mở cửa",
+    "entryFee": "Giá vé",
+    "phone": "Điện thoại",
+    "website": "Website",
+    "openMap": "Mở bản đồ OpenStreetMap",
+    "nearbyPlaces": "Địa điểm gần đó",
+    "nearbyPlacesSubtitle": "Những nơi khác đáng ghé ở {{name}}, gần nhất trước.",
+    "away": "cách {{distance}}",
+    "nearbyHotels": "Khách sạn gần đây",
+    "nearbyHotelsSubtitle": "Chỗ nghỉ trong bán kính {{km}} km, gần nhất trước.",
+    "noHotels": "Chưa có khách sạn nào gần đây.",
+    "reviewsTitle": "Đánh giá của du khách"
+  }
+}

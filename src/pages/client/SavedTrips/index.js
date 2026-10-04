@@ -4,26 +4,27 @@ import DashboardLayout from "../../../components/layouts/DashboardLayout";
 import FormAlert from "../../../components/common/FormAlert";
 import { fetchFavorites, removeFavorite } from "../../../services/favoriteService";
 import { formatDate, formatDateTime, formatMoney } from "../../../utils/formatters";
+import { useT } from "../../../i18n/I18nContext";
 
 const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80";
 const TABS = [
-    { key: "hotel", label: "Hotels", icon: "hotel", explore: "/hotels" },
-    { key: "tour", label: "Tours", icon: "tour", explore: "/tours" },
-    { key: "car", label: "Cars", icon: "directions_car", explore: "/cars" },
-    { key: "flight", label: "Flights", icon: "flight", explore: "/flights" },
+    { key: "hotel", labelKey: "nav.hotels", icon: "hotel", explore: "/hotels", exploreKey: "trips.savedTrips.exploreHotels" },
+    { key: "tour", labelKey: "nav.tours", icon: "tour", explore: "/tours", exploreKey: "trips.savedTrips.exploreTours" },
+    { key: "car", labelKey: "nav.cars", icon: "directions_car", explore: "/cars", exploreKey: "trips.savedTrips.exploreCars" },
+    { key: "flight", labelKey: "nav.flights", icon: "flight", explore: "/flights", exploreKey: "trips.savedTrips.exploreFlights" },
 ];
 
 /** Thông tin hiển thị thẻ tour / xe / chuyến bay đã lưu (null khi mục không còn tồn tại). */
-function describe(fav) {
+function describe(fav, t) {
     if (fav.itemType === "tour" && fav.tour) {
-        const t = fav.tour;
+        const tour = fav.tour;
         return {
             to: `/tours/${fav.itemId}`,
-            title: t.name,
-            image: t.coverImageUrl,
-            line: [t.destinationName, t.countryName].filter(Boolean).join(", "),
-            badge: t.durationDays ? `${t.durationDays} days` : null,
-            price: `${formatMoney(t.priceAdult, t.currencyCode)} / adult`,
+            title: tour.name,
+            image: tour.coverImageUrl,
+            line: [tour.destinationName, tour.countryName].filter(Boolean).join(", "),
+            badge: tour.durationDays ? t("common.units.day", { count: tour.durationDays }) : null,
+            price: t("trips.savedTrips.pricePerAdult", { price: formatMoney(tour.priceAdult, tour.currencyCode) }),
         };
     }
     if (fav.itemType === "car" && fav.car) {
@@ -32,9 +33,9 @@ function describe(fav) {
             to: `/cars/${fav.itemId}`,
             title: c.name,
             image: c.coverImageUrl,
-            line: [c.brand, c.model, c.seats ? `${c.seats} seats` : null].filter(Boolean).join(" · "),
+            line: [c.brand, c.model, c.seats ? t("trips.savedTrips.seats", { count: c.seats }) : null].filter(Boolean).join(" · "),
             badge: c.carType,
-            price: `${formatMoney(c.pricePerDay, c.currencyCode)} / day`,
+            price: t("trips.savedTrips.pricePerDay", { price: formatMoney(c.pricePerDay, c.currencyCode) }),
         };
     }
     if (fav.itemType === "flight" && fav.flight) {
@@ -45,13 +46,14 @@ function describe(fav) {
             image: f.airlineLogoUrl,
             line: `${f.departureAirportCode} → ${f.arrivalAirportCode} · ${formatDateTime(f.departureTime)}`,
             badge: f.cabinClasses?.length ? f.cabinClasses.join(" / ") : null,
-            price: `from ${formatMoney(f.fromPrice ?? f.basePrice, f.currencyCode)}`,
+            price: t("trips.savedTrips.fromPrice", { price: formatMoney(f.fromPrice ?? f.basePrice, f.currencyCode) }),
         };
     }
     return null;
 }
 
 function SavedTrips() {
+    const t = useT();
     const [searchParams, setSearchParams] = useSearchParams();
     const tab = TABS.find((t) => t.key === searchParams.get("tab")) || TABS[0];
     const [favorites, setFavorites] = useState([]);
@@ -87,28 +89,28 @@ function SavedTrips() {
         <DashboardLayout>
             <section className="mb-12">
                 <span className="text-[0.75rem] uppercase tracking-[0.2em] text-on-tertiary-fixed-variant mb-2 block">
-                    Curated Collection
+                    {t("trips.savedTrips.eyebrow")}
                 </span>
-                <h1 className="font-headline text-5xl font-extrabold text-on-surface tracking-tight mb-4">Saved Trips</h1>
+                <h1 className="font-headline text-5xl font-extrabold text-on-surface tracking-tight mb-4">{t("nav.sidebar.savedTrips")}</h1>
                 <p className="text-on-surface-variant text-lg leading-relaxed">
-                    Khách sạn, tour, xe và chuyến bay bạn đã lưu để đặt sau.
+                    {t("trips.savedTrips.subtitle")}
                 </p>
             </section>
 
             <div className="flex flex-wrap gap-2 mb-10">
-                {TABS.map((t) => (
+                {TABS.map((tabOption) => (
                     <button
-                        key={t.key}
+                        key={tabOption.key}
                         type="button"
-                        onClick={() => setSearchParams(t.key === "hotel" ? {} : { tab: t.key })}
+                        onClick={() => setSearchParams(tabOption.key === "hotel" ? {} : { tab: tabOption.key })}
                         className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold transition-colors ${
-                            t.key === tab.key
+                            tabOption.key === tab.key
                                 ? "bg-primary text-white"
                                 : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high"
                         }`}
                     >
-                        <span className="material-symbols-outlined text-[18px]">{t.icon}</span>
-                        {t.label}
+                        <span className="material-symbols-outlined text-[18px]">{tabOption.icon}</span>
+                        {t(tabOption.labelKey)}
                     </button>
                 ))}
             </div>
@@ -127,10 +129,10 @@ function SavedTrips() {
                 <div className="bg-surface-container-lowest rounded-xl p-12 text-center">
                     <span className="material-symbols-outlined text-5xl text-outline mb-3">favorite</span>
                     <p className="text-on-surface-variant mb-6">
-                        Chưa có mục nào được lưu. Bấm biểu tượng trái tim trên trang chi tiết để lưu.
+                        {t("trips.savedTrips.empty")}
                     </p>
                     <Link to={tab.explore} className="bg-primary text-white px-6 py-3 rounded-lg font-bold">
-                        Explore {tab.label.toLowerCase()}
+                        {t(tab.exploreKey)}
                     </Link>
                 </div>
             )}
@@ -146,7 +148,7 @@ function SavedTrips() {
                                     <Link to={`/hotel/${fav.itemId}`} className="block aspect-[4/3] overflow-hidden">
                                         <img
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                            alt={hotel?.name || "Hotel"}
+                                            alt={hotel?.name || t("trips.savedTrips.hotel")}
                                             src={hotel?.coverImageUrl || PLACEHOLDER_IMAGE}
                                             loading="lazy"
                                         />
@@ -155,8 +157,8 @@ function SavedTrips() {
                                         type="button"
                                         onClick={() => handleRemove(fav.id)}
                                         className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/95 shadow-md flex items-center justify-center hover:scale-110 transition-transform"
-                                        aria-label="Remove from saved"
-                                        title="Remove from saved"
+                                        aria-label={t("trips.favorite.removeFromSaved")}
+                                        title={t("trips.favorite.removeFromSaved")}
                                     >
                                         <span
                                             className="material-symbols-outlined text-red-500"
@@ -167,7 +169,7 @@ function SavedTrips() {
                                     </button>
                                     {hotel?.starRating != null && (
                                         <span className="absolute top-4 left-4 bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
-                                            {hotel.starRating} Star
+                                            {t("trips.savedTrips.starRating", { count: hotel.starRating })}
                                         </span>
                                     )}
                                     <div className="p-6">
@@ -175,7 +177,7 @@ function SavedTrips() {
                                             to={`/hotel/${fav.itemId}`}
                                             className="text-xl font-bold text-primary hover:underline block truncate"
                                         >
-                                            {hotel?.name || "Khách sạn không còn tồn tại"}
+                                            {hotel?.name || t("trips.savedTrips.hotelNoLongerAvailable")}
                                         </Link>
                                         <p className="text-sm text-on-surface-variant flex items-center gap-1 mt-1 truncate">
                                             <span className="material-symbols-outlined text-sm">location_on</span>
@@ -194,7 +196,7 @@ function SavedTrips() {
                                                 ))}
                                             </div>
                                         )}
-                                        <p className="text-xs text-on-surface-variant mt-4">Saved {formatDate(fav.createdAt)}</p>
+                                        <p className="text-xs text-on-surface-variant mt-4">{t("trips.savedTrips.savedOn", { date: formatDate(fav.createdAt) })}</p>
                                     </div>
                                 </div>
                             </div>
@@ -208,7 +210,8 @@ function SavedTrips() {
 }
 
 function SavedItemCard({ fav, onRemove }) {
-    const info = describe(fav);
+    const t = useT();
+    const info = describe(fav, t);
     return (
         <div className="group">
             <div className="relative overflow-hidden rounded-xl bg-surface-container-lowest shadow-[0_8px_48px_rgba(27,28,28,0.06)] transition-transform duration-500 hover:-translate-y-2">
@@ -233,8 +236,8 @@ function SavedItemCard({ fav, onRemove }) {
                     type="button"
                     onClick={() => onRemove(fav.id)}
                     className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/95 shadow-md flex items-center justify-center hover:scale-110 transition-transform"
-                    aria-label="Remove from saved"
-                    title="Remove from saved"
+                    aria-label={t("trips.favorite.removeFromSaved")}
+                    title={t("trips.favorite.removeFromSaved")}
                 >
                     <span className="material-symbols-outlined text-red-500" style={{ fontVariationSettings: "'FILL' 1" }}>
                         favorite
@@ -251,11 +254,11 @@ function SavedItemCard({ fav, onRemove }) {
                             {info.title}
                         </Link>
                     ) : (
-                        <p className="text-xl font-bold text-on-surface-variant truncate">Mục này không còn tồn tại</p>
+                        <p className="text-xl font-bold text-on-surface-variant truncate">{t("trips.savedTrips.itemNoLongerAvailable")}</p>
                     )}
                     {info?.line && <p className="text-sm text-on-surface-variant mt-1 truncate">{info.line}</p>}
                     {info?.price && <p className="text-sm font-bold text-on-surface mt-4">{info.price}</p>}
-                    <p className="text-xs text-on-surface-variant mt-4">Saved {formatDate(fav.createdAt)}</p>
+                    <p className="text-xs text-on-surface-variant mt-4">{t("trips.savedTrips.savedOn", { date: formatDate(fav.createdAt) })}</p>
                 </div>
             </div>
         </div>

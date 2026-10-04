@@ -1,0 +1,27 @@
+{
+  "hero": {
+    "eyebrow": "Liên hệ",
+    "title": "Liên hệ chúng tôi",
+    "imageAlt": "Cánh máy bay trên tầng mây",
+    "subtitle": "Có câu hỏi về đặt chỗ, điểm đến hay yêu cầu đặc biệt? Đội ngũ của chúng tôi phản hồi trong vòng một ngày làm việc."
+  },
+  "fields": {
+    "address": "Địa chỉ",
+    "workingHours": "Giờ làm việc",
+    "phoneOptional": "Số điện thoại (không bắt buộc)",
+    "subjectOptional": "Chủ đề (không bắt buộc)",
+    "message": "Tin nhắn"
+  },
+  "validation": {
+    "fullNameRequired": "Vui lòng nhập họ tên.",
+    "emailInvalid": "Nhập địa chỉ email hợp lệ.",
+    "messageRequired": "Vui lòng nhập tin nhắn."
+  },
+  "status": {
+    "sent": "Đã gửi tin nhắn. Chúng tôi sẽ phản hồi qua email sớm nhất."
+  },
+  "actions": {
+    "sending": "Đang gửi...",
+    "sendMessage": "Gửi tin nhắn"
+  }
+}

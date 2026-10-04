@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import { filterRooms } from "../constants/rooms";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { filterRooms, roomTypeOptionsFrom } from "../constants/rooms";
 import { fetchRooms } from "../services/roomService";
 
 const DEFAULT_LIMIT = 50;
@@ -16,6 +16,9 @@ export const DEFAULT_ROOM_FILTERS = {
 
 export function useRoomsPage() {
     const [rooms, setRooms] = useState([]);
+    // lựa chọn "Loại phòng" lấy từ toàn bộ phòng đã tải (trước khi lọc) để không tự co lại khi tick
+    const [allRooms, setAllRooms] = useState([]);
+    const roomTypeOptions = useMemo(() => roomTypeOptionsFrom(allRooms), [allRooms]);
     const [applied, setApplied] = useState(DEFAULT_ROOM_FILTERS);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -29,6 +32,7 @@ export function useRoomsPage() {
                 page: 1,
                 limit: DEFAULT_LIMIT,
             });
+            setAllRooms(result.items);
             const filtered = filterRooms(result.items, {
                 ...filters,
                 skipAvailabilityFilter: true,
@@ -52,6 +56,7 @@ export function useRoomsPage() {
 
     return {
         rooms,
+        roomTypeOptions,
         applied,
         loading,
         error,

@@ -1,0 +1,27 @@
+{
+  "hero": {
+    "eyebrow": "Get in touch",
+    "title": "Contact us",
+    "imageAlt": "Airplane wing above the clouds",
+    "subtitle": "Questions about a booking, a destination or a special request? Our travel team replies within one business day."
+  },
+  "fields": {
+    "address": "Address",
+    "workingHours": "Working hours",
+    "phoneOptional": "Phone (optional)",
+    "subjectOptional": "Subject (optional)",
+    "message": "Message"
+  },
+  "validation": {
+    "fullNameRequired": "Please enter your full name.",
+    "emailInvalid": "Enter a valid email address.",
+    "messageRequired": "Please enter a message."
+  },
+  "status": {
+    "sent": "Message sent. We'll reply by email as soon as possible."
+  },
+  "actions": {
+    "sending": "Sending...",
+    "sendMessage": "Send message"
+  }
+}

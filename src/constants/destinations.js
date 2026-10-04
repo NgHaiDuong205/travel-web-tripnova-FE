@@ -1,6 +1,7 @@
 export const DESTINATION_LIST = [
     {
         id: "amalfi",
+        i18nKey: "amalfi",
         countryId: "it",
         cityId: "amalfi-coast",
         type: "feature",
@@ -14,6 +15,7 @@ export const DESTINATION_LIST = [
     },
     {
         id: "agra",
+        i18nKey: "agra",
         countryId: "in",
         cityId: "agra",
         type: "secondary",
@@ -28,6 +30,7 @@ export const DESTINATION_LIST = [
     },
     {
         id: "london",
+        i18nKey: "london",
         countryId: "gb",
         cityId: "london",
         type: "card",
@@ -40,6 +43,7 @@ export const DESTINATION_LIST = [
     },
     {
         id: "cinque-terre",
+        i18nKey: "cinqueTerre",
         countryId: "it",
         cityId: "cinque-terre",
         type: "card",
@@ -52,6 +56,7 @@ export const DESTINATION_LIST = [
     },
     {
         id: "fuji",
+        i18nKey: "fuji",
         countryId: "jp",
         cityId: "fuji",
         type: "card",
@@ -67,6 +72,7 @@ export const DESTINATION_LIST = [
 export const DESTINATION_DETAILS = {
     amalfi: {
         id: "amalfi",
+        i18nKey: "amalfi",
         heroTitle: ["The Amalfi", "Coast."],
         heroImage:
             "https://lh3.googleusercontent.com/aida-public/AB6AXuDnO3JtbvQM6usEJMN8uBa0iJ62NozQAQcEUfzZpYW6S4ld4mUjiGFhprAVy3zLZFbGbdtN77kFi1VXTvvYfGy9rAqFJY5nt1iYy03_ELQQ7IA9nDYds8DJQDfBcPnSy1uDUpxVCi-_KytSSs1ci3XHJU8fEZbwWWmcHlHQiFQSr-F66GDRXJmxBbeS02s4nB4BPRxyCwtngKdrahUufaxz0i_C1y81rch09Uir1C7qXpq3E9hM8dKclJQl0_Y2xW4-GKokrvMBn8Y",
@@ -158,6 +164,7 @@ export const DESTINATION_DETAILS = {
     },
     agra: {
         id: "agra",
+        i18nKey: "agra",
         heroTitle: ["Agra", "Heritage."],
         heroImage:
             "https://lh3.googleusercontent.com/aida-public/AB6AXuCwrVWbN2yqYuaoXj-JTDgQnsUT6FCqxz0YwmDZlmL4N98PkAeTkIcq7GUaoMjlQfpgNMAI_vOQsLrQVb-7I2neQSi1zLy2-H7oSP91e8rMBZogmhObMGje3eCtUzlbUnnNkDESMrtYE8uwNBEh08Bq3SzYNmK0W50k7lN1hJZbbYWhSy65R_Y8g0ZdfQmzdnTJEBRr-0qkITgOBnKF2lau0DIM_sqz0s7KjrfrnQIG-YD5citkcdrB3KpF7XaGJYDxIOdKzG5mwao",
@@ -244,6 +251,7 @@ export const DESTINATION_DETAILS = {
     },
     london: {
         id: "london",
+        i18nKey: "london",
         heroTitle: ["London", "Fog."],
         heroImage:
             "https://lh3.googleusercontent.com/aida-public/AB6AXuB0_ruHWGnJdJMcd_B386S25uZXh7o4b_AR-4ePnhuXTS1LWjaYdbYJOqvYYBYNZbWQpehXq-cbw5z4wr2f02YbkKg9NWwRRmO8Pw43FmU8nmoNnmtl87npG1x74tITm_CpLc19Byteil95Ic9MSu6F8BiyxKRch25LQZ6R0iWBSr0P7TisT7by6jSKkoIq8FQsyrayCFJIyZH-kQiqLaSlo5As3pBDZJu1JyPVv-pcn8A7juSujpkipTL_71_nR-8Dokc4f1FnmXk",
@@ -330,6 +338,7 @@ export const DESTINATION_DETAILS = {
     },
     "cinque-terre": {
         id: "cinque-terre",
+        i18nKey: "cinqueTerre",
         heroTitle: ["Cinque", "Terre."],
         heroImage:
             "https://lh3.googleusercontent.com/aida-public/AB6AXuAzj4LMClUEI2m98PtgZ41IRBqefRrOhMpW_QApBtNzADI8DR3TC_BySaHf_gjo_adgrLsZHQSDT5g6UVAaJKiiaMoRAZJAcMntgpi5syDU0AOk1_5qQtgYHMOxt3Hvm0Se6qIk6ycxt6BkZuKsx6TZsjblJYyhaiPkcv92UKAFdoJX3vVk0c61fCsM3HYQIRwcXCUlSWtu4c2qnFUGvb_9nGBngJJspwDNXI7zeUmZdLV4fbZytTVYVDeTUBwk6u2eb1vbV8oBA4E",
@@ -416,6 +425,7 @@ export const DESTINATION_DETAILS = {
     },
     fuji: {
         id: "fuji",
+        i18nKey: "fuji",
         heroTitle: ["Mount", "Fuji."],
         heroImage:
             "https://lh3.googleusercontent.com/aida-public/AB6AXuDIkGLGemmATCoufNcJDyXvXseQLycEKgqSoKirFVgnZycgLVlXf58KQuKbzW5zFgs9_t7Hhk8xfu_WyxpF9DBBDHEv6ffVdjhvB_O_kM2I8DIRZxh-0ZUDLCVc5gnpiNfprUOQ7owzKignzbrLrfJ_sja8gqLu34AgS7LmwO5ekMSGAnPN-8PyHosW27B9W1icZdXSIK-BPFdIC43J-Jc3-agn1kd2wFmJdDUY2CNRlUUcjJEAv_NzWb7mLKjQRXhOnfr7AsTy4eU",

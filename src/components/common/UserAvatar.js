@@ -1,7 +1,10 @@
+import { useT } from "../../i18n/I18nContext";
+
 /** Ảnh đại diện; không có ảnh thì hiện chữ cái đầu của tên (không gọi dịch vụ ngoài). */
 function UserAvatar({ user, size = "w-10 h-10", textSize = "text-sm", rounded = "rounded-lg" }) {
+    const t = useT();
     if (user?.avatarUrl) {
-        return <img src={user.avatarUrl} alt={user.fullName || "Avatar"} className={`${size} ${rounded} object-cover`} />;
+        return <img src={user.avatarUrl} alt={user.fullName || t("account.avatar.alt")} className={`${size} ${rounded} object-cover`} />;
     }
     const initials =
         (user?.fullName || user?.email || "?")

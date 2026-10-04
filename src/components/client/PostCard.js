@@ -8,15 +8,15 @@ import CommentThread from "./CommentThread";
 import PostForm from "./PostForm";
 import { POST_STATUS_LABELS, deletePost, reactToPost, removePostReaction, updatePost } from "../../services/postService";
 import { formatDate } from "../../utils/formatters";
+import { useT } from "../../i18n/I18nContext";
 
-// Trang DestinationDetail hiện dùng dữ liệu tĩnh (id không phải UUID) nên chưa liên kết destination.
 const ENTITY_LINKS = {
     hotel: (id) => `/hotel/${id}`,
+    destination: (id) => `/destinations/${id}`,
     tour: (id) => `/tours/${id}`,
     car: (id) => `/cars/${id}`,
     flight: (id) => `/flights/${id}`,
 };
-const VERIFIED_LABELS = { hotel: "Verified stay", tour: "Verified traveller", car: "Verified rental", flight: "Verified flyer" };
 
 /**
  * Một bài đánh giá: điểm, nội dung, ảnh, like/dislike, bình luận; tác giả được sửa / xoá.
@@ -24,6 +24,7 @@ const VERIFIED_LABELS = { hotel: "Verified stay", tour: "Verified traveller", ca
  * onChange(post) sau khi sửa / reaction, onDeleted(id) sau khi xoá.
  */
 function PostCard({ post, showEntity = false, onChange, onDeleted }) {
+    const t = useT();
     const { user, isLoggedIn } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
@@ -56,7 +57,7 @@ function PostCard({ post, showEntity = false, onChange, onDeleted }) {
     };
 
     const handleDelete = async () => {
-        if (!window.confirm("Delete this review? This cannot be undone.")) return;
+        if (!window.confirm(t("reviews.postCard.deleteConfirm"))) return;
         try {
             await deletePost(post.id);
             onDeleted?.(post.id);
@@ -70,7 +71,7 @@ function PostCard({ post, showEntity = false, onChange, onDeleted }) {
             <article className="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant/20">
                 <PostForm
                     post={post}
-                    submitLabel="Save changes"
+                    submitLabel={t("common.actions.saveChanges")}
                     onCancel={() => setEditing(false)}
                     onSubmit={async (body) => {
                         const updated = await updatePost(post.id, body);
@@ -98,10 +99,14 @@ function PostCard({ post, showEntity = false, onChange, onDeleted }) {
                         {post.isVerifiedBooking && (
                             <span className="inline-flex items-center gap-1 text-[11px] font-bold text-green-700">
                                 <span className="material-symbols-outlined text-[14px]">verified</span>
-                                {VERIFIED_LABELS[post.entityType] || "Verified booking"}
+                                {t(`reviews.postCard.verified.${post.entityType}`, { defaultValue: t("reviews.postCard.verified.booking") })}
                             </span>
                         )}
-                        {!approved && <StatusBadge status={post.status} labels={POST_STATUS_LABELS} />}
+                        {!approved && <StatusBadge status={post.status} labels={{
+                            pending: { ...POST_STATUS_LABELS.pending, label: t("reviews.status.pending") },
+                            approved: { ...POST_STATUS_LABELS.approved, label: t("reviews.status.approved") },
+                            rejected: { ...POST_STATUS_LABELS.rejected, label: t("reviews.status.rejected") },
+                        }} />}
                     </div>
                     <p className="text-xs text-on-surface-variant">
                         {formatDate(post.createdAt)}
@@ -138,27 +143,27 @@ function PostCard({ post, showEntity = false, onChange, onDeleted }) {
             <footer className="flex flex-wrap items-center gap-2 pt-2 border-t border-outline-variant/20">
                 {approved && (
                     <>
-                        <button type="button" disabled={busy || isMine} onClick={() => handleReact("like")} className={reactionClass(post.myReaction === "like")} title={isMine ? "You can't vote on your own review" : "Helpful"}>
+                        <button type="button" disabled={busy || isMine} onClick={() => handleReact("like")} className={reactionClass(post.myReaction === "like")} title={isMine ? t("reviews.postCard.ownVote") : t("reviews.postCard.helpful")}>
                             <span className="material-symbols-outlined text-[16px]">thumb_up</span>
                             {post.upvotes}
                         </button>
-                        <button type="button" disabled={busy || isMine} onClick={() => handleReact("dislike")} className={reactionClass(post.myReaction === "dislike")} title={isMine ? "You can't vote on your own review" : "Not helpful"}>
+                        <button type="button" disabled={busy || isMine} onClick={() => handleReact("dislike")} className={reactionClass(post.myReaction === "dislike")} title={isMine ? t("reviews.postCard.ownVote") : t("reviews.postCard.notHelpful")}>
                             <span className="material-symbols-outlined text-[16px]">thumb_down</span>
                             {post.downvotes}
                         </button>
                         <button type="button" onClick={() => setShowComments((v) => !v)} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-surface-container-high">
                             <span className="material-symbols-outlined text-[16px]">chat_bubble</span>
-                            {commentCount} comment{commentCount === 1 ? "" : "s"}
+                            {t("reviews.postCard.comments", { count: commentCount })}
                         </button>
                     </>
                 )}
                 {isMine && (
                     <div className="ml-auto flex gap-1">
                         <button type="button" onClick={() => setEditing(true)} className="px-3 py-1.5 rounded-full text-xs font-bold hover:bg-surface-container-high">
-                            Edit
+                            {t("common.actions.edit")}
                         </button>
                         <button type="button" onClick={handleDelete} className="px-3 py-1.5 rounded-full text-xs font-bold text-red-600 hover:bg-red-50">
-                            Delete
+                            {t("common.actions.delete")}
                         </button>
                     </div>
                 )}

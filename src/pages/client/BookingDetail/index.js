@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { BOOKING_STATUS_LABELS, cancelHotelBooking, fetchHotelBooking } from "../../../services/bookingService";
-import { PAYMENT_STATUS_LABELS } from "../../../services/paymentService";
+import { cancelHotelBooking, fetchHotelBooking } from "../../../services/bookingService";
 import FormAlert from "../../../components/common/FormAlert";
 import StatusBadge from "../../../components/common/StatusBadge";
 import { formatDate, formatDateTime, formatMoney } from "../../../utils/formatters";
+import { useT } from "../../../i18n/I18nContext";
 
 function Row({ label, children }) {
     return (
@@ -16,6 +16,23 @@ function Row({ label, children }) {
 }
 
 function BookingDetail() {
+    const t = useT();
+    const bookingStatusLabels = {
+        pending: { label: t("booking.statuses.awaitingPayment"), className: "bg-amber-50 text-amber-700 border-amber-200" },
+        confirmed: { label: t("common.status.confirmed"), className: "bg-green-50 text-green-700 border-green-200" },
+        checked_in: { label: t("common.status.checked_in"), className: "bg-blue-50 text-blue-700 border-blue-200" },
+        checked_out: { label: t("common.status.checked_out"), className: "bg-gray-50 text-gray-700 border-gray-200" },
+        completed: { label: t("common.status.completed"), className: "bg-gray-50 text-gray-700 border-gray-200" },
+        cancelled: { label: t("common.status.cancelled"), className: "bg-red-50 text-red-700 border-red-200" },
+        refunded: { label: t("common.status.refunded"), className: "bg-purple-50 text-purple-700 border-purple-200" },
+        no_show: { label: t("booking.statuses.noShow"), className: "bg-red-50 text-red-700 border-red-200" },
+    };
+    const paymentStatusLabels = {
+        pending: { label: t("common.status.pending"), className: "bg-amber-50 text-amber-700 border-amber-200" },
+        success: { label: t("common.status.paid"), className: "bg-green-50 text-green-700 border-green-200" },
+        failed: { label: t("common.status.failed"), className: "bg-red-50 text-red-700 border-red-200" },
+        refunded: { label: t("common.status.refunded"), className: "bg-purple-50 text-purple-700 border-purple-200" },
+    };
     const { bookingId } = useParams();
     const [booking, setBooking] = useState(null);
     const [error, setError] = useState("");
@@ -34,7 +51,7 @@ function BookingDetail() {
     }, [load]);
 
     const handleCancel = async () => {
-        const reason = window.prompt("Lý do huỷ đặt phòng (không bắt buộc):", "");
+        const reason = window.prompt(t("booking.detail.cancelReasonPrompt"), "");
         if (reason === null) return;
         setCancelling(true);
         setError("");
@@ -50,7 +67,7 @@ function BookingDetail() {
     if (!booking) {
         return (
             <div className="max-w-screen-md mx-auto px-8 pt-32 pb-24 text-center">
-                {error ? <FormAlert>{error}</FormAlert> : <p className="text-gray-500">Đang tải...</p>}
+                {error ? <FormAlert>{error}</FormAlert> : <p className="text-gray-500">{t("common.state.loading")}</p>}
             </div>
         );
     }
@@ -61,10 +78,10 @@ function BookingDetail() {
         <main className="max-w-screen-md mx-auto px-8 pt-32 pb-24 space-y-8">
             <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <p className="text-xs uppercase tracking-widest text-gray-500 font-bold">Booking</p>
+                    <p className="text-xs uppercase tracking-widest text-gray-500 font-bold">{t("booking.detail.booking")}</p>
                     <h1 className="text-3xl font-extrabold text-primary font-mono">{booking.orderCode}</h1>
                 </div>
-                <StatusBadge status={booking.status} labels={BOOKING_STATUS_LABELS} />
+                <StatusBadge status={booking.status} labels={bookingStatusLabels} />
             </div>
 
             <FormAlert>{error}</FormAlert>
@@ -79,35 +96,34 @@ function BookingDetail() {
                     </Link>
                     <p className="text-sm text-gray-500 mb-4">{booking.hotelAddress}</p>
                     <div className="divide-y divide-gray-100">
-                        <Row label="Room">
+                        <Row label={t("booking.detail.room")}>
                             {booking.roomTypeName}
-                            {booking.roomNumber ? ` · No. ${booking.roomNumber}` : ""}
+                            {booking.roomNumber ? ` · ${t("booking.detail.roomNumber", { number: booking.roomNumber })}` : ""}
                         </Row>
-                        <Row label="Check-in">{formatDate(booking.checkInDate)}</Row>
-                        <Row label="Check-out">{formatDate(booking.checkOutDate)}</Row>
-                        <Row label="Nights">{booking.numNights}</Row>
-                        <Row label="Guests">
-                            {booking.numAdults} adult{booking.numAdults > 1 ? "s" : ""}
-                            {booking.numChildren > 0 ? `, ${booking.numChildren} children` : ""}
+                        <Row label={t("common.fields.checkIn")}>{formatDate(booking.checkInDate)}</Row>
+                        <Row label={t("common.fields.checkOut")}>{formatDate(booking.checkOutDate)}</Row>
+                        <Row label={t("booking.detail.nights")}>{t("common.units.night", { count: booking.numNights })}</Row>
+                        <Row label={t("common.fields.guests")}>
+                            {booking.numChildren > 0 ? t("booking.detail.guestsWithChildren", { adults: t("common.units.adult", { count: booking.numAdults }), children: t("common.units.child", { count: booking.numChildren }) }) : t("booking.detail.guestsSummary", { adults: t("common.units.adult", { count: booking.numAdults }) })}
                         </Row>
-                        {booking.specialRequests && <Row label="Special requests">{booking.specialRequests}</Row>}
+                        {booking.specialRequests && <Row label={t("booking.detail.specialRequests")}>{booking.specialRequests}</Row>}
                     </div>
                 </div>
             </section>
 
             <section className="bg-white rounded-xl border border-gray-100 shadow-sm p-8">
-                <h2 className="text-xl font-bold text-primary mb-2">Payment</h2>
+                <h2 className="text-xl font-bold text-primary mb-2">{t("booking.payment.title")}</h2>
                 <div className="divide-y divide-gray-100">
-                    <Row label="Total">{formatMoney(booking.totalPrice, currency)}</Row>
-                    <Row label="Method">{booking.paymentMethod?.toUpperCase()}</Row>
-                    <Row label="Status">
-                        <StatusBadge status={booking.paymentStatus} labels={PAYMENT_STATUS_LABELS} />
+                    <Row label={t("common.fields.total")}>{formatMoney(booking.totalPrice, currency)}</Row>
+                    <Row label={t("booking.payment.method")}>{booking.paymentMethod?.toUpperCase()}</Row>
+                    <Row label={t("common.fields.status")}>
+                        <StatusBadge status={booking.paymentStatus} labels={paymentStatusLabels} />
                     </Row>
-                    {booking.paidAt && <Row label="Paid at">{formatDateTime(booking.paidAt)}</Row>}
+                    {booking.paidAt && <Row label={t("booking.detail.paidAt")}>{formatDateTime(booking.paidAt)}</Row>}
                     {booking.refundAmount != null && (
                         <>
-                            <Row label="Refund">{formatMoney(booking.refundAmount, currency)}</Row>
-                            <Row label="Refund reason">{booking.refundReason}</Row>
+                            <Row label={t("booking.detail.refund")}>{formatMoney(booking.refundAmount, currency)}</Row>
+                            <Row label={t("booking.detail.refundReason")}>{booking.refundReason}</Row>
                         </>
                     )}
                 </div>
@@ -119,7 +135,7 @@ function BookingDetail() {
                         to={`/payment/${booking.paymentId}`}
                         className="bg-[#003580] text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-800"
                     >
-                        Pay now
+                        {t("booking.detail.payNow")}
                     </Link>
                 )}
                 {booking.cancellable && (
@@ -129,11 +145,11 @@ function BookingDetail() {
                         onClick={handleCancel}
                         className="bg-white text-red-600 border border-red-200 px-6 py-3 rounded-lg font-bold hover:bg-red-50 disabled:opacity-60"
                     >
-                        {cancelling ? "Cancelling..." : "Cancel booking"}
+                        {cancelling ? t("booking.detail.cancelling") : t("booking.detail.cancelBooking")}
                     </button>
                 )}
                 <Link to="/booking-history" className="px-6 py-3 rounded-lg font-bold text-[#003580] hover:bg-blue-50">
-                    All bookings
+                    {t("booking.detail.allBookings")}
                 </Link>
             </div>
         </main>

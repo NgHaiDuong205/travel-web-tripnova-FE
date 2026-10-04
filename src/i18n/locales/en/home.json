@@ -1,0 +1,174 @@
+{
+  "clocks": {
+    "hanoi": "Hanoi",
+    "newYork": "New York",
+    "london": "London",
+    "paris": "Paris",
+    "tokyo": "Tokyo"
+  },
+  "hero": {
+    "imageAlt": "Breathtaking cinematic panoramic view of a luxury infinity pool overlooking the Mediterranean sea at golden hour with dramatic clouds",
+    "eyebrow": "The Art of Travel",
+    "titleFirst": "The World,",
+    "titleSecond": "Curated.",
+    "description": "Experience travel through an editorial lens. We frame your journey with precision and soul, bringing the globe's finest sanctuaries to your fingertips.",
+    "exploreDestinations": "Explore Destinations",
+    "ourStory": "Our Story"
+  },
+  "services": {
+    "eyebrow": "Our Expertise",
+    "title": "Tailored Services for the Modern Voyager",
+    "description": "From the tarmac to the terrace, we manage every detail of your escape with surgical precision.",
+    "hotels": {
+      "title": "Premium Hotels",
+      "description": "Hand-selected boutique stays and 5-star properties that define architectural excellence and hospitality."
+    },
+    "cars": {
+      "title": "Efficient Car Rentals",
+      "description": "A fleet ranging from luxury sedans to rugged explorers, ensuring your mobility is as seamless as your stay."
+    },
+    "flights": {
+      "title": "Flight Booking",
+      "description": "Priority routing and exclusive fares across global carriers, prioritizing comfort and time efficiency."
+    }
+  },
+  "destinations": {
+    "title": "The Global Shortlist",
+    "description": "Trending destinations selected by our editorial team for their unique cultural and visual depth.",
+    "explore": "Explore",
+    "hotels": "hotels",
+    "viewAll": "View all destinations"
+  },
+  "globe": {
+    "title": "Explore the World",
+    "description": "Spin the 3D globe and tap a pin to see a photo, the live weather and local time of popular destinations.",
+    "hint": "Click a pin or a place below to see photos and live weather",
+    "loadingWeather": "Loading current weather…",
+    "weatherUnavailable": "Weather is unavailable right now.",
+    "feelsLike": "Feels like",
+    "humidity": "Humidity",
+    "wind": "Wind",
+    "localTime": "Local time",
+    "explore": "Explore destination",
+    "photoCredit": "Photo: Wikimedia Commons",
+    "weather": {
+      "clear": "Clear sky",
+      "mainlyClear": "Mainly clear",
+      "partlyCloudy": "Partly cloudy",
+      "overcast": "Overcast",
+      "fog": "Fog",
+      "drizzle": "Drizzle",
+      "rain": "Rain",
+      "snow": "Snow",
+      "thunderstorm": "Thunderstorm",
+      "unknown": "—"
+    },
+    "places": {
+      "halong": {
+        "name": "Ha Long Bay",
+        "country": "Vietnam"
+      },
+      "hoian": {
+        "name": "Hoi An",
+        "country": "Vietnam"
+      },
+      "kyoto": {
+        "name": "Kyoto",
+        "country": "Japan"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Japan"
+      },
+      "bali": {
+        "name": "Bali",
+        "country": "Indonesia"
+      },
+      "sydney": {
+        "name": "Sydney",
+        "country": "Australia"
+      },
+      "maldives": {
+        "name": "Malé, Maldives",
+        "country": "Maldives"
+      },
+      "dubai": {
+        "name": "Dubai",
+        "country": "United Arab Emirates"
+      },
+      "santorini": {
+        "name": "Santorini",
+        "country": "Greece"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "Italy"
+      },
+      "amalfi": {
+        "name": "Amalfi Coast",
+        "country": "Italy"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "France"
+      },
+      "london": {
+        "name": "London",
+        "country": "United Kingdom"
+      },
+      "reykjavik": {
+        "name": "Reykjavík",
+        "country": "Iceland"
+      },
+      "marrakesh": {
+        "name": "Marrakesh",
+        "country": "Morocco"
+      },
+      "capetown": {
+        "name": "Cape Town",
+        "country": "South Africa"
+      },
+      "nyc": {
+        "name": "New York City",
+        "country": "United States"
+      },
+      "grandcanyon": {
+        "name": "Grand Canyon",
+        "country": "United States"
+      },
+      "banff": {
+        "name": "Banff",
+        "country": "Canada"
+      },
+      "machupicchu": {
+        "name": "Machu Picchu",
+        "country": "Peru"
+      },
+      "rio": {
+        "name": "Rio de Janeiro",
+        "country": "Brazil"
+      }
+    }
+  },
+  "newsletter": {
+    "imageAlt": "scenic view of a small luxury yacht cruising through calm mountain fjords at sunset with mirror reflections",
+    "title": "Join the Voyager Circle",
+    "description": "Unlock the hidden gems of travel. Our weekly editorial delivers exclusive property access and curates travel stories you won't find anywhere else.",
+    "emailPlaceholder": "Your email address",
+    "subscribe": "Subscribe"
+  },
+  "trust": {
+    "curator": {
+      "title": "Verified Curator",
+      "description": "Every property and experience is personally vetted by our global team of luxury experts."
+    },
+    "support": {
+      "title": "24/7 Priority Support",
+      "description": "A dedicated concierge available around the clock to handle every unexpected turn."
+    },
+    "pricing": {
+      "title": "Transparent Pricing",
+      "description": "No hidden fees, no dynamic surcharges. The price you see is the final editorial value."
+    }
+  }
+}

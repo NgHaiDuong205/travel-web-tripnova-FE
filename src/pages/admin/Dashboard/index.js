@@ -15,6 +15,7 @@ import { BOOKING_STATUS_LABELS } from "../../../services/bookingService";
 import { PAYMENT_STATUS_LABELS } from "../../../services/paymentService";
 import { formatDate, formatDateTime, formatMoney, isoDateFromToday } from "../../../utils/formatters";
 import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
+import { useT } from "../../../i18n/I18nContext";
 
 function StatTile({ icon, label, value, to }) {
     const body = (
@@ -28,12 +29,11 @@ function StatTile({ icon, label, value, to }) {
 }
 
 const PERIODS = [
-    { key: "7d", label: "7 days", days: 7, granularity: "day" },
-    { key: "30d", label: "30 days", days: 30, granularity: "day" },
-    { key: "90d", label: "90 days", days: 90, granularity: "week" },
-    { key: "12m", label: "12 months", days: 365, granularity: "month" },
+    { key: "7d", labelKey: "admin.dashboard.period7d", days: 7, granularity: "day" },
+    { key: "30d", labelKey: "admin.dashboard.period30d", days: 30, granularity: "day" },
+    { key: "90d", labelKey: "admin.dashboard.period90d", days: 90, granularity: "week" },
+    { key: "12m", labelKey: "admin.dashboard.period12m", days: 365, granularity: "month" },
 ];
-const GRANULARITY_LABELS = { day: "theo ngày", week: "theo tuần (bắt đầu thứ Hai)", month: "theo tháng" };
 
 /** % thay đổi so với kỳ trước; null nếu kỳ trước = 0 (không so sánh được). */
 function changePercent(current, previous) {
@@ -43,6 +43,7 @@ function changePercent(current, previous) {
 }
 
 function PeriodTile({ label, value, current, previous }) {
+    const t = useT();
     const change = previous === undefined ? undefined : changePercent(current, previous);
     return (
         <div className="rounded-xl border border-gray-100 p-4">
@@ -50,7 +51,7 @@ function PeriodTile({ label, value, current, previous }) {
             <p className="text-2xl font-extrabold text-gray-900 mt-1">{value}</p>
             {change !== undefined && (
                 <p className={`text-xs mt-1 font-semibold ${change == null ? "text-gray-400" : change >= 0 ? "text-green-700" : "text-red-600"}`}>
-                    {change == null ? "Không có dữ liệu kỳ trước" : `${change >= 0 ? "▲" : "▼"} ${Math.abs(change).toFixed(1)}% so với kỳ trước`}
+                    {change == null ? t("admin.dashboard.noPreviousData") : t("admin.dashboard.change", { direction: change >= 0 ? "▲" : "▼", value: Math.abs(change).toFixed(1) })}
                 </p>
             )}
         </div>
@@ -58,6 +59,7 @@ function PeriodTile({ label, value, current, previous }) {
 }
 
 function TopList({ title, items, currency, emptyText }) {
+    const t = useT();
     return (
         <section className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
             <h2 className="text-lg font-bold text-gray-900 mb-4">{title}</h2>
@@ -70,7 +72,7 @@ function TopList({ title, items, currency, emptyText }) {
                             <p className="font-semibold text-gray-900 truncate">{item.name}</p>
                             <p className="text-xs text-gray-500 truncate">
                                 {item.subtitle ? `${item.subtitle} · ` : ""}
-                                {item.bookings} bookings · {item.nights} nights
+                                {t("admin.dashboard.bookingNightSummary", { bookings: item.bookings, nights: item.nights })}
                             </p>
                         </div>
                         <span className="font-bold text-gray-900 whitespace-nowrap">{formatMoney(item.revenue, currency)}</span>
@@ -82,6 +84,7 @@ function TopList({ title, items, currency, emptyText }) {
 }
 
 function PeriodPerformance({ currency }) {
+    const t = useT();
     const [periodKey, setPeriodKey] = useState("30d");
     const [state, setState] = useState({ loading: true, error: "", stats: null, revenue: [], topHotels: [], topDestinations: [] });
     const period = PERIODS.find((p) => p.key === periodKey);
@@ -111,14 +114,14 @@ function PeriodPerformance({ currency }) {
             <section className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 space-y-6">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                        <h2 className="text-lg font-bold text-gray-900">Performance</h2>
+                                <h2 className="text-lg font-bold text-gray-900">{t("admin.dashboard.performance")}</h2>
                         {stats && (
                             <p className="text-sm text-gray-500">
-                                {formatDate(stats.from)} – {formatDate(stats.to)}, so với {period.label} liền trước
+                                {t("admin.dashboard.periodComparison", { from: formatDate(stats.from), to: formatDate(stats.to), period: t(period.labelKey) })}
                             </p>
                         )}
                     </div>
-                    <div className="flex rounded-lg border border-gray-200 overflow-hidden" role="group" aria-label="Chọn khoảng thời gian">
+                    <div className="flex rounded-lg border border-gray-200 overflow-hidden" role="group" aria-label={t("admin.dashboard.selectPeriod")}>
                         {PERIODS.map((p) => (
                             <button
                                 key={p.key}
@@ -127,44 +130,45 @@ function PeriodPerformance({ currency }) {
                                 onClick={() => setPeriodKey(p.key)}
                                 className={`px-3 py-1.5 text-xs font-bold ${p.key === periodKey ? "bg-primary text-white" : "text-gray-600 hover:bg-gray-50"}`}
                             >
-                                {p.label}
+                                {t(p.labelKey)}
                             </button>
                         ))}
                     </div>
                 </div>
 
                 <FormAlert>{state.error}</FormAlert>
-                {state.loading && !stats && <p className="text-gray-500">Đang tải...</p>}
+                {state.loading && !stats && <p className="text-gray-500">{t("common.state.loading")}</p>}
 
                 {stats && (
                     <div className={`space-y-6 ${state.loading ? "opacity-60" : ""}`}>
                         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-                            <PeriodTile label="Revenue" value={formatMoney(stats.revenue, currency)} current={stats.revenue} previous={stats.previousRevenue} />
-                            <PeriodTile label="Bookings" value={stats.totalBookings.toLocaleString()} current={stats.totalBookings} previous={stats.previousBookings} />
-                            <PeriodTile label="New users" value={stats.newUsers.toLocaleString()} current={stats.newUsers} previous={stats.previousNewUsers} />
-                            <PeriodTile label="Refunded" value={formatMoney(stats.refundedAmount, currency)} />
-                            <PeriodTile label="Avg. booking value" value={formatMoney(stats.averageBookingValue, currency)} />
+                            <PeriodTile label={t("admin.dashboard.revenue")} value={formatMoney(stats.revenue, currency)} current={stats.revenue} previous={stats.previousRevenue} />
+                            <PeriodTile label={t("admin.dashboard.bookings")} value={stats.totalBookings.toLocaleString()} current={stats.totalBookings} previous={stats.previousBookings} />
+                            <PeriodTile label={t("admin.dashboard.newUsers")} value={stats.newUsers.toLocaleString()} current={stats.newUsers} previous={stats.previousNewUsers} />
+                            <PeriodTile label={t("admin.dashboard.refunded")} value={formatMoney(stats.refundedAmount, currency)} />
+                            <PeriodTile label={t("admin.dashboard.averageBookingValue")} value={formatMoney(stats.averageBookingValue, currency)} />
                         </div>
                         <div>
                             <p className="text-sm text-gray-500 mb-4">
-                                Doanh thu = tổng giao dịch thanh toán thành công {GRANULARITY_LABELS[period.granularity]}.
+                                {t("admin.dashboard.revenueNote", { granularity: t(`admin.dashboard.granularity.${period.granularity}`) })}
                             </p>
-                            <RevenueChart points={state.revenue} currency={currency} emptyText={`Chưa có doanh thu trong ${period.label} qua`} />
+                            <RevenueChart points={state.revenue} currency={currency} emptyText={t("admin.dashboard.emptyRevenue", { period: t(period.labelKey) })} />
                         </div>
                     </div>
                 )}
             </section>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <TopList title="Top hotels" items={state.topHotels} currency={currency} emptyText="Chưa có đặt phòng đã thanh toán trong kỳ." />
-                <TopList title="Top destinations" items={state.topDestinations} currency={currency} emptyText="Chưa có đặt phòng đã thanh toán trong kỳ." />
+                <TopList title={t("admin.dashboard.topHotels")} items={state.topHotels} currency={currency} emptyText={t("admin.dashboard.emptyPaidBookings")} />
+                <TopList title={t("admin.dashboard.topDestinations")} items={state.topDestinations} currency={currency} emptyText={t("admin.dashboard.emptyPaidBookings")} />
             </div>
-            <p className="text-xs text-gray-500 -mt-6">Xếp hạng theo doanh thu ròng (đã trừ tiền hoàn) của đặt phòng tạo trong kỳ.</p>
+            <p className="text-xs text-gray-500 -mt-6">{t("admin.dashboard.rankingNote")}</p>
         </div>
     );
 }
 
 function RecentPayments({ currency }) {
+    const t = useT();
     const [payments, setPayments] = useState(null);
     useEffect(() => {
         fetchAdminRecentPayments(8).then(setPayments).catch(() => setPayments([]));
@@ -172,20 +176,20 @@ function RecentPayments({ currency }) {
     return (
         <section className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 overflow-x-auto">
             <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-bold text-gray-900">Recent payments</h2>
-                <Link to="/admin/payments" className="text-sm font-bold text-primary hover:underline">View all</Link>
+                <h2 className="text-lg font-bold text-gray-900">{t("admin.dashboard.recentPayments")}</h2>
+                <Link to="/admin/payments" className="text-sm font-bold text-primary hover:underline">{t("common.actions.viewAll")}</Link>
             </div>
-            {payments === null && <p className="text-sm text-gray-500">Đang tải...</p>}
-            {payments?.length === 0 && <p className="text-sm text-gray-500">Chưa có giao dịch.</p>}
+            {payments === null && <p className="text-sm text-gray-500">{t("common.state.loading")}</p>}
+            {payments?.length === 0 && <p className="text-sm text-gray-500">{t("admin.dashboard.emptyPayments")}</p>}
             {payments?.length > 0 && (
                 <table className="w-full text-left text-sm min-w-[560px]">
                     <thead>
                         <tr className="text-xs uppercase text-gray-500">
-                            <th className="py-2">Order</th>
-                            <th className="py-2">Customer</th>
-                            <th className="py-2">Date</th>
-                            <th className="py-2">Status</th>
-                            <th className="py-2 text-right">Amount</th>
+                            <th className="py-2">{t("admin.dashboard.order")}</th>
+                            <th className="py-2">{t("admin.dashboard.customer")}</th>
+                            <th className="py-2">{t("common.fields.date")}</th>
+                            <th className="py-2">{t("common.fields.status")}</th>
+                            <th className="py-2 text-right">{t("admin.dashboard.amount")}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -206,6 +210,7 @@ function RecentPayments({ currency }) {
 }
 
 function AdminDashboard() {
+    const t = useT();
     const [data, setData] = useState(null);
     const [error, setError] = useState("");
 
@@ -214,19 +219,19 @@ function AdminDashboard() {
     }, []);
 
     if (!data) {
-        return error ? <FormAlert>{error}</FormAlert> : <p className="text-gray-500">Đang tải...</p>;
+        return error ? <FormAlert>{error}</FormAlert> : <p className="text-gray-500">{t("common.state.loading")}</p>;
     }
 
     return (
         <div className="space-y-8">
-            <h1 className="text-3xl font-extrabold text-primary">Dashboard</h1>
+            <h1 className="text-3xl font-extrabold text-primary">{t("admin.dashboard.title")}</h1>
 
             <section className="grid grid-cols-2 xl:grid-cols-5 gap-4">
-                <StatTile icon="payments" label="Total revenue" value={formatMoney(data.totalRevenue, data.currencyCode)} to="/admin/payments" />
-                <StatTile icon="hotel" label="Bookings" value={data.totalBookings.toLocaleString()} to="/admin/bookings" />
-                <StatTile icon="group" label="Users" value={data.totalUsers.toLocaleString()} to="/admin/users" />
-                <StatTile icon="apartment" label="Active hotels" value={`${data.activeHotels.toLocaleString()} / ${data.totalHotels.toLocaleString()}`} />
-                <StatTile icon="mail" label="New messages" value={data.newContactMessages.toLocaleString()} to="/admin/messages" />
+                <StatTile icon="payments" label={t("admin.dashboard.totalRevenue")} value={formatMoney(data.totalRevenue, data.currencyCode)} to="/admin/payments" />
+                <StatTile icon="hotel" label={t("admin.dashboard.bookings")} value={data.totalBookings.toLocaleString()} to="/admin/bookings" />
+                <StatTile icon="group" label={t("admin.dashboard.users")} value={data.totalUsers.toLocaleString()} to="/admin/users" />
+                <StatTile icon="apartment" label={t("admin.dashboard.activeHotels")} value={`${data.activeHotels.toLocaleString()} / ${data.totalHotels.toLocaleString()}`} />
+                <StatTile icon="mail" label={t("admin.dashboard.newMessages")} value={data.newContactMessages.toLocaleString()} to="/admin/messages" />
             </section>
 
             <PeriodPerformance currency={data.currencyCode} />
@@ -235,8 +240,8 @@ function AdminDashboard() {
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 <section className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                    <h2 className="text-lg font-bold text-gray-900 mb-4">Bookings by status</h2>
-                    {Object.keys(data.bookingsByStatus).length === 0 && <p className="text-sm text-gray-500">Chưa có đặt phòng.</p>}
+                    <h2 className="text-lg font-bold text-gray-900 mb-4">{t("admin.dashboard.bookingsByStatus")}</h2>
+                    {Object.keys(data.bookingsByStatus).length === 0 && <p className="text-sm text-gray-500">{t("admin.dashboard.emptyBookings")}</p>}
                     <ul className="space-y-3">
                         {Object.entries(data.bookingsByStatus).map(([status, count]) => (
                             <li key={status} className="flex items-center justify-between">
@@ -251,18 +256,18 @@ function AdminDashboard() {
 
                 <section className="xl:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-100 overflow-x-auto">
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg font-bold text-gray-900">Recent bookings</h2>
-                        <Link to="/admin/bookings" className="text-sm font-bold text-primary hover:underline">View all</Link>
+                        <h2 className="text-lg font-bold text-gray-900">{t("admin.dashboard.recentBookings")}</h2>
+                        <Link to="/admin/bookings" className="text-sm font-bold text-primary hover:underline">{t("common.actions.viewAll")}</Link>
                     </div>
                     <table className="w-full text-left text-sm min-w-[560px]">
                         <thead>
                             <tr className="text-xs uppercase text-gray-500">
-                                <th className="py-2">Order</th>
-                                <th className="py-2">Guest</th>
-                                <th className="py-2">Hotel</th>
-                                <th className="py-2">Stay</th>
-                                <th className="py-2">Status</th>
-                                <th className="py-2 text-right">Total</th>
+                                <th className="py-2">{t("admin.dashboard.order")}</th>
+                                <th className="py-2">{t("admin.bookings.guest")}</th>
+                                <th className="py-2">{t("admin.dashboard.hotel")}</th>
+                                <th className="py-2">{t("admin.bookings.stay")}</th>
+                                <th className="py-2">{t("common.fields.status")}</th>
+                                <th className="py-2 text-right">{t("common.fields.total")}</th>
                             </tr>
                         </thead>
                         <tbody>

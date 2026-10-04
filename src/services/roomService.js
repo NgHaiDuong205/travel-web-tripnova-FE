@@ -1,5 +1,6 @@
 import apiClient from "../config/axiosConfig";
 import { pickField, unwrapListResponse } from "../utils/apiHelpers";
+import { fromDisplayToUsd } from "../utils/currency";
 
 export function normalizeRoom(raw) {
     const amenities = raw.amenities ?? raw.amenityList ?? raw.amenityIds ?? [];
@@ -43,7 +44,7 @@ export function normalizeRoom(raw) {
         roomTypeName: pickField(raw, "roomTypeName", "room_type_name"),
         maxGuests: Number(pickField(raw, "maxGuests", "max_guests", "maxOccupancy", "max_occupancy", "capacity")) || 1,
         price: price != null ? Number(price) : undefined,
-        currency: pickField(raw, "currency", "currencyCode", "currency_code") || "€",
+        currency: pickField(raw, "currency", "currencyCode", "currency_code") || "USD",
         image,
         description: pickField(raw, "description", "shortDescription", "short_description"),
         highlights: Array.isArray(raw.highlights)
@@ -85,8 +86,9 @@ export function buildRoomQueryParams(filters = {}) {
     const maxGuests = Number(filters.maxGuests);
     if (maxGuests > 0) params.maxGuests = maxGuests;
 
-    const min = filters.minPrice !== "" && filters.minPrice != null ? Number(filters.minPrice) : null;
-    const max = filters.maxPrice !== "" && filters.maxPrice != null ? Number(filters.maxPrice) : null;
+    // ô lọc nhập theo tiền hiển thị (VND khi tiếng Việt) → API nhận USD
+    const min = filters.minPrice !== "" && filters.minPrice != null ? fromDisplayToUsd(filters.minPrice) : null;
+    const max = filters.maxPrice !== "" && filters.maxPrice != null ? fromDisplayToUsd(filters.maxPrice) : null;
     if (min != null && !Number.isNaN(min)) params.minPrice = min;
     if (max != null && !Number.isNaN(max)) params.maxPrice = max;
 

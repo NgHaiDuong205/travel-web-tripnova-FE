@@ -1,32 +1,35 @@
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import UserAvatar from "../common/UserAvatar";
+import ThemeToggle from "../common/ThemeToggle";
+import { useT } from "../../i18n/I18nContext";
 
 const NAV_ITEMS = [
-    { to: "/admin", label: "Dashboard", icon: "dashboard", end: true },
-    { to: "/admin/hotels", label: "Hotels", icon: "apartment" },
-    { to: "/admin/hotel-images", label: "Hotel Images", icon: "photo_library" },
-    { to: "/admin/hotel-managers", label: "Hotel Managers", icon: "manage_accounts" },
-    { to: "/admin/cars", label: "Cars", icon: "directions_car" },
-    { to: "/admin/flights", label: "Flights", icon: "flight" },
-    { to: "/admin/tours", label: "Tours", icon: "tour" },
-    { to: "/admin/amenities", label: "Amenities", icon: "room_service" },
-    { to: "/admin/geography", label: "Geography", icon: "public" },
-    { to: "/admin/bookings", label: "Bookings", icon: "book_online" },
-    { to: "/admin/users", label: "Users", icon: "group" },
-    { to: "/admin/roles", label: "Roles", icon: "admin_panel_settings" },
-    { to: "/admin/payments", label: "Payments", icon: "payments" },
-    { to: "/admin/invoices", label: "Invoices", icon: "receipt_long" },
-    { to: "/admin/messages", label: "Messages", icon: "mail" },
-    { to: "/admin/posts", label: "Reviews", icon: "reviews" },
-    { to: "/admin/search-queries", label: "Search Queries", icon: "query_stats" },
-    { to: "/admin/audit-logs", label: "Audit Logs", icon: "history_edu" },
+    { to: "/admin", labelKey: "admin.layout.dashboard", icon: "dashboard", end: true },
+    { to: "/admin/hotels", labelKey: "admin.layout.hotels", icon: "apartment" },
+    { to: "/admin/hotel-images", labelKey: "admin.layout.hotelImages", icon: "photo_library" },
+    { to: "/admin/hotel-managers", labelKey: "admin.layout.hotelManagers", icon: "manage_accounts" },
+    { to: "/admin/cars", labelKey: "admin.layout.cars", icon: "directions_car" },
+    { to: "/admin/flights", labelKey: "admin.layout.flights", icon: "flight" },
+    { to: "/admin/tours", labelKey: "admin.layout.tours", icon: "tour" },
+    { to: "/admin/amenities", labelKey: "admin.layout.amenities", icon: "room_service" },
+    { to: "/admin/geography", labelKey: "admin.layout.geography", icon: "public" },
+    { to: "/admin/bookings", labelKey: "admin.layout.bookings", icon: "book_online" },
+    { to: "/admin/users", labelKey: "admin.layout.users", icon: "group" },
+    { to: "/admin/roles", labelKey: "admin.layout.roles", icon: "admin_panel_settings" },
+    { to: "/admin/payments", labelKey: "admin.layout.payments", icon: "payments" },
+    { to: "/admin/invoices", labelKey: "admin.layout.invoices", icon: "receipt_long" },
+    { to: "/admin/messages", labelKey: "admin.layout.messages", icon: "mail" },
+    { to: "/admin/posts", labelKey: "admin.layout.reviews", icon: "reviews" },
+    { to: "/admin/search-queries", labelKey: "admin.layout.searchQueries", icon: "query_stats" },
+    { to: "/admin/audit-logs", labelKey: "admin.layout.auditLogs", icon: "history_edu" },
 ];
 
 /** Khung trang quản trị; ManagerLayout dùng lại với menu / nhãn / trang chủ riêng (siteLink = false: ẩn "View site"). */
 function AdminLayout({ navItems = NAV_ITEMS, badge = "ADMIN", home = "/admin", siteLink = true }) {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const t = useT();
 
     const handleSignOut = async () => {
         await logout();
@@ -52,7 +55,7 @@ function AdminLayout({ navItems = NAV_ITEMS, badge = "ADMIN", home = "/admin", s
                             }
                         >
                             <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
-                            {item.label}
+                            {t(item.labelKey)}
                         </NavLink>
                     ))}
                 </nav>
@@ -65,13 +68,14 @@ function AdminLayout({ navItems = NAV_ITEMS, badge = "ADMIN", home = "/admin", s
                         </div>
                     </div>
                     <div className="flex gap-2">
+                        <ThemeToggle tone="dark" />
                         {siteLink && (
                             <Link to="/" className="flex-1 text-center text-xs font-bold py-2 rounded bg-white/10 hover:bg-white/20">
-                                View site
+                                {t("admin.layout.viewSite")}
                             </Link>
                         )}
                         <button type="button" onClick={handleSignOut} className="flex-1 text-xs font-bold py-2 rounded bg-white/10 hover:bg-red-500">
-                            Sign out
+                            {t("admin.layout.signOut")}
                         </button>
                     </div>
                 </div>

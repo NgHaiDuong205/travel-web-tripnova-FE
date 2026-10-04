@@ -6,9 +6,12 @@ import FormAlert from "../../../components/common/FormAlert";
 import FavoriteButton from "../../../components/common/FavoriteButton";
 import AddToTripCartButton from "../../../components/catalog/AddToTripCartButton";
 import ReviewSection from "../../../components/client/ReviewSection";
+import PendingOrderNotice, { usePendingOrders } from "../../../components/catalog/PendingOrderNotice";
 import { PAYMENT_METHODS } from "../../../services/bookingService";
 import {
+    cancelTourBooking,
     createTourBooking,
+    fetchMyTourBookings,
     fetchTour,
     fetchTourAvailability,
     fetchTourCars,
@@ -17,6 +20,7 @@ import {
 } from "../../../services/tourService";
 import { formatDate, formatDateTime, formatMoney } from "../../../utils/formatters";
 import { localDateTimeFromToday } from "../../../utils/dateTime";
+import { useT } from "../../../i18n/I18nContext";
 
 const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1800&q=80";
 const FREE_CANCELLATION_DAYS = 30;
@@ -38,14 +42,14 @@ const iconFor = (text) => INCLUSION_ICONS.find(([pattern]) => new RegExp(pattern
 const isoPlusDays = (days) => localDateTimeFromToday(days).slice(0, 10);
 
 /** Bộ đếm +/- (người lớn, trẻ em) theo thiết kế Booking Summary. */
-function Counter({ label, value, min, max, onChange }) {
+function Counter({ label, value, min, max, onChange, t }) {
     return (
         <div className="flex items-center justify-between">
             <span className="text-sm font-bold text-on-surface">{label}</span>
             <div className="flex items-center gap-3 bg-surface-container-low rounded-full px-2 py-1">
                 <button
                     type="button"
-                    aria-label={`Fewer ${label}`}
+                    aria-label={t("tours.detail.fewer", { label })}
                     disabled={value <= min}
                     onClick={() => onChange(value - 1)}
                     className="w-8 h-8 rounded-full font-bold hover:bg-surface-container-high disabled:opacity-30"
@@ -55,7 +59,7 @@ function Counter({ label, value, min, max, onChange }) {
                 <span className="w-5 text-center font-bold">{value}</span>
                 <button
                     type="button"
-                    aria-label={`More ${label}`}
+                    aria-label={t("tours.detail.more", { label })}
                     disabled={value >= max}
                     onClick={() => onChange(value + 1)}
                     className="w-8 h-8 rounded-full font-bold hover:bg-surface-container-high disabled:opacity-30"
@@ -69,6 +73,7 @@ function Counter({ label, value, min, max, onChange }) {
 
 /** Chi tiết tour + đặt tour (theo TOUR_DETAIL.HTML). Đặt xong chuyển tới /trip-payment/:id. */
 function TourDetail() {
+    const t = useT();
     const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
@@ -86,6 +91,9 @@ function TourDetail() {
     const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]?.value || "credit_card");
     const [formError, setFormError] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    const [availabilityNonce, setAvailabilityNonce] = useState(0); // tăng để lấy lại số chỗ (sau khi huỷ đơn)
+    // Đơn tour này đã đặt nhưng chưa thanh toán (VD bấm Back từ trang thanh toán)
+    const { orders: pendingOrders, reload: reloadPending } = usePendingOrders(fetchMyTourBookings, (b) => b.tourId === id, id);
 
     useEffect(() => {
         setTour(null);
@@ -95,7 +103,7 @@ function TourDetail() {
                 setDate(data.departureDate || isoPlusDays(Math.max(MIN_LEAD_DAYS, 14)));
                 if (data.minParticipants && data.minParticipants > 2) setAdults(Math.min(data.minParticipants, 9));
             })
-            .catch((err) => setError(err.status === 404 ? "This tour is no longer available." : err.message));
+            .catch((err) => setError(err.status === 404 ? t("tours.detail.noLongerAvailable") : err.message));
         fetchTourHotels(id)
             .then(setHotels)
             .catch(() => setHotels([]));
@@ -105,7 +113,7 @@ function TourDetail() {
         fetchTourFlights(id)
             .then(setFlights)
             .catch(() => setFlights([]));
-    }, [id]);
+    }, [id, t]);
 
     useEffect(() => {
         if (user)
@@ -126,7 +134,7 @@ function TourDetail() {
         return () => {
             cancelled = true;
         };
-    }, [tour, id, date]);
+    }, [tour, id, date, availabilityNonce]);
 
     const handleBook = async () => {
         if (!isLoggedIn) {
@@ -134,7 +142,7 @@ function TourDetail() {
             return;
         }
         if (!contact.name.trim()) {
-            setFormError("Please enter the contact name.");
+            setFormError(t("tours.booking.contactNameRequired"));
             return;
         }
         setSubmitting(true);
@@ -166,7 +174,7 @@ function TourDetail() {
                     className="inline-flex items-center gap-2 text-sm font-medium text-on-surface-variant hover:text-primary mb-6"
                 >
                     <span className="material-symbols-outlined text-[20px]">arrow_back</span>
-                    Back to Tours
+                    {t("tours.detail.backToTours")}
                 </Link>
                 <FormAlert>{error}</FormAlert>
             </main>
@@ -206,13 +214,13 @@ function TourDetail() {
                         className="inline-flex items-center gap-2 text-white/90 hover:text-white font-medium text-sm w-fit"
                     >
                         <span className="material-symbols-outlined text-[20px]">arrow_back</span>
-                        Back to Tours
+                        {t("tours.detail.backToTours")}
                     </Link>
                     <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
                         <div className="max-w-3xl">
                             <div className="flex items-center gap-3 mb-4">
                                 <span className="inline-block bg-tertiary-fixed text-on-tertiary-fixed text-[10px] px-3 py-1 rounded font-bold tracking-widest uppercase">
-                                    {tour.durationDays}-Day Journey
+                                    {t("tours.detail.dayJourney", { count: tour.durationDays })}
                                 </span>
                                 <FavoriteButton itemType="tour" itemId={id} />
                             </div>
@@ -222,7 +230,7 @@ function TourDetail() {
                             <div className="flex flex-wrap gap-6 text-white/90 font-medium">
                                 <span className="flex items-center gap-2">
                                     <span className="material-symbols-outlined">schedule</span>
-                                    {tour.durationDays} Days{tour.durationNights ? ` · ${tour.durationNights} Nights` : ""}
+                                    {t("common.units.day", { count: tour.durationDays })}{tour.durationNights ? ` · ${t("common.units.night", { count: tour.durationNights })}` : ""}
                                 </span>
                                 {place && (
                                     <span className="flex items-center gap-2">
@@ -233,7 +241,7 @@ function TourDetail() {
                                 {tour.departureLocation && (
                                     <span className="flex items-center gap-2">
                                         <span className="material-symbols-outlined">trip_origin</span>
-                                        From {tour.departureLocation}
+                                        {t("tours.detail.fromLocation", { location: tour.departureLocation })}
                                     </span>
                                 )}
                             </div>
@@ -241,27 +249,27 @@ function TourDetail() {
                         {/* Floating booking card */}
                         <div className="bg-surface/95 backdrop-blur-md rounded-xl p-6 w-full lg:w-80 shadow-2xl">
                             <span className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
-                                Starting from
+                                {t("tours.detail.startingFrom")}
                             </span>
                             <div className="font-headline text-3xl font-black text-primary mb-4">
                                 {formatMoney(tour.priceAdult, tour.currencyCode)}{" "}
-                                <span className="text-sm font-medium text-on-surface-variant">/ person</span>
+                                <span className="text-sm font-medium text-on-surface-variant">{t("common.units.perPerson")}</span>
                             </div>
                             <div className="grid grid-cols-2 gap-3 text-sm mb-5">
                                 <div>
                                     <span className="block text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
-                                        Next departure
+                                        {t("tours.detail.nextDeparture")}
                                     </span>
                                     <span className="font-bold">
-                                        {tour.departureDate ? formatDate(tour.departureDate) : "Flexible"}
+                                        {tour.departureDate ? formatDate(tour.departureDate) : t("tours.detail.flexible")}
                                     </span>
                                 </div>
                                 <div>
                                     <span className="block text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
-                                        Availability
+                                        {t("tours.detail.availability")}
                                     </span>
                                     <span className="font-bold">
-                                        {spotsLeft != null ? `${spotsLeft} spot${spotsLeft === 1 ? "" : "s"} left` : "Open"}
+                                        {spotsLeft != null ? t("tours.detail.spotsLeft", { count: spotsLeft }) : t("tours.detail.open")}
                                     </span>
                                 </div>
                             </div>
@@ -270,21 +278,39 @@ function TourDetail() {
                                 onClick={() => document.getElementById("book")?.scrollIntoView({ behavior: "smooth" })}
                                 className="w-full editorial-gradient text-white py-3 rounded-lg font-bold hover:opacity-90"
                             >
-                                Book This Tour
+                                {t("tours.detail.bookThisTour")}
                             </button>
                             <p className="text-[11px] text-center text-on-surface-variant mt-3">
-                                Flexible cancellation up to {FREE_CANCELLATION_DAYS} days prior
+                                {t("tours.detail.flexibleCancellation", { count: FREE_CANCELLATION_DAYS })}
                             </p>
                         </div>
                     </div>
                 </div>
             </section>
 
+            {pendingOrders.length > 0 && (
+                <div className="max-w-screen-2xl mx-auto px-8 pt-10">
+                    <PendingOrderNotice
+                        orders={pendingOrders}
+                        describe={(bookings) =>
+                            bookings
+                                .map((b) => `${formatDate(b.departureDate)} · ${t("common.units.guest", { count: (b.numAdults || 0) + (b.numChildren || 0) })}`)
+                                .join("; ")
+                        }
+                        onCancel={(bookings) => cancelTourBooking(bookings[0].id, "Cancelled by customer before payment")}
+                        onChanged={() => {
+                            reloadPending();
+                            setAvailabilityNonce((n) => n + 1);
+                        }}
+                    />
+                </div>
+            )}
+
             <div className="max-w-screen-2xl mx-auto px-8 py-20 grid grid-cols-1 lg:grid-cols-3 gap-16">
                 <div className="lg:col-span-2 space-y-20">
                     {/* Overview */}
                     <section>
-                        <h2 className="font-headline text-3xl font-bold text-primary mb-6">The Journey</h2>
+                        <h2 className="font-headline text-3xl font-bold text-primary mb-6">{t("tours.detail.theJourney")}</h2>
                         <p className="text-lg text-on-surface-variant leading-relaxed whitespace-pre-line">{tour.description}</p>
                         {tour.highlights?.length > 0 && (
                             <div className="flex flex-wrap gap-2 mt-6">
@@ -304,9 +330,9 @@ function TourDetail() {
                     {hotels.length > 0 && (
                         <section>
                             <div className="flex items-end justify-between mb-8">
-                                <h2 className="font-headline text-3xl font-bold text-primary">Stays Included</h2>
+                                <h2 className="font-headline text-3xl font-bold text-primary">{t("tours.detail.staysIncluded")}</h2>
                                 <span className="text-sm font-bold text-on-surface-variant">
-                                    {hotels.length} Handpicked Propert{hotels.length === 1 ? "y" : "ies"}
+                                    {t("tours.detail.handpickedProperty", { count: hotels.length })}
                                 </span>
                             </div>
                             <div className="space-y-6">
@@ -326,8 +352,8 @@ function TourDetail() {
                                         <div className="p-6">
                                             <span className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
                                                 {h.destinationName}
-                                                {h.checkInDay ? ` · Day ${h.checkInDay}` : ""}
-                                                {h.nights ? ` · ${h.nights} night${h.nights === 1 ? "" : "s"}` : ""}
+                                                {h.checkInDay ? ` · ${t("tours.detail.day", { count: h.checkInDay })}` : ""}
+                                                {h.nights ? ` · ${t("common.units.night", { count: h.nights })}` : ""}
                                             </span>
                                             <h3 className="font-headline text-2xl font-bold text-on-surface mt-1 mb-2">
                                                 {h.name}
@@ -346,7 +372,7 @@ function TourDetail() {
                     {/* Itinerary timeline */}
                     {tour.itinerary?.length > 0 && (
                         <section>
-                            <h2 className="font-headline text-3xl font-bold text-primary mb-10">The Itinerary</h2>
+                            <h2 className="font-headline text-3xl font-bold text-primary mb-10">{t("tours.detail.theItinerary")}</h2>
                             <ol className="relative border-l-2 border-primary-fixed-dim ml-3 space-y-10">
                                 {tour.itinerary.map((day) => (
                                     <li key={`${day.label}-${day.title}`} className="pl-8 relative">
@@ -367,7 +393,7 @@ function TourDetail() {
                     {/* Transport */}
                     {(flights.length > 0 || cars.length > 0) && (
                         <section>
-                            <h2 className="font-headline text-3xl font-bold text-primary mb-6">Getting Around</h2>
+                            <h2 className="font-headline text-3xl font-bold text-primary mb-6">{t("tours.detail.gettingAround")}</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {flights.map((f) => (
                                     <div
@@ -377,7 +403,7 @@ function TourDetail() {
                                         <span className="material-symbols-outlined text-primary text-3xl">flight</span>
                                         <div>
                                             <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
-                                                {f.leg || "Flight"}
+                                                {f.leg || t("tours.detail.flight")}
                                             </p>
                                             <p className="font-bold">
                                                 {f.airline} {f.flightNumber} · {f.departureAirportCode} → {f.arrivalAirportCode}
@@ -394,11 +420,11 @@ function TourDetail() {
                                         <span className="material-symbols-outlined text-primary text-3xl">airport_shuttle</span>
                                         <div>
                                             <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
-                                                {c.usageDay ? `Day ${c.usageDay}` : "Transfer"}
+                                                {c.usageDay ? t("tours.detail.day", { count: c.usageDay }) : t("tours.detail.transfer")}
                                             </p>
                                             <p className="font-bold">{c.name}</p>
                                             <p className="text-xs text-on-surface-variant">
-                                                {c.seats} seats{c.withDriver ? " · with driver" : ""}
+                                                {t("tours.detail.seats", { count: c.seats, withDriver: c.withDriver ? t("tours.detail.withDriver") : "" })}
                                             </p>
                                         </div>
                                     </div>
@@ -410,7 +436,7 @@ function TourDetail() {
                     {/* Inclusions */}
                     {(tour.included?.length > 0 || tour.excluded?.length > 0) && (
                         <section>
-                            <h2 className="font-headline text-3xl font-bold text-primary mb-8">Curated Inclusions</h2>
+                            <h2 className="font-headline text-3xl font-bold text-primary mb-8">{t("tours.detail.curatedInclusions")}</h2>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 {tour.included.map((item) => (
                                     <div
@@ -429,51 +455,51 @@ function TourDetail() {
                             </div>
                             {tour.excluded?.length > 0 && (
                                 <div className="mt-6 text-sm text-on-surface-variant">
-                                    <span className="font-bold text-on-surface">Not included: </span>
+                                    <span className="font-bold text-on-surface">{t("tours.detail.notIncluded")}</span>
                                     {tour.excluded.join(" · ")}
                                 </div>
                             )}
                         </section>
                     )}
 
-                    <ReviewSection entityType="tour" entityId={id} title="Traveller Reviews" />
+                    <ReviewSection entityType="tour" entityId={id} title={t("tours.detail.travellerReviews")} />
                 </div>
 
                 {/* Booking summary */}
                 <div id="book" className="scroll-mt-24">
                     <BookingSummaryCard
-                        eyebrow="Booking Summary"
+                        eyebrow={t("tours.booking.summary")}
                         price={formatMoney(tour.priceAdult, tour.currencyCode)}
-                        priceSuffix="/ adult"
+                        priceSuffix={t("common.units.perPerson")}
                         rows={[
                             {
-                                label: `Adults × ${adults}`,
+                                label: t("tours.booking.adultQuantity", { count: adults }),
                                 value: formatMoney(adults * Number(tour.priceAdult), tour.currencyCode),
                             },
                             ...(children > 0
                                 ? [
                                       {
-                                          label: `Children × ${children}`,
+                                          label: t("tours.booking.childQuantity", { count: children }),
                                           value: formatMoney(children * childPrice, tour.currencyCode),
                                       },
                                   ]
                                 : []),
                         ]}
-                        totalLabel="Total Price"
+                        totalLabel={t("tours.booking.totalPrice")}
                         total={formatMoney(total, tour.currencyCode)}
-                        ctaLabel={notEnough ? "Not enough spots" : "Confirm Booking"}
+                        ctaLabel={notEnough ? t("tours.booking.notEnoughSpots") : t("tours.booking.confirmBooking")}
                         ctaDisabled={notEnough || !date}
                         ctaBusy={submitting}
                         onCta={handleBook}
                         footnote={
                             cancellationDate
-                                ? `Free cancellation until ${cancellationDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}`
-                                : `Free cancellation up to ${FREE_CANCELLATION_DAYS} days prior`
+                                ? t("tours.booking.freeCancellationUntil", { date: formatDate(cancellationDate) })
+                                : t("tours.detail.flexibleCancellation", { count: FREE_CANCELLATION_DAYS })
                         }
                     >
                         <label className="block">
                             <span className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1.5 ml-1">
-                                Departure
+                                {t("tours.booking.departure")}
                             </span>
                             <input
                                 type="date"
@@ -484,19 +510,19 @@ function TourDetail() {
                                 onChange={(e) => setDate(e.target.value)}
                             />
                             {tour.departureDate && (
-                                <span className="text-[11px] text-on-surface-variant ml-1">Fixed-date departure</span>
+                                <span className="text-[11px] text-on-surface-variant ml-1">{t("tours.booking.fixedDateDeparture")}</span>
                             )}
                         </label>
-                        <Counter label="Adults" value={adults} min={1} max={20} onChange={setAdults} />
-                        <Counter label="Children" value={children} min={0} max={20} onChange={setChildren} />
+                        <Counter label={t("common.fields.adults")} value={adults} min={1} max={20} onChange={setAdults} t={t} />
+                        <Counter label={t("common.fields.children")} value={children} min={0} max={20} onChange={setChildren} t={t} />
                         {spotsLeft != null && (
                             <p className={`text-xs font-bold ${notEnough ? "text-error" : "text-green-700"}`}>
-                                {spotsLeft} spot{spotsLeft === 1 ? "" : "s"} left for this date
+                                {t("tours.booking.spotsLeftForDate", { count: spotsLeft })}
                             </p>
                         )}
                         <input
                             className={inputClass}
-                            placeholder="Contact name *"
+                            placeholder={t("tours.booking.contactName")}
                             maxLength={150}
                             value={contact.name}
                             onChange={(e) => setContact((c) => ({ ...c, name: e.target.value }))}
@@ -504,14 +530,14 @@ function TourDetail() {
                         <div className="grid grid-cols-2 gap-2">
                             <input
                                 className={inputClass}
-                                placeholder="Phone"
+                                placeholder={t("common.fields.phone")}
                                 maxLength={30}
                                 value={contact.phone}
                                 onChange={(e) => setContact((c) => ({ ...c, phone: e.target.value }))}
                             />
                             <input
                                 className={inputClass}
-                                placeholder="Email"
+                                placeholder={t("common.fields.email")}
                                 type="email"
                                 maxLength={150}
                                 value={contact.email}
@@ -521,7 +547,7 @@ function TourDetail() {
                         <select className={inputClass} value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
                             {PAYMENT_METHODS.map((m) => (
                                 <option key={m.value} value={m.value}>
-                                    {m.label}
+                                    {t(`common.paymentMethods.${m.value}`)}
                                 </option>
                             ))}
                         </select>
@@ -530,7 +556,7 @@ function TourDetail() {
                             itemType="tour"
                             disabled={notEnough || !date}
                             build={() => {
-                                if (!contact.name.trim()) throw new Error("Please enter the contact name.");
+                                if (!contact.name.trim()) throw new Error(t("tours.booking.contactNameRequired"));
                                 return {
                                     tourId: id,
                                     departureDate: date,

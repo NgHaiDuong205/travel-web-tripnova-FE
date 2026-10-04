@@ -1,16 +1,18 @@
 import { NavLink } from "react-router-dom";
+import { useT } from "../../i18n/I18nContext";
 
 function NavigationMenu() {
+    const t = useT();
     const menuItems = [
-        { path: "/", label: "Home" },
-        { path: "/hotels", label: "Hotels" },
-        { path: "/cars", label: "Car Rentals" },
-        { path: "/flights", label: "Flights" },
-        { path: "/tours", label: "Tours" },
-        { path: "/destinations", label: "Destinations" },
-        { path: "/search", label: "Search" },
-        { path: "/abouts", label: "About" },
-        { path: "/contacts", label: "Contact" },
+        { path: "/", label: t("nav.home") },
+        { path: "/hotels", label: t("nav.hotels") },
+        { path: "/cars", label: t("nav.cars") },
+        { path: "/flights", label: t("nav.flights") },
+        { path: "/tours", label: t("nav.tours") },
+        { path: "/destinations", label: t("nav.destinations") },
+        { path: "/ai-planner", label: t("nav.aiPlanner") },
+        { path: "/abouts", label: t("nav.about") },
+        { path: "/contacts", label: t("nav.contact") },
     ];
 
     return (

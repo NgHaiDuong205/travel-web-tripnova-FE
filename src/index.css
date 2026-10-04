@@ -7,6 +7,7 @@
 
 body {
   zoom: 0.75;
+  @apply bg-background text-on-background;
 }
 
 @layer utilities {
@@ -20,14 +21,14 @@ body {
     background: linear-gradient(135deg, #002155 0%, #003580 100%);
   }
   .glass-nav {
-    background: rgba(251, 249, 248, 0.9);
+    background: rgb(var(--c-surface) / 0.9);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(0, 0, 0, 0.05);
   }
   .sidebar-active {
-    background-color: #ffffff;
-    color: #003580;
+    background-color: rgb(var(--bg-white));
+    color: rgb(var(--c-primary-container));
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     font-weight: 700;
   }
@@ -46,3 +47,30 @@ body {
 .animate-subtle-zoom {
   animation: subtle-zoom 20s infinite alternate ease-in-out;
 }
+/* ---- Dark mode: các class màu hex viết cứng (text-[#003580]...) không đi qua biến theme ---- */
+html.dark .glass-nav { border-color: rgba(255, 255, 255, 0.06); }
+html.dark .editorial-shadow { box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35); }
+html.dark .text-\[\#003580\],
+html.dark .hover\:text-\[\#003580\]:hover { color: rgb(var(--c-primary)); }
+html.dark .text-\[\#434651\] { color: rgb(var(--c-on-surface-variant)); }
+html.dark .bg-\[\#003580\] { background-color: rgb(var(--bg-primary)); }
+html.dark .border-\[\#003580\],
+html.dark .focus\:border-\[\#003580\]:focus { border-color: rgb(var(--c-primary)); }
+html.dark .after\:bg-\[\#003580\]::after { background-color: rgb(var(--c-primary)); }
+
+/* Biểu đồ recharts */
+html.dark .recharts-default-tooltip {
+  background-color: rgb(var(--c-surface-container-high)) !important;
+  border-color: rgb(var(--c-outline-variant)) !important;
+  color: rgb(var(--c-on-surface));
+}
+html.dark .recharts-cartesian-grid line { stroke: rgb(var(--c-outline-variant)); }
+html.dark .recharts-cartesian-axis-tick-value { fill: rgb(var(--c-on-surface-variant)); }
+html.dark .recharts-legend-item-text { color: rgb(var(--c-on-surface-variant)) !important; }
+
+/* Ảnh / bản đồ giữ nguyên, chỉ dịu bớt độ chói */
+html.dark img { filter: brightness(0.92); }
+
+/* Màu biểu đồ admin viết cứng #003580 → sáng hơn trong dark mode */
+html.dark .recharts-wrapper [fill="#003580"] { fill: #6f9bff; }
+html.dark .recharts-wrapper [stroke="#003580"] { stroke: #6f9bff; }

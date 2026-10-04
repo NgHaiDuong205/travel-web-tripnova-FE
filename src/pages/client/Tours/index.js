@@ -7,13 +7,14 @@ import FormAlert from "../../../components/common/FormAlert";
 import Pagination from "../../../components/common/Pagination";
 import { DURATION_FILTERS, TOUR_SORTS, fetchTours } from "../../../services/tourService";
 import { formatDate, formatMoney } from "../../../utils/formatters";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 9;
 const HERO_IMAGE = "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1800&q=80";
 const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=900&q=80";
 
 /** Thẻ tour theo TOUR.HTML (ảnh, nhãn, thời lượng, giá "Starting from"). */
-function TourCard({ tour }) {
+function TourCard({ tour, t }) {
     const link = `/tours/${tour.id}`;
     return (
         <article className="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col">
@@ -30,7 +31,7 @@ function TourCard({ tour }) {
                 )}
                 {tour.departureDate && (
                     <span className="absolute top-4 right-4 editorial-gradient text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
-                        Departs {formatDate(tour.departureDate)}
+                        {t("tours.list.departs", { date: formatDate(tour.departureDate) })}
                     </span>
                 )}
             </Link>
@@ -50,12 +51,12 @@ function TourCard({ tour }) {
                 <div className="mt-auto flex items-end justify-between pt-4 border-t border-outline-variant/20">
                     <span className="flex items-center gap-1 text-sm font-bold text-on-surface-variant">
                         <span className="material-symbols-outlined text-[18px]">schedule</span>
-                        {tour.durationDays} Day{tour.durationDays === 1 ? "" : "s"}
-                        {tour.durationNights ? ` / ${tour.durationNights} Night${tour.durationNights === 1 ? "" : "s"}` : ""}
+                        {t("common.units.day", { count: tour.durationDays })}
+                        {tour.durationNights ? ` / ${t("common.units.night", { count: tour.durationNights })}` : ""}
                     </span>
                     <div className="text-right">
                         <span className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
-                            Starting from
+                            {t("tours.list.startingFrom")}
                         </span>
                         <span className="font-headline text-2xl font-black text-primary">
                             {formatMoney(tour.priceAdult, tour.currencyCode)}
@@ -69,6 +70,7 @@ function TourCard({ tour }) {
 
 /** Danh sách tour: hero biên tập + thanh tìm kiếm, lưới "Editor's Picks". Bộ lọc lưu trên URL. */
 function Tours() {
+    const t = useT();
     const [params, setParams] = useSearchParams();
     const [result, setResult] = useState({ items: [], total: 0 });
     const [loading, setLoading] = useState(true);
@@ -111,19 +113,16 @@ function Tours() {
         <div className="bg-surface text-on-surface">
             {/* Editorial hero */}
             <section className="relative h-[640px] w-full overflow-hidden">
-                <img src={HERO_IMAGE} alt="Mountain landscape at dawn" className="absolute inset-0 w-full h-full object-cover" />
+                <img src={HERO_IMAGE} alt={t("tours.list.heroImageAlt")} className="absolute inset-0 w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/70 via-primary/30 to-transparent" />
                 <div className="relative z-10 max-w-screen-2xl mx-auto px-8 h-full flex flex-col justify-center">
-                    <span className="text-white/90 text-[0.75rem] uppercase tracking-[0.2em] font-bold mb-4">
-                        Exclusive Collection
-                    </span>
+                    <span className="text-white/90 text-[0.75rem] uppercase tracking-[0.2em] font-bold mb-4">{t("tours.list.exclusiveCollection")}</span>
                     <h1 className="font-headline text-5xl md:text-7xl font-extrabold text-white tracking-tight leading-tight mb-6 max-w-3xl">
-                        Curated Journeys. <br />
-                        Local Secrets.
+                        {t("tours.list.heroTitleLineOne")} <br />
+                        {t("tours.list.heroTitleLineTwo")}
                     </h1>
                     <p className="text-white/90 text-lg max-w-xl font-medium mb-10">
-                        Expert-led experiences that go beyond the guidebook. Discover the soul of every destination through the
-                        eyes of those who call it home.
+                        {t("tours.list.heroDescription")}
                     </p>
                     <div className="flex flex-wrap gap-4">
                         <button
@@ -131,13 +130,13 @@ function Tours() {
                             onClick={scrollToList}
                             className="bg-surface text-primary px-8 py-3.5 rounded-lg font-bold hover:bg-surface-container-high transition-all"
                         >
-                            Explore Experiences
+                            {t("tours.list.exploreExperiences")}
                         </button>
                         <Link
                             to="/destinations"
                             className="border border-white/60 text-white px-8 py-3.5 rounded-lg font-bold hover:bg-white/10 transition-all"
                         >
-                            Browse Destinations
+                            {t("tours.list.browseDestinations")}
                         </Link>
                     </div>
                 </div>
@@ -147,22 +146,22 @@ function Tours() {
             <div className="max-w-screen-xl mx-auto px-8 -mt-16 relative z-20">
                 <SearchPanel
                     columns={3}
-                    submitLabel="Search"
+                    submitLabel={t("common.actions.search")}
                     submitIcon="search"
                     onSubmit={() => {
                         update({ q: search.q.trim(), length: search.length });
                         scrollToList();
                     }}
                 >
-                    <SearchField label="Destination" icon="location_on">
+                    <SearchField label={t("common.fields.destination")} icon="location_on">
                         <input
                             className={fieldInputClass}
-                            placeholder="Where are you going?"
+                            placeholder={t("tours.search.destinationPlaceholder")}
                             value={search.q}
                             onChange={(e) => setSearch((s) => ({ ...s, q: e.target.value }))}
                         />
                     </SearchField>
-                    <SearchField label="Length" icon="schedule">
+                    <SearchField label={t("tours.search.length")} icon="schedule">
                         <select
                             className={fieldInputClass}
                             value={search.length}
@@ -170,21 +169,21 @@ function Tours() {
                         >
                             {DURATION_FILTERS.map((d) => (
                                 <option key={d.value} value={d.value}>
-                                    {d.label}
+                                    {t(`tours.search.duration.${d.value || "any"}`)}
                                 </option>
                             ))}
                         </select>
                     </SearchField>
-                    <SearchField label="Budget per person" icon="payments">
+                    <SearchField label={t("tours.search.budgetPerPerson")} icon="payments">
                         <select
                             className={fieldInputClass}
                             value={params.get("priceMax") || ""}
                             onChange={(e) => update({ priceMax: e.target.value })}
                         >
-                            <option value="">Any budget</option>
-                            <option value="300">Up to $300</option>
-                            <option value="800">Up to $800</option>
-                            <option value="1500">Up to $1,500</option>
+                            <option value="">{t("tours.search.anyBudget")}</option>
+                            <option value="300">{t("tours.search.upToBudget", { amount: formatMoney(300, "USD") })}</option>
+                            <option value="800">{t("tours.search.upToBudget", { amount: formatMoney(800, "USD") })}</option>
+                            <option value="1500">{t("tours.search.upToBudget", { amount: formatMoney(1500, "USD") })}</option>
                         </select>
                     </SearchField>
                 </SearchPanel>
@@ -193,9 +192,9 @@ function Tours() {
             {/* Tour grid */}
             <section id="tours" className="max-w-screen-2xl mx-auto px-8 py-20 scroll-mt-24">
                 <ListHeader
-                    eyebrow={params.get("q") ? `Results for "${params.get("q")}"` : "Unforgettable moments, hand-picked"}
-                    title="Editor's Picks"
-                    sortOptions={TOUR_SORTS}
+                    eyebrow={params.get("q") ? t("tours.list.resultsFor", { query: params.get("q") }) : t("tours.list.handPicked")}
+                    title={t("tours.list.editorsPicks")}
+                    sortOptions={TOUR_SORTS.map((sort) => ({ ...sort, label: t(`tours.sort.${sort.value}`) }))}
                     sort={params.get("sort") || "newest"}
                     onSortChange={(value) => update({ sort: value === "newest" ? "" : value })}
                 />
@@ -210,18 +209,17 @@ function Tours() {
                     <div className="text-center py-20 bg-surface-container-low rounded-xl">
                         <span className="material-symbols-outlined text-5xl text-outline mb-3">travel_explore</span>
                         <p className="text-on-surface-variant">
-                            No tours match your search yet. Try another destination or length.
+                            {t("tours.list.emptyState")}
                         </p>
                     </div>
                 ) : (
                     <>
                         <p className="text-sm text-on-surface-variant mb-6">
-                            <span className="font-bold text-on-surface">{result.total}</span> experience
-                            {result.total === 1 ? "" : "s"}
+                            <span className="font-bold text-on-surface">{t("tours.list.experience", { count: result.total })}</span>
                         </p>
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                             {result.items.map((tour) => (
-                                <TourCard key={tour.id} tour={tour} />
+                                <TourCard key={tour.id} tour={tour} t={t} />
                             ))}
                         </div>
                     </>

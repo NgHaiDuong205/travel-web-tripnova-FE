@@ -17,6 +17,7 @@ import {
 import { SEAT_CLASS_LABELS, formatDuration } from "../../../services/flightService";
 import { formatDateTime, formatMoney } from "../../../utils/formatters";
 import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 20;
 const EMPTY_FLIGHT = {
@@ -65,6 +66,7 @@ function apiDateTime(value) {
 
 /** Biểu mẫu thêm hoặc sửa chuyến bay trong khu vực quản trị. */
 function FlightForm({ initial, onSave, onCancel }) {
+    const t = useT();
     const [form, setForm] = useState({
         ...EMPTY_FLIGHT,
         ...initial,
@@ -99,39 +101,39 @@ function FlightForm({ initial, onSave, onCancel }) {
             className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 grid grid-cols-1 md:grid-cols-2 gap-4"
         >
             <label className="text-xs font-bold text-gray-600">
-                Flight number *
+                {t("admin.flights.flightNumber")} *
                 <input required value={form.flightNumber} onChange={set("flightNumber")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Airline *
+                {t("admin.flights.airline")} *
                 <input required value={form.airline} onChange={set("airline")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Airline logo URL
+                {t("admin.flights.airlineLogoUrl")}
                 <input value={form.airlineLogoUrl || ""} onChange={set("airlineLogoUrl")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Aircraft type
+                {t("admin.flights.aircraftType")}
                 <input value={form.aircraftType || ""} onChange={set("aircraftType")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Departure airport code *
+                {t("admin.flights.departureAirportCode")} *
                 <input required value={form.departureAirportCode} onChange={set("departureAirportCode")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Departure city
+                {t("admin.flights.departureCity")}
                 <input value={form.departureCity || ""} onChange={set("departureCity")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Arrival airport code *
+                {t("admin.flights.arrivalAirportCode")} *
                 <input required value={form.arrivalAirportCode} onChange={set("arrivalAirportCode")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Arrival city
+                {t("admin.flights.arrivalCity")}
                 <input value={form.arrivalCity || ""} onChange={set("arrivalCity")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Departure time *
+                {t("admin.flights.departureTime")} *
                 <input
                     required
                     type="datetime-local"
@@ -141,7 +143,7 @@ function FlightForm({ initial, onSave, onCancel }) {
                 />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Arrival time *
+                {t("admin.flights.arrivalTime")} *
                 <input
                     required
                     type="datetime-local"
@@ -151,7 +153,7 @@ function FlightForm({ initial, onSave, onCancel }) {
                 />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Base price *
+                {t("admin.flights.basePrice")} *
                 <input
                     required
                     min="0"
@@ -163,23 +165,23 @@ function FlightForm({ initial, onSave, onCancel }) {
                 />
             </label>
             <label className="md:col-span-2 text-xs font-bold text-gray-600">
-                Baggage policy
+                {t("admin.flights.baggagePolicy")}
                 <textarea rows="4" value={form.baggagePolicy || ""} onChange={set("baggagePolicy")} className={inputClass} />
             </label>
             <div className="md:col-span-2 flex flex-wrap items-center gap-5">
                 <label className="flex items-center gap-2 text-sm text-gray-700">
                     <input type="checkbox" checked={form.isActive} onChange={set("isActive")} />
-                    Active
+                    {t("common.status.active")}
                 </label>
                 <div className="ml-auto flex gap-2">
                     <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg text-sm font-bold text-gray-500">
-                        Cancel
+                        {t("common.actions.cancel")}
                     </button>
                     <button
                         disabled={saving}
                         className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold disabled:opacity-50"
                     >
-                        {saving ? "Saving..." : "Save"}
+                        {saving ? t("common.state.saving") : t("common.actions.save")}
                     </button>
                 </div>
             </div>
@@ -192,6 +194,7 @@ function FlightForm({ initial, onSave, onCancel }) {
 
 /** Bảng tạo và quản lý sơ đồ ghế chuyến bay. */
 function SeatPanel({ flight, onClose }) {
+    const t = useT();
     const [blocks, setBlocks] = useState([{ ...EMPTY_BLOCK }]);
     const [seats, setSeats] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -225,7 +228,7 @@ function SeatPanel({ flight, onClose }) {
     };
     const generate = async (event) => {
         event.preventDefault();
-        if (!window.confirm("Replaces all seats that were never booked. Continue?")) return;
+        if (!window.confirm(t("admin.flights.confirmGenerateSeats"))) return;
         setSaving(true);
         setError("");
         try {
@@ -247,7 +250,7 @@ function SeatPanel({ flight, onClose }) {
     };
     const toggleSeat = async (seat) => {
         const blocking = seat.status === "available";
-        if (blocking && !window.confirm(`Block seat ${seat.seatNumber}?`)) return;
+        if (blocking && !window.confirm(t("admin.flights.confirmBlockSeat", { seat: seat.seatNumber }))) return;
         setSaving(true);
         setError("");
         try {
@@ -278,21 +281,21 @@ function SeatPanel({ flight, onClose }) {
         <section className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6">
             <div className="flex flex-wrap items-center gap-3">
                 <div>
-                    <h2 className="font-extrabold text-primary">Seat map: {flight.flightNumber}</h2>
+                    <h2 className="font-extrabold text-primary">{t("admin.flights.seatMap", { flight: flight.flightNumber })}</h2>
                     <p className="text-sm text-gray-500">
                         {flight.departureAirportCode} → {flight.arrivalAirportCode}
                     </p>
                 </div>
                 <button type="button" onClick={onClose} className="ml-auto text-sm font-bold text-gray-500">
-                    Close seats
+                    {t("admin.flights.closeSeats")}
                 </button>
             </div>
             <form onSubmit={generate} className="space-y-3 rounded-lg bg-gray-50 border border-gray-100 p-4">
-                <h3 className="font-bold text-sm text-gray-700">Generate seat map</h3>
+                <h3 className="font-bold text-sm text-gray-700">{t("admin.flights.generateSeatMap")}</h3>
                 {blocks.map((block, index) => (
                     <div key={index} className="grid grid-cols-1 sm:grid-cols-6 gap-3 items-end">
                         <label className="text-xs font-bold text-gray-600">
-                            Class
+                            {t("admin.flights.class")}
                             <select
                                 value={block.seatClass}
                                 onChange={(event) => changeClass(index, event.target.value)}
@@ -300,13 +303,13 @@ function SeatPanel({ flight, onClose }) {
                             >
                                 {Object.entries(SEAT_CLASS_LABELS).map(([key, label]) => (
                                     <option key={key} value={key}>
-                                        {label}
+                                        {t(`admin.flights.seatClasses.${key}`, { defaultValue: label })}
                                     </option>
                                 ))}
                             </select>
                         </label>
                         <label className="text-xs font-bold text-gray-600">
-                            From row
+                            {t("admin.flights.fromRow")}
                             <input
                                 required
                                 min="1"
@@ -317,7 +320,7 @@ function SeatPanel({ flight, onClose }) {
                             />
                         </label>
                         <label className="text-xs font-bold text-gray-600">
-                            To row
+                            {t("admin.flights.toRow")}
                             <input
                                 required
                                 min="1"
@@ -328,7 +331,7 @@ function SeatPanel({ flight, onClose }) {
                             />
                         </label>
                         <label className="text-xs font-bold text-gray-600">
-                            Letters
+                            {t("admin.flights.letters")}
                             <input
                                 required
                                 value={block.letters}
@@ -337,7 +340,7 @@ function SeatPanel({ flight, onClose }) {
                             />
                         </label>
                         <label className="text-xs font-bold text-gray-600">
-                            Price
+                            {t("common.fields.price")}
                             <input
                                 required
                                 min="0"
@@ -354,7 +357,7 @@ function SeatPanel({ flight, onClose }) {
                             onClick={() => setBlocks((prev) => prev.filter((_, current) => current !== index))}
                             className="px-3 py-2 text-xs font-bold text-red-600 disabled:opacity-40"
                         >
-                            Remove block
+                            {t("admin.flights.removeBlock")}
                         </button>
                     </div>
                 ))}
@@ -364,13 +367,13 @@ function SeatPanel({ flight, onClose }) {
                         onClick={() => setBlocks((prev) => [...prev, { ...EMPTY_BLOCK }])}
                         className="px-4 py-2 rounded-lg text-sm font-bold border border-primary text-primary"
                     >
-                        Add block
+                        {t("admin.flights.addBlock")}
                     </button>
                     <button
                         disabled={saving}
                         className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white disabled:opacity-50"
                     >
-                        Generate seat map
+                        {t("admin.flights.generateSeatMap")}
                     </button>
                 </div>
             </form>
@@ -379,19 +382,19 @@ function SeatPanel({ flight, onClose }) {
                 {Object.entries(seatStatusClasses).map(([status, className]) => (
                     <span key={status} className="flex items-center gap-1 capitalize">
                         <i className={`inline-block w-3 h-3 rounded ${className}`} />
-                        {status}: {counts[status]}
+                        {t(`admin.flights.seatStatuses.${status}`, { defaultValue: status })}: {counts[status]}
                     </span>
                 ))}
                 {Object.entries(SEAT_CLASS_LABELS).map(([seatClass, label]) => (
                     <span key={seatClass} className={`border-l-4 pl-1 ${seatClassBorders[seatClass]}`}>
-                        {label}
+                        {t(`admin.flights.seatClasses.${seatClass}`, { defaultValue: label })}
                     </span>
                 ))}
             </div>
             {loading ? (
-                <p className="text-gray-500">Đang tải...</p>
+                <p className="text-gray-500">{t("common.state.loading")}</p>
             ) : orderedRows.length === 0 ? (
-                <p className="text-gray-500">Chưa có ghế.</p>
+                <p className="text-gray-500">{t("admin.flights.emptySeats")}</p>
             ) : (
                 <div className="space-y-2 overflow-x-auto">
                     {orderedRows.map(([row, rowSeats]) => (
@@ -406,7 +409,7 @@ function SeatPanel({ flight, onClose }) {
                                             type="button"
                                             disabled={saving || !["available", "blocked"].includes(seat.status)}
                                             onClick={() => toggleSeat(seat)}
-                                            title={`${SEAT_CLASS_LABELS[seat.seatClass] || seat.seatClass}: ${seat.status}`}
+                                            title={`${t(`admin.flights.seatClasses.${seat.seatClass}`, { defaultValue: SEAT_CLASS_LABELS[seat.seatClass] || seat.seatClass })}: ${t(`admin.flights.seatStatuses.${seat.status}`, { defaultValue: seat.status })}`}
                                             className={`w-9 h-9 border-l-4 text-xs font-bold rounded disabled:cursor-default ${seatStatusClasses[seat.status] || seatStatusClasses.available} ${seatClassBorders[seat.seatClass] || "border-l-gray-400"}`}
                                         >
                                             {seat.seatNumber}
@@ -423,6 +426,7 @@ function SeatPanel({ flight, onClose }) {
 
 /** Tab quản lý chuyến bay. */
 function FlightsTab() {
+    const t = useT();
     const [q, setQ] = useState("");
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
@@ -452,7 +456,7 @@ function FlightsTab() {
         setReload((value) => value + 1);
     };
     const deactivate = async (flight) => {
-        if (!window.confirm(`Deactivate ${flight.flightNumber}?`)) return;
+        if (!window.confirm(t("admin.flights.confirmDeactivate", { flight: flight.flightNumber }))) return;
         setBusyId(flight.id);
         setError("");
         try {
@@ -477,16 +481,16 @@ function FlightsTab() {
                 <input
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
-                    placeholder="Search flights..."
+                    placeholder={t("admin.flights.searchFlights")}
                     className={`${filterClass} w-64`}
                 />
-                <button className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white">Search</button>
+                <button className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white">{t("common.actions.search")}</button>
                 <button
                     type="button"
                     onClick={() => setEditing("new")}
                     className="ml-auto px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white"
                 >
-                    Add flight
+                    {t("admin.flights.addFlight")}
                 </button>
             </form>
             <FormAlert>{error}</FormAlert>
@@ -499,22 +503,15 @@ function FlightsTab() {
             )}
             {seatFlight && <SeatPanel flight={seatFlight} onClose={() => setSeatFlight(null)} />}
             {loading ? (
-                <p className="text-gray-500">Đang tải...</p>
+                <p className="text-gray-500">{t("common.state.loading")}</p>
             ) : result.items.length === 0 ? (
-                <p className="text-gray-500">Không có dữ liệu.</p>
+                <p className="text-gray-500">{t("admin.flights.empty")}</p>
             ) : (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead className="bg-gray-50 text-left text-xs text-gray-500">
                             <tr>
-                                <th className="p-4">Flight</th>
-                                <th>Route</th>
-                                <th>Departure</th>
-                                <th>Duration</th>
-                                <th>Seats</th>
-                                <th>Base price</th>
-                                <th>Status</th>
-                                <th className="p-4">Actions</th>
+                                <th className="p-4">{t("admin.flights.flight")}</th><th>{t("admin.flights.route")}</th><th>{t("admin.flights.departure")}</th><th>{t("admin.flights.duration")}</th><th>{t("admin.flights.seats")}</th><th>{t("admin.flights.basePrice")}</th><th>{t("common.fields.status")}</th><th className="p-4">{t("admin.flights.actions")}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -544,7 +541,7 @@ function FlightsTab() {
                                         <span
                                             className={`px-2 py-1 rounded-full text-xs font-bold ${flight.isActive ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-600"}`}
                                         >
-                                            {flight.isActive ? "Active" : "Inactive"}
+                                            {flight.isActive ? t("common.status.active") : t("common.status.inactive")}
                                         </span>
                                     </td>
                                     <td className="p-4 whitespace-nowrap">
@@ -553,14 +550,14 @@ function FlightsTab() {
                                             onClick={() => setEditing(flight)}
                                             className="text-primary font-bold text-xs"
                                         >
-                                            Edit
+                                            {t("common.actions.edit")}
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => setSeatFlight(flight)}
                                             className="ml-3 text-primary font-bold text-xs"
                                         >
-                                            Seats
+                                            {t("admin.flights.seats")}
                                         </button>
                                         {flight.isActive && (
                                             <button
@@ -569,7 +566,7 @@ function FlightsTab() {
                                                 onClick={() => deactivate(flight)}
                                                 className="ml-3 text-red-600 font-bold text-xs disabled:opacity-50"
                                             >
-                                                Deactivate
+                                                {t("admin.flights.deactivate")}
                                             </button>
                                         )}
                                     </td>
@@ -586,6 +583,7 @@ function FlightsTab() {
 
 /** Tab quản lý đơn đặt chuyến bay. */
 function BookingsTab() {
+    const t = useT();
     const [status, setStatus] = useState("");
     const [q, setQ] = useState("");
     const [search, setSearch] = useState("");
@@ -608,7 +606,7 @@ function BookingsTab() {
     }, [status, q, page]);
     const update = async (booking, nextStatus) => {
         if (!nextStatus) return;
-        const reason = nextStatus === "cancelled" ? window.prompt("Cancellation reason:") : undefined;
+        const reason = nextStatus === "cancelled" ? window.prompt(t("admin.flights.cancellationReason")) : undefined;
         if (nextStatus === "cancelled" && reason === null) return;
         setBusyId(booking.id);
         setError("");
@@ -642,7 +640,7 @@ function BookingsTab() {
                     }}
                     className={filterClass}
                 >
-                    <option value="">All statuses</option>
+                    <option value="">{t("common.status.all")}</option>
                     {Object.entries(BOOKING_STATUS_LABELS).map(([key, value]) => (
                         <option key={key} value={key}>
                             {value.label}
@@ -652,29 +650,22 @@ function BookingsTab() {
                 <input
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
-                    placeholder="Order, customer, passenger, flight no."
+                    placeholder={t("admin.flights.bookingSearch")}
                     className={`${filterClass} w-72`}
                 />
-                <button className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white">Search</button>
+                <button className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white">{t("common.actions.search")}</button>
             </form>
             <FormAlert>{error}</FormAlert>
             {loading ? (
-                <p className="text-gray-500">Đang tải...</p>
+                <p className="text-gray-500">{t("common.state.loading")}</p>
             ) : result.items.length === 0 ? (
-                <p className="text-gray-500">Không có dữ liệu.</p>
+                <p className="text-gray-500">{t("admin.flights.empty")}</p>
             ) : (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead className="bg-gray-50 text-left text-xs text-gray-500">
                             <tr>
-                                <th className="p-4">Order</th>
-                                <th>Passenger</th>
-                                <th>Flight</th>
-                                <th>Departure</th>
-                                <th>Seat</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                                <th className="p-4">Action</th>
+                                <th className="p-4">{t("admin.flights.order")}</th><th>{t("admin.flights.passenger")}</th><th>{t("admin.flights.flight")}</th><th>{t("admin.flights.departure")}</th><th>{t("admin.flights.seat")}</th><th>{t("common.fields.total")}</th><th>{t("common.fields.status")}</th><th className="p-4">{t("admin.flights.action")}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -714,7 +705,7 @@ function BookingsTab() {
                                             onChange={(event) => update(booking, event.target.value)}
                                             className="rounded-lg border border-gray-300 bg-white px-2 py-1 text-xs"
                                         >
-                                            <option value="">Change status…</option>
+                                            <option value="">{t("admin.flights.changeStatus")}</option>
                                             {(FLIGHT_BOOKING_NEXT_STATUSES[booking.status] || []).map((next) => (
                                                 <option key={next} value={next}>
                                                     {BOOKING_STATUS_LABELS[next].label}
@@ -735,19 +726,20 @@ function BookingsTab() {
 
 /** Trang quản trị chuyến bay và đơn đặt chuyến bay. */
 function AdminFlights() {
+    const t = useT();
     const [tab, setTab] = useState("flights");
     const tabClass = (active) =>
         `px-4 py-2 text-sm font-bold border-b-2 ${active ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-800"}`;
     return (
         <div className="space-y-6">
-            <h1 className="text-3xl font-extrabold text-primary">Flights</h1>
+            <h1 className="text-3xl font-extrabold text-primary">{t("admin.flights.title")}</h1>
             <AdminStatsPanel section="flights" />
             <div className="flex gap-2 border-b border-gray-200">
                 <button type="button" onClick={() => setTab("flights")} className={tabClass(tab === "flights")}>
-                    Flights
+                    {t("admin.flights.title")}
                 </button>
                 <button type="button" onClick={() => setTab("bookings")} className={tabClass(tab === "bookings")}>
-                    Bookings
+                    {t("admin.flights.bookings")}
                 </button>
             </div>
             {tab === "flights" ? <FlightsTab /> : <BookingsTab />}

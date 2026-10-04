@@ -16,6 +16,7 @@ import {
 } from "../../../services/adminPostService";
 import { formatDateTime } from "../../../utils/formatters";
 import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 20;
 const ENTITY_TYPES = ["hotel", "destination", "landmark", "tour", "car", "flight"];
@@ -23,29 +24,30 @@ const buttonClass = "px-3 py-1 rounded-lg text-xs font-bold border disabled:opac
 
 /** Hàng thao tác cho một bình luận (ẩn / hiện / xoá hẳn), dùng chung cho 2 tab. */
 function CommentRow({ comment, busy, onStatus, onDelete, showPost }) {
+    const t = useT();
     return (
         <div className="flex flex-wrap items-start gap-3 py-3 border-b border-gray-100 last:border-0">
             <div className="flex-1 min-w-[240px]">
                 <p className="text-xs text-gray-500">
                     <span className="font-bold text-gray-800">{comment.authorName}</span> · {formatDateTime(comment.createdAt)}
-                    {comment.parentId && " · reply"}
-                    {showPost && ` · on "${comment.postTitle || "untitled post"}"`}
+                    {comment.parentId && t("admin.posts.replySuffix")}
+                    {showPost && t("admin.posts.onPost", { title: comment.postTitle || t("admin.posts.untitledPost") })}
                 </p>
                 <p className="text-sm text-gray-700 whitespace-pre-line break-words">{comment.content}</p>
             </div>
-            <StatusBadge status={comment.status} labels={COMMENT_STATUS_LABELS} />
+            <StatusBadge status={comment.status} labels={Object.fromEntries(Object.entries(COMMENT_STATUS_LABELS).map(([value, cfg]) => [value, { ...cfg, label: t(`admin.status.${value}`, { defaultValue: cfg.label }) }]))} />
             <div className="flex gap-2">
                 {comment.status === "active" ? (
                     <button type="button" disabled={busy} onClick={() => onStatus(comment, "flagged")} className={`${buttonClass} border-amber-200 text-amber-700 hover:bg-amber-50`}>
-                        Hide
+                        {t("admin.posts.hide")}
                     </button>
                 ) : (
                     <button type="button" disabled={busy} onClick={() => onStatus(comment, "active")} className={`${buttonClass} border-green-200 text-green-700 hover:bg-green-50`}>
-                        Restore
+                        {t("admin.posts.restore")}
                     </button>
                 )}
                 <button type="button" disabled={busy} onClick={() => onDelete(comment)} className={`${buttonClass} border-red-200 text-red-600 hover:bg-red-50`}>
-                    Delete
+                    {t("common.actions.delete")}
                 </button>
             </div>
         </div>
@@ -53,6 +55,7 @@ function CommentRow({ comment, busy, onStatus, onDelete, showPost }) {
 }
 
 function PostComments({ postId, onError }) {
+    const t = useT();
     const [comments, setComments] = useState(null);
     const [busyId, setBusyId] = useState(null);
 
@@ -76,8 +79,8 @@ function PostComments({ postId, onError }) {
         }
     };
 
-    if (!comments) return <p className="text-xs text-gray-500 mt-3">Loading comments...</p>;
-    if (comments.length === 0) return <p className="text-xs text-gray-500 mt-3">No comments.</p>;
+    if (!comments) return <p className="text-xs text-gray-500 mt-3">{t("admin.posts.loadingComments")}</p>;
+    if (comments.length === 0) return <p className="text-xs text-gray-500 mt-3">{t("admin.posts.noComments")}</p>;
     return (
         <div className="mt-3 bg-gray-50 rounded-lg px-4">
             {comments.map((c) => (
@@ -87,7 +90,7 @@ function PostComments({ postId, onError }) {
                     busy={busyId === c.id}
                     onStatus={(comment, status) => run(comment, () => updateAdminCommentStatus(comment.id, status))}
                     onDelete={(comment) =>
-                        window.confirm("Delete this comment and all replies permanently?") && run(comment, () => deleteAdminComment(comment.id))
+                        window.confirm(t("admin.posts.confirmDeleteComment")) && run(comment, () => deleteAdminComment(comment.id))
                     }
                 />
             ))}
@@ -96,6 +99,7 @@ function PostComments({ postId, onError }) {
 }
 
 function PostsTab() {
+    const t = useT();
     const [filters, setFilters] = useState({ status: "pending", entityType: "", q: "" });
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
@@ -147,25 +151,25 @@ function PostsTab() {
                 className="flex flex-wrap items-center gap-3"
             >
                 <select value={filters.status} onChange={(e) => setFilter("status", e.target.value)} className="rounded-lg border-gray-200 text-sm">
-                    <option value="">All statuses</option>
+                    <option value="">{t("common.status.all")}</option>
                     {Object.entries(POST_STATUS_LABELS).map(([value, cfg]) => (
-                        <option key={value} value={value}>{cfg.label}</option>
+                        <option key={value} value={value}>{t(`admin.status.${value}`, { defaultValue: cfg.label })}</option>
                     ))}
                 </select>
                 <select value={filters.entityType} onChange={(e) => setFilter("entityType", e.target.value)} className="rounded-lg border-gray-200 text-sm">
-                    <option value="">All targets</option>
-                    {ENTITY_TYPES.map((t) => (
-                        <option key={t} value={t}>{t}</option>
+                    <option value="">{t("admin.posts.allTargets")}</option>
+                    {ENTITY_TYPES.map((type) => (
+                        <option key={type} value={type}>{t(`admin.posts.entityTypes.${type}`, { defaultValue: type })}</option>
                     ))}
                 </select>
-                <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search title, content, author..." className="rounded-lg border-gray-200 text-sm w-64" />
-                <button type="submit" className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white">Search</button>
-                <span className="ml-auto text-sm text-gray-500">{result.total.toLocaleString()} posts</span>
+                <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t("admin.posts.searchPostsPlaceholder")} className="rounded-lg border-gray-200 text-sm w-64" />
+                <button type="submit" className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white">{t("common.actions.search")}</button>
+                <span className="ml-auto text-sm text-gray-500">{t("admin.posts.postCount", { count: result.total })}</span>
             </form>
 
             <FormAlert>{error}</FormAlert>
-            {loading && <p className="text-gray-500">Đang tải...</p>}
-            {!loading && result.items.length === 0 && <p className="text-gray-500">Không có bài viết nào.</p>}
+            {loading && <p className="text-gray-500">{t("common.state.loading")}</p>}
+            {!loading && result.items.length === 0 && <p className="text-gray-500">{t("admin.posts.emptyPosts")}</p>}
 
             <div className="space-y-4">
                 {!loading &&
@@ -173,16 +177,16 @@ function PostsTab() {
                         <article key={p.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                             <div className="flex flex-wrap items-start justify-between gap-4 mb-3">
                                 <div>
-                                    <p className="font-bold text-gray-900">{p.title || "(No title)"}</p>
+                                    <p className="font-bold text-gray-900">{p.title || t("admin.posts.noTitle")}</p>
                                     <p className="text-sm text-gray-500">
-                                        {p.authorName} · {formatDateTime(p.createdAt)} · {p.entityType}:{" "}
-                                        <span className="font-semibold text-gray-700">{p.entityName || "(deleted)"}</span>
-                                        {p.isVerifiedBooking && " · verified booking"}
+                                        {p.authorName} · {formatDateTime(p.createdAt)} · {t(`admin.posts.entityTypes.${p.entityType}`, { defaultValue: p.entityType })}:{" "}
+                                        <span className="font-semibold text-gray-700">{p.entityName || t("admin.posts.deleted")}</span>
+                                        {p.isVerifiedBooking && t("admin.posts.verifiedBooking")}
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     {p.rating && <StarRating value={p.rating} size="text-[16px]" />}
-                                    <StatusBadge status={p.status} labels={POST_STATUS_LABELS} />
+                                    <StatusBadge status={p.status} labels={Object.fromEntries(Object.entries(POST_STATUS_LABELS).map(([value, cfg]) => [value, { ...cfg, label: t(`admin.status.${value}`, { defaultValue: cfg.label }) }]))} />
                                 </div>
                             </div>
                             <p className="text-sm text-gray-700 whitespace-pre-line break-words">{p.content}</p>
@@ -199,26 +203,26 @@ function PostsTab() {
                                 <span className="text-xs text-gray-500 mr-auto">
                                     👍 {p.upvotes} · 👎 {p.downvotes} ·{" "}
                                     <button type="button" onClick={() => setOpenId(openId === p.id ? null : p.id)} className="font-bold text-primary hover:underline">
-                                        {p.commentCount} visible comment{p.commentCount === 1 ? "" : "s"} {openId === p.id ? "▲" : "▼"}
+                                        {t("admin.posts.visibleCommentCount", { count: p.commentCount })} {openId === p.id ? "▲" : "▼"}
                                     </button>
                                 </span>
                                 {p.status !== "approved" && (
                                     <button type="button" disabled={busyId === p.id} onClick={() => run(p, () => updateAdminPostStatus(p.id, "approved"))} className={`${buttonClass} border-green-200 text-green-700 hover:bg-green-50`}>
-                                        Approve
+                                        {t("admin.posts.approve")}
                                     </button>
                                 )}
                                 {p.status !== "rejected" && (
                                     <button type="button" disabled={busyId === p.id} onClick={() => run(p, () => updateAdminPostStatus(p.id, "rejected"))} className={`${buttonClass} border-amber-200 text-amber-700 hover:bg-amber-50`}>
-                                        Reject
+                                        {t("admin.posts.reject")}
                                     </button>
                                 )}
                                 <button
                                     type="button"
                                     disabled={busyId === p.id}
-                                    onClick={() => window.confirm("Delete this post with all its comments and reactions?") && run(p, () => deleteAdminPost(p.id))}
+                                    onClick={() => window.confirm(t("admin.posts.confirmDeletePost")) && run(p, () => deleteAdminPost(p.id))}
                                     className={`${buttonClass} border-red-200 text-red-600 hover:bg-red-50`}
                                 >
-                                    Delete
+                                    {t("common.actions.delete")}
                                 </button>
                             </div>
                             {openId === p.id && <PostComments postId={p.id} onError={setError} />}
@@ -231,6 +235,7 @@ function PostsTab() {
 }
 
 function CommentsTab() {
+    const t = useT();
     const [status, setStatus] = useState("");
     const [q, setQ] = useState("");
     const [search, setSearch] = useState("");
@@ -285,19 +290,19 @@ function CommentsTab() {
                     }}
                     className="rounded-lg border-gray-200 text-sm"
                 >
-                    <option value="">All statuses</option>
+                    <option value="">{t("common.status.all")}</option>
                     {Object.entries(COMMENT_STATUS_LABELS).map(([value, cfg]) => (
-                        <option key={value} value={value}>{cfg.label}</option>
+                        <option key={value} value={value}>{t(`admin.status.${value}`, { defaultValue: cfg.label })}</option>
                     ))}
                 </select>
-                <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search content, author..." className="rounded-lg border-gray-200 text-sm w-64" />
-                <button type="submit" className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white">Search</button>
-                <span className="ml-auto text-sm text-gray-500">{result.total.toLocaleString()} comments</span>
+                <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t("admin.posts.searchCommentsPlaceholder")} className="rounded-lg border-gray-200 text-sm w-64" />
+                <button type="submit" className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white">{t("common.actions.search")}</button>
+                <span className="ml-auto text-sm text-gray-500">{t("admin.posts.commentCount", { count: result.total })}</span>
             </form>
 
             <FormAlert>{error}</FormAlert>
-            {loading && <p className="text-gray-500">Đang tải...</p>}
-            {!loading && result.items.length === 0 && <p className="text-gray-500">Không có bình luận nào.</p>}
+            {loading && <p className="text-gray-500">{t("common.state.loading")}</p>}
+            {!loading && result.items.length === 0 && <p className="text-gray-500">{t("admin.posts.emptyComments")}</p>}
             {!loading && result.items.length > 0 && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 px-6">
                     {result.items.map((c) => (
@@ -308,7 +313,7 @@ function CommentsTab() {
                             busy={busyId === c.id}
                             onStatus={(comment, next) => run(comment, () => updateAdminCommentStatus(comment.id, next))}
                             onDelete={(comment) =>
-                                window.confirm("Delete this comment and all replies permanently?") && run(comment, () => deleteAdminComment(comment.id))
+                                window.confirm(t("admin.posts.confirmDeleteComment")) && run(comment, () => deleteAdminComment(comment.id))
                             }
                         />
                     ))}
@@ -321,17 +326,18 @@ function CommentsTab() {
 
 /** Kiểm duyệt bài viết / đánh giá và bình luận. */
 function AdminPosts() {
+    const t = useT();
     const [tab, setTab] = useState("posts");
     const tabClass = (active) =>
         `px-4 py-2 text-sm font-bold border-b-2 ${active ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-800"}`;
 
     return (
         <div className="space-y-6">
-            <h1 className="text-3xl font-extrabold text-primary">Reviews & comments</h1>
+            <h1 className="text-3xl font-extrabold text-primary">{t("admin.posts.title")}</h1>
             <AdminStatsPanel section="reviews" />
             <div className="flex gap-2 border-b border-gray-200">
-                <button type="button" onClick={() => setTab("posts")} className={tabClass(tab === "posts")}>Posts</button>
-                <button type="button" onClick={() => setTab("comments")} className={tabClass(tab === "comments")}>Comments</button>
+                <button type="button" onClick={() => setTab("posts")} className={tabClass(tab === "posts")}>{t("admin.posts.posts")}</button>
+                <button type="button" onClick={() => setTab("comments")} className={tabClass(tab === "comments")}>{t("admin.posts.comments")}</button>
             </div>
             {tab === "posts" ? <PostsTab /> : <CommentsTab />}
         </div>

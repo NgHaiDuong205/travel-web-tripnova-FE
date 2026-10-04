@@ -1,0 +1,142 @@
+{
+  "statuses": {
+    "awaitingPayment": "Awaiting payment",
+    "noShow": "No show"
+  },
+  "checkout": {
+    "title": "Complete your booking",
+    "hotelFallback": "Hotel",
+    "roomFallback": "Room",
+    "roomNumber": "Room {{number}}",
+    "yourStay": "Your stay",
+    "specialRequests": "Special requests (optional)",
+    "specialRequestsPlaceholder": "High floor, late check-in...",
+    "guest": "Guest",
+    "dates": "Dates",
+    "guestsSummary": "{{adults}}",
+    "guestsWithChildren": "{{adults}}, {{children}}",
+    "nightsAtRate": "{{nights}} × {{price}}",
+    "alternateRoom_one": "The selected room is unavailable; we will assign another room in the same category ({{count}} room available).",
+    "alternateRoom_other": "The selected room is unavailable; we will assign another room in the same category ({{count}} rooms available).",
+    "noRoomsAvailable": "This room category is sold out for the selected dates.",
+    "creatingBooking": "Creating booking...",
+    "continueToPayment": "Continue to payment",
+    "adding": "Adding...",
+    "addToCart": "Add to cart",
+    "holdPolicy": "The room is held for 15 minutes after you continue. Adding it to the cart does not hold the room.",
+    "findHotel": "Find a hotel",
+    "errors": {
+      "missingRoomInfo": "Missing room information",
+      "createBooking": "Could not create booking.",
+      "addToCart": "Could not add to cart."
+    },
+    "validation": {
+      "maxGuests_one": "The room accommodates a maximum of {{count}} guest.",
+      "maxGuests_other": "The room accommodates a maximum of {{count}} guests.",
+      "checkOutAfterCheckIn": "Check-out must be after check-in."
+    }
+  },
+  "payment": {
+    "title": "Payment",
+    "order": "Order",
+    "method": "Method",
+    "created": "Created",
+    "amount": "Amount",
+    "testEnvironment": "Test environment: the payment gateway is simulated and no real money is charged.",
+    "payAmount": "Pay {{amount}}",
+    "simulateFailed": "Simulate failed payment",
+    "viewBookings_one": "View {{count}} booking",
+    "viewBookings_other": "View {{count}} bookings",
+    "viewBooking": "View booking"
+  },
+  "tripPayment": {
+    "loading": "Loading payment...",
+    "myTrips": "My Trips",
+    "secureCheckout": "Secure checkout",
+    "title": "Complete your payment",
+    "holdPolicy": "Your reservation is held for 15 minutes",
+    "paymentFailed": "The payment failed or the reservation expired. Please book again.",
+    "viewMyTrips": "View my trips"
+  },
+  "detail": {
+    "cancelReasonPrompt": "Reason for cancelling the booking (optional):",
+    "booking": "Booking",
+    "room": "Room",
+    "roomNumber": "No. {{number}}",
+    "nights": "Nights",
+    "guestsSummary": "{{adults}}",
+    "guestsWithChildren": "{{adults}}, {{children}}",
+    "specialRequests": "Special requests",
+    "paidAt": "Paid at",
+    "refund": "Refund",
+    "refundReason": "Refund reason",
+    "payNow": "Pay now",
+    "cancelling": "Cancelling...",
+    "cancelBooking": "Cancel booking",
+    "allBookings": "All bookings"
+  },
+  "history": {
+    "memberDashboard": "Member Dashboard",
+    "title": "Booking History",
+    "totalTrips": "Total Trips",
+    "totalSpent": "Total Spent",
+    "empty": "There are no bookings in this section.",
+    "findHotel": "Find a hotel",
+    "showingBookings": "Showing {{shown}} of {{total}} bookings"
+  },
+  "listItem": {
+    "stay": "Stay",
+    "guestsSummary": "{{adults}}",
+    "guestsWithChildren": "{{adults}}, {{children}}",
+    "payView": "Pay / View"
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty.",
+    "selectRoom": "Select {{room}}",
+    "itemSummary": "{{checkIn}} → {{checkOut}} · {{nights}} · {{adults}}",
+    "itemSummaryWithChildren": "{{checkIn}} → {{checkOut}} · {{nights}} · {{adults}}, {{children}}",
+    "roomsRemaining_one": " ({{count}} remaining)",
+    "roomsRemaining_other": " ({{count}} remaining)",
+    "priceChanged": "The price changed from {{price}} when the item was added to the cart.",
+    "adultsTotal": "Adults (total)",
+    "childrenTotal": "Children (total)",
+    "checkoutPolicy": "Rooms are booked in one order, paid for once, and held for 15 minutes. Items with issues cannot be checked out.",
+    "validation": {
+      "checkOutAfterCheckIn": "Check-out must be after check-in.",
+      "adultPerRoom": "Each room needs at least one adult."
+    },
+    "issues": {
+      "expired": "The check-in date has passed — please change the dates.",
+      "inactive": "This room is not currently available for booking.",
+      "unavailable": "There are not enough rooms available for the selected quantity."
+    },
+    "intro": "Hotels, tours, car rentals and flights you plan to book. Prices and availability are refreshed every time you open the cart. Each group is checked out as a separate order.",
+    "types": {
+      "hotel": "Hotels"
+    },
+    "exploreTypes": {
+      "hotel": "hotels",
+      "tour": "tours",
+      "car": "car rentals",
+      "flight": "flights"
+    },
+    "clearHotels": "Remove all hotels",
+    "clearHotelsConfirm": "Remove all hotel rooms from your cart?"
+  },
+  "tripCart": {
+    "planJourney": "Plan your journey",
+    "explore": "Explore {{type}}",
+    "selectItem": "Select {{item}}",
+    "added": "Added {{date}}",
+    "was": "was",
+    "selected": "{{selected}} of {{total}} selected",
+    "paymentMethodFor": "Payment method for {{type}}",
+    "checkout": "Checkout {{type}}",
+    "types": {
+      "tour": "Tours",
+      "car": "Car rentals",
+      "flight": "Flights"
+    }
+  }
+}

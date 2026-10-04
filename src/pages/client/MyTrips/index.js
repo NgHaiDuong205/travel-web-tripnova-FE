@@ -6,32 +6,57 @@ import Pagination from "../../../components/common/Pagination";
 import StatusBadge from "../../../components/common/StatusBadge";
 import BookingListItem from "../../../components/client/BookingListItem";
 import { fetchMyBookings } from "../../../services/meService";
-import { BOOKING_STATUS_LABELS, cancelCarBooking, fetchMyCarBookings } from "../../../services/carService";
-import { SEAT_CLASS_LABELS, cancelFlightBooking, fetchMyFlightBookings } from "../../../services/flightService";
+import { cancelCarBooking, fetchMyCarBookings } from "../../../services/carService";
+import { cancelFlightBooking, fetchMyFlightBookings } from "../../../services/flightService";
 import { AirlineLogo, FlightTimeline, flightDateLabel } from "../../../components/catalog/FlightTimeline";
 import { cancelTourBooking, fetchMyTourBookings } from "../../../services/tourService";
 import { formatDate, formatDateTime, formatMoney } from "../../../utils/formatters";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 10;
 const STATUS_TABS = [
-    { value: "all", label: "All" },
-    { value: "upcoming", label: "Upcoming" },
-    { value: "pending", label: "Awaiting payment" },
-    { value: "completed", label: "Completed" },
-    { value: "cancelled", label: "Cancelled" },
+    { value: "all", labelKey: "common.status.all" },
+    { value: "upcoming", labelKey: "common.status.upcoming" },
+    { value: "pending", labelKey: "trips.myTrips.status.awaitingPayment" },
+    { value: "completed", labelKey: "common.status.completed" },
+    { value: "cancelled", labelKey: "common.status.cancelled" },
 ];
 const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&q=80";
 
+function getBookingStatusLabels(t) {
+    return {
+        pending: { label: t("trips.myTrips.status.awaitingPayment"), className: "bg-amber-50 text-amber-700 border-amber-200" },
+        confirmed: { label: t("common.status.confirmed"), className: "bg-green-50 text-green-700 border-green-200" },
+        checked_in: { label: t("trips.myTrips.status.inProgress"), className: "bg-blue-50 text-blue-700 border-blue-200" },
+        checked_out: { label: t("trips.myTrips.status.returned"), className: "bg-blue-50 text-blue-700 border-blue-200" },
+        completed: { label: t("common.status.completed"), className: "bg-gray-50 text-gray-700 border-gray-200" },
+        cancelled: { label: t("common.status.cancelled"), className: "bg-red-50 text-red-600 border-red-200" },
+        refunded: { label: t("common.status.refunded"), className: "bg-gray-50 text-gray-600 border-gray-200" },
+        no_show: { label: t("common.status.no_show"), className: "bg-red-50 text-red-600 border-red-200" },
+    };
+}
+
+function getSeatClassLabel(t, seatClass) {
+    const keys = {
+        economy: "trips.myTrips.seatClasses.economy",
+        premium_economy: "trips.myTrips.seatClasses.premiumEconomy",
+        business: "trips.myTrips.seatClasses.business",
+        first: "trips.myTrips.seatClasses.first",
+    };
+    return keys[seatClass] ? t(keys[seatClass]) : seatClass;
+}
+
 /** Một đơn thuê xe trong danh sách My Trips. */
 function CarTripCard({ booking, highlighted, onChanged }) {
+    const t = useT();
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState("");
 
     const handleCancel = async () => {
         const paid = booking.status === "confirmed";
         const question = paid
-            ? "Cancel this rental? You will receive a full refund."
-            : "Cancel this reservation? It has not been paid yet.";
+            ? t("trips.myTrips.confirm.cancelRentalPaid")
+            : t("trips.myTrips.confirm.cancelReservationUnpaid");
         if (!window.confirm(question)) return;
         setBusy(true);
         setError("");
@@ -62,30 +87,31 @@ function CarTripCard({ booking, highlighted, onChanged }) {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                         <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
-                            Car rental · {booking.orderCode}
+                            {t("trips.myTrips.carRentalOrder", { orderCode: booking.orderCode })}
                         </p>
                         <h3 className="font-headline text-xl font-bold text-primary">{booking.carName}</h3>
                         <p className="text-xs text-on-surface-variant">
-                            {[booking.carBrand, booking.carModel].filter(Boolean).join(" ")}
-                            {booking.withDriver ? " · with driver" : " · self-drive"}
+                            {t(booking.withDriver ? "trips.myTrips.carDetailsWithDriver" : "trips.myTrips.carDetailsSelfDrive", {
+                                model: [booking.carBrand, booking.carModel].filter(Boolean).join(" "),
+                            })}
                         </p>
                     </div>
-                    <StatusBadge status={booking.status} labels={BOOKING_STATUS_LABELS} />
+                    <StatusBadge status={booking.status} labels={getBookingStatusLabels(t)} />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
                     <div>
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Pick-up</p>
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">{t("trips.myTrips.pickup")}</p>
                         <p className="font-semibold">{formatDateTime(booking.pickupDate)}</p>
                         {booking.pickupLocation && <p className="text-xs text-on-surface-variant">{booking.pickupLocation}</p>}
                     </div>
                     <div>
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Drop-off</p>
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">{t("trips.myTrips.dropoff")}</p>
                         <p className="font-semibold">{formatDateTime(booking.returnDate)}</p>
                         {booking.returnLocation && <p className="text-xs text-on-surface-variant">{booking.returnLocation}</p>}
                     </div>
                     <div className="sm:text-right">
                         <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
-                            {booking.rentalDays} day{booking.rentalDays === 1 ? "" : "s"}
+                            {t("common.units.day", { count: booking.rentalDays })}
                         </p>
                         <p className="font-headline text-xl font-black text-primary">
                             {formatMoney(booking.totalPrice, booking.currencyCode)}
@@ -96,7 +122,7 @@ function CarTripCard({ booking, highlighted, onChanged }) {
                 <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-outline-variant/20">
                     {booking.status === "confirmed" && booking.cancellable && (
                         <span className="text-xs text-on-surface-variant mr-auto">
-                            Free cancellation until {formatDateTime(booking.freeCancellationUntil)}
+                            {t("trips.myTrips.freeCancellationUntil", { date: formatDateTime(booking.freeCancellationUntil) })}
                         </span>
                     )}
                     {booking.status === "pending" && booking.paymentId && (
@@ -104,7 +130,7 @@ function CarTripCard({ booking, highlighted, onChanged }) {
                             to={`/trip-payment/${booking.paymentId}`}
                             className="editorial-gradient text-white px-4 py-2 rounded-lg text-xs font-bold"
                         >
-                            Pay now
+                            {t("trips.myTrips.payNow")}
                         </Link>
                     )}
                     {booking.cancellable && (
@@ -114,7 +140,7 @@ function CarTripCard({ booking, highlighted, onChanged }) {
                             onClick={handleCancel}
                             className="px-4 py-2 rounded-lg text-xs font-bold text-error border border-error/30 hover:bg-error-container/40 disabled:opacity-50"
                         >
-                            {busy ? "Cancelling..." : "Cancel"}
+                            {busy ? t("trips.myTrips.cancelling") : t("common.actions.cancel")}
                         </button>
                     )}
                 </div>
@@ -125,14 +151,15 @@ function CarTripCard({ booking, highlighted, onChanged }) {
 
 /** Một vé máy bay (một hành khách) trong My Trips. */
 function FlightTripCard({ booking, highlighted, onChanged }) {
+    const t = useT();
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState("");
 
     const handleCancel = async () => {
         const question =
             booking.status === "confirmed"
-                ? `Cancel the ticket of ${booking.passengerName}? You will receive a full refund.`
-                : "Cancel this reservation? All passengers of this order will be cancelled.";
+                ? t("trips.myTrips.confirm.cancelTicketPaid", { passengerName: booking.passengerName })
+                : t("trips.myTrips.confirm.cancelFlightReservation");
         if (!window.confirm(question)) return;
         setBusy(true);
         setError("");
@@ -169,7 +196,7 @@ function FlightTripCard({ booking, highlighted, onChanged }) {
                     <AirlineLogo flight={flight} size="w-12 h-12" />
                     <div>
                         <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
-                            Flight · {booking.orderCode}
+                            {t("trips.myTrips.flightOrder", { orderCode: booking.orderCode })}
                         </p>
                         <h3 className="font-headline text-xl font-bold text-primary">
                             {booking.airline} {booking.flightNumber}
@@ -177,24 +204,25 @@ function FlightTripCard({ booking, highlighted, onChanged }) {
                         <p className="text-xs text-on-surface-variant">{flightDateLabel(booking.departureTime)}</p>
                     </div>
                 </div>
-                <StatusBadge status={booking.status} labels={BOOKING_STATUS_LABELS} />
+                <StatusBadge status={booking.status} labels={getBookingStatusLabels(t)} />
             </div>
             <FlightTimeline flight={flight} />
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
                 <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Passenger</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">{t("trips.myTrips.passenger")}</p>
                     <p className="font-semibold">{booking.passengerName}</p>
-                    {booking.passportNo && <p className="text-xs text-on-surface-variant">Passport {booking.passportNo}</p>}
+                    {booking.passportNo && <p className="text-xs text-on-surface-variant">{t("trips.myTrips.passport", { passportNo: booking.passportNo })}</p>}
                 </div>
                 <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Seat</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">{t("trips.myTrips.seat")}</p>
                     <p className="font-semibold">
-                        {booking.seatNumber || "—"}{" "}
-                        {booking.seatClass ? `· ${SEAT_CLASS_LABELS[booking.seatClass] || booking.seatClass}` : ""}
+                        {booking.seatClass
+                            ? t("trips.myTrips.seatDetails", { seatNumber: booking.seatNumber || "—", seatClass: getSeatClassLabel(t, booking.seatClass) })
+                            : booking.seatNumber || "—"}
                     </p>
                 </div>
                 <div className="sm:text-right">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Fare</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">{t("trips.myTrips.fare")}</p>
                     <p className="font-headline text-xl font-black text-primary">
                         {formatMoney(booking.totalPrice, booking.currencyCode)}
                     </p>
@@ -204,7 +232,7 @@ function FlightTripCard({ booking, highlighted, onChanged }) {
             <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-outline-variant/20">
                 {booking.status === "confirmed" && booking.cancellable && (
                     <span className="text-xs text-on-surface-variant mr-auto">
-                        Free cancellation until {formatDateTime(booking.freeCancellationUntil)}
+                        {t("trips.myTrips.freeCancellationUntil", { date: formatDateTime(booking.freeCancellationUntil) })}
                     </span>
                 )}
                 {booking.status === "pending" && booking.paymentId && (
@@ -212,7 +240,7 @@ function FlightTripCard({ booking, highlighted, onChanged }) {
                         to={`/trip-payment/${booking.paymentId}`}
                         className="editorial-gradient text-white px-4 py-2 rounded-lg text-xs font-bold"
                     >
-                        Pay now
+                        {t("trips.myTrips.payNow")}
                     </Link>
                 )}
                 {booking.cancellable && (
@@ -222,7 +250,7 @@ function FlightTripCard({ booking, highlighted, onChanged }) {
                         onClick={handleCancel}
                         className="px-4 py-2 rounded-lg text-xs font-bold text-error border border-error/30 hover:bg-error-container/40 disabled:opacity-50"
                     >
-                        {busy ? "Cancelling..." : "Cancel"}
+                        {busy ? t("trips.myTrips.cancelling") : t("common.actions.cancel")}
                     </button>
                 )}
             </div>
@@ -232,14 +260,15 @@ function FlightTripCard({ booking, highlighted, onChanged }) {
 
 /** Một đơn tour trong My Trips. */
 function TourTripCard({ booking, highlighted, onChanged }) {
+    const t = useT();
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState("");
 
     const handleCancel = async () => {
         const question =
             booking.status === "confirmed"
-                ? "Cancel this tour? You will receive a full refund."
-                : "Cancel this reservation? It has not been paid yet.";
+                ? t("trips.myTrips.confirm.cancelTourPaid")
+                : t("trips.myTrips.confirm.cancelReservationUnpaid");
         if (!window.confirm(question)) return;
         setBusy(true);
         setError("");
@@ -252,9 +281,10 @@ function TourTripCard({ booking, highlighted, onChanged }) {
         }
     };
 
-    const guests = `${booking.numAdults} adult${booking.numAdults === 1 ? "" : "s"}${
-        booking.numChildren ? `, ${booking.numChildren} child${booking.numChildren === 1 ? "" : "ren"}` : ""
-    }`;
+    const adults = t("common.units.adult", { count: booking.numAdults });
+    const guests = booking.numChildren
+        ? t("trips.myTrips.travellersWithChildren", { adults, children: t("common.units.child", { count: booking.numChildren }) })
+        : adults;
     return (
         <article
             id={`trip-${booking.id}`}
@@ -271,27 +301,27 @@ function TourTripCard({ booking, highlighted, onChanged }) {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                         <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
-                            Tour · {booking.orderCode}
+                            {t("trips.myTrips.tourOrder", { orderCode: booking.orderCode })}
                         </p>
                         <h3 className="font-headline text-xl font-bold text-primary">{booking.tourName}</h3>
                         {booking.destinationName && <p className="text-xs text-on-surface-variant">{booking.destinationName}</p>}
                     </div>
-                    <StatusBadge status={booking.status} labels={BOOKING_STATUS_LABELS} />
+                    <StatusBadge status={booking.status} labels={getBookingStatusLabels(t)} />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
                     <div>
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Dates</p>
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">{t("trips.myTrips.dates")}</p>
                         <p className="font-semibold">
                             {formatDate(booking.departureDate)} → {formatDate(booking.returnDate)}
                         </p>
                     </div>
                     <div>
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Travellers</p>
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">{t("trips.myTrips.travellers")}</p>
                         <p className="font-semibold">{guests}</p>
                     </div>
                     <div className="sm:text-right">
                         <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
-                            {booking.durationDays} day{booking.durationDays === 1 ? "" : "s"}
+                            {t("common.units.day", { count: booking.durationDays })}
                         </p>
                         <p className="font-headline text-xl font-black text-primary">
                             {formatMoney(booking.totalPrice, booking.currencyCode)}
@@ -302,7 +332,7 @@ function TourTripCard({ booking, highlighted, onChanged }) {
                 <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-outline-variant/20">
                     {booking.status === "confirmed" && booking.cancellable && (
                         <span className="text-xs text-on-surface-variant mr-auto">
-                            Free cancellation until {formatDate(booking.freeCancellationUntil)}
+                            {t("trips.myTrips.freeCancellationUntil", { date: formatDate(booking.freeCancellationUntil) })}
                         </span>
                     )}
                     {booking.status === "pending" && booking.paymentId && (
@@ -310,7 +340,7 @@ function TourTripCard({ booking, highlighted, onChanged }) {
                             to={`/trip-payment/${booking.paymentId}`}
                             className="editorial-gradient text-white px-4 py-2 rounded-lg text-xs font-bold"
                         >
-                            Pay now
+                            {t("trips.myTrips.payNow")}
                         </Link>
                     )}
                     {booking.cancellable && (
@@ -320,7 +350,7 @@ function TourTripCard({ booking, highlighted, onChanged }) {
                             onClick={handleCancel}
                             className="px-4 py-2 rounded-lg text-xs font-bold text-error border border-error/30 hover:bg-error-container/40 disabled:opacity-50"
                         >
-                            {busy ? "Cancelling..." : "Cancel"}
+                            {busy ? t("trips.myTrips.cancelling") : t("common.actions.cancel")}
                         </button>
                     )}
                 </div>
@@ -341,41 +371,42 @@ function HotelTripCard({ booking, highlighted }) {
 /** Loại chuyến trong My Trips: nguồn dữ liệu + thẻ hiển thị. */
 const TRIP_TYPES = {
     hotels: {
-        label: "Hotels",
+        labelKey: "nav.hotels",
         icon: "hotel",
         fetch: fetchMyBookings,
         Card: HotelTripCard,
         browse: "/hotels",
-        browseLabel: "Find a hotel",
+        browseLabelKey: "trips.myTrips.browse.findHotel",
     },
     cars: {
-        label: "Cars",
+        labelKey: "nav.cars",
         icon: "directions_car",
         fetch: fetchMyCarBookings,
         Card: CarTripCard,
         browse: "/cars",
-        browseLabel: "Browse cars",
+        browseLabelKey: "trips.myTrips.browse.cars",
     },
     flights: {
-        label: "Flights",
+        labelKey: "nav.flights",
         icon: "flight",
         fetch: fetchMyFlightBookings,
         Card: FlightTripCard,
         browse: "/flights",
-        browseLabel: "Search flights",
+        browseLabelKey: "trips.myTrips.browse.flights",
     },
     tours: {
-        label: "Tours",
+        labelKey: "nav.tours",
         icon: "tour",
         fetch: fetchMyTourBookings,
         Card: TourTripCard,
         browse: "/tours",
-        browseLabel: "Explore tours",
+        browseLabelKey: "trips.myTrips.browse.tours",
     },
 };
 
 /** Mọi chuyến đã đặt: khách sạn, xe, vé máy bay, tour (tab theo ?tab=; /booking-history chuyển về tab hotels). */
 function MyTrips() {
+    const t = useT();
     const [params, setParams] = useSearchParams();
     const tab = TRIP_TYPES[params.get("tab")] ? params.get("tab") : "hotels";
     const type = TRIP_TYPES[tab];
@@ -422,18 +453,18 @@ function MyTrips() {
         <DashboardLayout>
             <section className="mb-10">
                 <span className="text-[0.75rem] uppercase tracking-[0.2em] text-on-tertiary-fixed-variant mb-2 block">
-                    Journeys
+                    {t("trips.myTrips.eyebrow")}
                 </span>
-                <h1 className="font-headline text-5xl font-extrabold text-on-surface tracking-tight mb-2">My Trips</h1>
+                <h1 className="font-headline text-5xl font-extrabold text-on-surface tracking-tight mb-2">{t("nav.sidebar.myTrips")}</h1>
                 <p className="text-on-surface-variant text-lg">
-                    Hotel stays, car rentals, flights and tours in one place.
+                    {t("trips.myTrips.subtitle")}
                 </p>
             </section>
 
-            {paidId && <FormAlert type="success">Payment received — your reservation is confirmed.</FormAlert>}
+            {paidId && <FormAlert type="success">{t("trips.myTrips.paymentReceived")}</FormAlert>}
 
             <div className="flex gap-2 border-b border-outline-variant/30 mt-6">
-                {Object.entries(TRIP_TYPES).map(([key, t]) => (
+                {Object.entries(TRIP_TYPES).map(([key, tripType]) => (
                     <button
                         key={key}
                         type="button"
@@ -444,8 +475,8 @@ function MyTrips() {
                                 : "border-transparent text-on-surface-variant hover:text-on-surface"
                         }`}
                     >
-                        <span className="material-symbols-outlined text-[20px]">{t.icon}</span>
-                        {t.label}
+                        <span className="material-symbols-outlined text-[20px]">{tripType.icon}</span>
+                        {t(tripType.labelKey)}
                     </button>
                 ))}
             </div>
@@ -462,7 +493,7 @@ function MyTrips() {
                                 : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high"
                         }`}
                     >
-                        {tab.label}
+                        {t(tab.labelKey)}
                     </button>
                 ))}
             </div>
@@ -478,9 +509,9 @@ function MyTrips() {
             ) : result.items.length === 0 ? (
                 <div className="text-center py-16 bg-surface-container-low rounded-xl">
                     <span className="material-symbols-outlined text-5xl text-outline mb-3">{type.icon}</span>
-                    <p className="text-on-surface-variant mb-4">No trips here yet.</p>
+                    <p className="text-on-surface-variant mb-4">{t("trips.myTrips.empty")}</p>
                     <Link to={type.browse} className="text-sm font-bold text-primary hover:underline">
-                        {type.browseLabel}
+                        {t(type.browseLabelKey)}
                     </Link>
                 </div>
             ) : (

@@ -1,32 +1,32 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { addFavorite, checkFavorite, removeFavorite } from "../../services/favoriteService";
+import {
+    addFavorite,
+    getFavoriteId,
+    loadFavoriteIds,
+    removeFavorite,
+    subscribeFavorites,
+} from "../../services/favoriteService";
+import { useT } from "../../i18n/I18nContext";
 
 /**
  * Nút tim lưu/bỏ lưu yêu thích. Chưa đăng nhập -> chuyển sang trang Login.
  * `onChange(favorited)` được gọi sau khi đổi trạng thái thành công.
  */
 function FavoriteButton({ itemType = "hotel", itemId, className = "", onChange }) {
-    const { isLoggedIn } = useAuth();
+    const t = useT();
+    const { isLoggedIn, user } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
-    const [favoriteId, setFavoriteId] = useState(null);
     const [busy, setBusy] = useState(false);
+    // Trạng thái lấy từ kho chung (1 request cho cả trang), không gọi /check/ từng nút.
+    const storedId = useSyncExternalStore(subscribeFavorites, () => getFavoriteId(itemType, itemId));
+    const favoriteId = isLoggedIn && itemId ? storedId : null;
 
     useEffect(() => {
-        if (!isLoggedIn || !itemId) {
-            setFavoriteId(null);
-            return;
-        }
-        let cancelled = false;
-        checkFavorite(itemType, itemId)
-            .then((res) => !cancelled && setFavoriteId(res.favoriteId))
-            .catch(() => null);
-        return () => {
-            cancelled = true;
-        };
-    }, [isLoggedIn, itemType, itemId]);
+        if (isLoggedIn && user?.id) loadFavoriteIds(user.id);
+    }, [isLoggedIn, user?.id]);
 
     const handleClick = async (e) => {
         e.preventDefault();
@@ -40,11 +40,9 @@ function FavoriteButton({ itemType = "hotel", itemId, className = "", onChange }
         try {
             if (favoriteId) {
                 await removeFavorite(favoriteId);
-                setFavoriteId(null);
                 onChange?.(false);
             } else {
-                const created = await addFavorite(itemType, itemId);
-                setFavoriteId(created.id);
+                await addFavorite(itemType, itemId);
                 onChange?.(true);
             }
         } catch {
@@ -61,8 +59,8 @@ function FavoriteButton({ itemType = "hotel", itemId, className = "", onChange }
             onClick={handleClick}
             disabled={busy}
             aria-pressed={favorited}
-            aria-label={favorited ? "Remove from saved" : "Save to favorites"}
-            title={favorited ? "Remove from saved" : "Save to favorites"}
+            aria-label={favorited ? t("trips.favorite.removeFromSaved") : t("trips.favorite.saveToFavorites")}
+            title={favorited ? t("trips.favorite.removeFromSaved") : t("trips.favorite.saveToFavorites")}
             className={`w-10 h-10 rounded-full bg-white/95 shadow-md flex items-center justify-center transition-transform hover:scale-110 disabled:opacity-60 ${className}`}
         >
             <span

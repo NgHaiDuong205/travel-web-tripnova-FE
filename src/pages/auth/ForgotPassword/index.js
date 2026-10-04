@@ -3,8 +3,10 @@ import { useState } from "react";
 import { forgotPassword } from "../../../services/authService";
 import FormInput from "../../../components/common/FormInput";
 import FormAlert from "../../../components/common/FormAlert";
+import { useT } from "../../../i18n/I18nContext";
 
 function ForgotPassword() {
+    const t = useT();
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
     const [sent, setSent] = useState(false);
@@ -13,7 +15,7 @@ function ForgotPassword() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!email.trim()) {
-            setError("Vui lòng nhập email.");
+            setError(t("auth.validation.emailRequired"));
             return;
         }
         setSubmitting(true);
@@ -21,7 +23,7 @@ function ForgotPassword() {
             await forgotPassword(email.trim());
             setSent(true);
         } catch (err) {
-            setError(err.message || "Không gửi được yêu cầu.");
+            setError(err.message || t("auth.forgotPassword.errors.failed"));
         } finally {
             setSubmitting(false);
         }
@@ -31,22 +33,22 @@ function ForgotPassword() {
         <section className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-gray-50 py-12 px-4">
             <div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-black text-[#003580] tracking-tight mb-2">Forgot password?</h1>
-                    <p className="text-gray-500 font-medium">Nhập email, chúng tôi sẽ gửi link đặt lại mật khẩu.</p>
+                    <h1 className="text-3xl font-black text-[#003580] tracking-tight mb-2">{t("auth.forgotPassword.title")}</h1>
+                    <p className="text-gray-500 font-medium">{t("auth.forgotPassword.subtitle")}</p>
                 </div>
 
                 {sent ? (
                     <FormAlert type="success">
-                        Nếu email tồn tại trong hệ thống, link đặt lại mật khẩu đã được gửi. Link có hiệu lực 30 phút.
+                        {t("auth.forgotPassword.sent")}
                     </FormAlert>
                 ) : (
                     <form className="space-y-6" onSubmit={handleSubmit} noValidate>
                         <FormAlert>{error}</FormAlert>
                         <FormInput
-                            label="Email Address"
+                            label={t("auth.fields.emailAddress")}
                             type="email"
                             name="email"
-                            placeholder="Enter your email"
+                            placeholder={t("auth.fields.enterEmail")}
                             autoComplete="email"
                             value={email}
                             onChange={(e) => {
@@ -59,14 +61,14 @@ function ForgotPassword() {
                             disabled={submitting}
                             className="w-full bg-[#003580] text-white py-3.5 rounded-lg font-bold tracking-wide shadow-md hover:bg-blue-800 transition-all disabled:opacity-60"
                         >
-                            {submitting ? "Sending..." : "Send reset link"}
+                            {submitting ? t("auth.forgotPassword.sending") : t("auth.forgotPassword.sendResetLink")}
                         </button>
                     </form>
                 )}
 
                 <div className="mt-8 text-center text-sm font-medium">
                     <Link to="/login" className="font-bold text-[#003580] hover:underline">
-                        Back to Sign in
+                        {t("auth.forgotPassword.backToSignIn")}
                     </Link>
                 </div>
             </div>

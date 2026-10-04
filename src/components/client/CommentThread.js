@@ -5,6 +5,7 @@ import UserAvatar from "../common/UserAvatar";
 import FormAlert from "../common/FormAlert";
 import { createComment, deleteComment, fetchComments, updateComment } from "../../services/postService";
 import { formatDateTime } from "../../utils/formatters";
+import { useT } from "../../i18n/I18nContext";
 
 /** Từ tầng này trở đi trả lời không thụt lề thêm (tránh cây quá sâu trên màn hình nhỏ). */
 const MAX_INDENT_DEPTH = 3;
@@ -23,6 +24,7 @@ function buildTree(comments) {
 }
 
 function CommentBox({ initial = "", placeholder, submitLabel, onSubmit, onCancel, autoFocus }) {
+    const t = useT();
     const [text, setText] = useState(initial);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
@@ -57,11 +59,11 @@ function CommentBox({ initial = "", placeholder, submitLabel, onSubmit, onCancel
             <div className="flex justify-end gap-2">
                 {onCancel && (
                     <button type="button" onClick={onCancel} className="px-3 py-1.5 rounded-lg text-xs font-bold text-on-surface-variant hover:bg-surface-container-high">
-                        Cancel
+                        {t("common.actions.cancel")}
                     </button>
                 )}
                 <button type="submit" disabled={saving || !text.trim()} className="px-4 py-1.5 rounded-lg text-xs font-bold bg-primary text-on-primary disabled:opacity-50">
-                    {saving ? "Sending..." : submitLabel}
+                    {saving ? t("reviews.comments.sending") : submitLabel}
                 </button>
             </div>
         </form>
@@ -69,6 +71,7 @@ function CommentBox({ initial = "", placeholder, submitLabel, onSubmit, onCancel
 }
 
 function CommentNode({ node, depth, userId, canReply, onReply, onEdit, onDelete }) {
+    const t = useT();
     const [mode, setMode] = useState(null); // "reply" | "edit"
     const visible = node.status === "active";
     const isMine = visible && userId && node.authorId === userId;
@@ -88,14 +91,14 @@ function CommentNode({ node, depth, userId, canReply, onReply, onEdit, onDelete 
                                 <span className="font-bold text-sm">{node.authorName}</span>
                                 <span className="text-[11px] text-on-surface-variant">
                                     {formatDateTime(node.createdAt)}
-                                    {node.isEdited && " · edited"}
+                                    {node.isEdited && ` · ${t("reviews.comments.edited")}`}
                                 </span>
                             </div>
                             {mode === "edit" ? (
                                 <div className="mt-2">
                                     <CommentBox
                                         initial={node.content}
-                                        submitLabel="Save"
+                                        submitLabel={t("common.actions.save")}
                                         autoFocus
                                         onSubmit={async (text) => {
                                             await onEdit(node.id, text);
@@ -110,33 +113,33 @@ function CommentNode({ node, depth, userId, canReply, onReply, onEdit, onDelete 
                             <div className="flex gap-4 mt-1 text-xs font-bold text-on-surface-variant">
                                 {canReply && (
                                     <button type="button" onClick={() => setMode(mode === "reply" ? null : "reply")} className="hover:text-primary">
-                                        Reply
+                                        {t("common.actions.reply")}
                                     </button>
                                 )}
                                 {isMine && mode !== "edit" && (
                                     <button type="button" onClick={() => setMode("edit")} className="hover:text-primary">
-                                        Edit
+                                        {t("common.actions.edit")}
                                     </button>
                                 )}
                                 {isMine && (
                                     <button
                                         type="button"
-                                        onClick={() => window.confirm("Delete this comment?") && onDelete(node.id)}
+                                        onClick={() => window.confirm(t("reviews.comments.deleteConfirm")) && onDelete(node.id)}
                                         className="hover:text-red-600"
                                     >
-                                        Delete
+                                        {t("common.actions.delete")}
                                     </button>
                                 )}
                             </div>
                         </>
                     ) : (
-                        <p className="text-sm italic text-on-surface-variant py-1">This comment was removed.</p>
+                        <p className="text-sm italic text-on-surface-variant py-1">{t("reviews.comments.removed")}</p>
                     )}
                     {mode === "reply" && (
                         <div className="mt-2">
                             <CommentBox
-                                placeholder={`Reply to ${node.authorName}...`}
-                                submitLabel="Reply"
+                                placeholder={t("reviews.comments.replyPlaceholder", { name: node.authorName })}
+                                submitLabel={t("common.actions.reply")}
                                 autoFocus
                                 onSubmit={async (text) => {
                                     await onReply(node.id, text);
@@ -170,6 +173,7 @@ function CommentNode({ node, depth, userId, canReply, onReply, onEdit, onDelete 
 
 /** Bình luận nhiều tầng của một bài. onCountChange(n) báo số bình luận đang hiển thị cho PostCard. */
 function CommentThread({ postId, onCountChange }) {
+    const t = useT();
     const { user, isLoggedIn } = useAuth();
     const location = useLocation();
     const [comments, setComments] = useState([]);
@@ -217,16 +221,16 @@ function CommentThread({ postId, onCountChange }) {
         <div className="space-y-4">
             <FormAlert>{error}</FormAlert>
             {isLoggedIn ? (
-                <CommentBox placeholder="Write a comment..." submitLabel="Comment" onSubmit={(text) => handleReply(null, text)} />
+                <CommentBox placeholder={t("reviews.comments.writePlaceholder")} submitLabel={t("reviews.comments.comment")} onSubmit={(text) => handleReply(null, text)} />
             ) : (
                 <p className="text-xs text-on-surface-variant">
-                    <Link to={`/login?redirect=${encodeURIComponent(location.pathname)}`} className="font-bold text-primary hover:underline">Sign in</Link> to join the conversation.
+                    <Link to={`/login?redirect=${encodeURIComponent(location.pathname)}`} className="font-bold text-primary hover:underline">{t("reviews.comments.signIn")}</Link>{t("reviews.comments.joinConversation")}
                 </p>
             )}
             {loading ? (
-                <p className="text-xs text-on-surface-variant">Loading comments...</p>
+                <p className="text-xs text-on-surface-variant">{t("reviews.comments.loading")}</p>
             ) : tree.length === 0 ? (
-                <p className="text-xs text-on-surface-variant">No comments yet.</p>
+                <p className="text-xs text-on-surface-variant">{t("reviews.comments.empty")}</p>
             ) : (
                 <ul className="space-y-4">
                     {tree.map((node) => (

@@ -1,0 +1,138 @@
+{
+  "statuses": {
+    "awaitingPayment": "Chờ thanh toán",
+    "noShow": "Không đến"
+  },
+  "checkout": {
+    "title": "Hoàn tất đặt phòng",
+    "hotelFallback": "Khách sạn",
+    "roomFallback": "Phòng",
+    "roomNumber": "Phòng {{number}}",
+    "yourStay": "Kỳ lưu trú của bạn",
+    "specialRequests": "Yêu cầu đặc biệt (không bắt buộc)",
+    "specialRequestsPlaceholder": "Tầng cao, nhận phòng muộn...",
+    "guest": "Khách",
+    "dates": "Ngày",
+    "guestsSummary": "{{adults}}",
+    "guestsWithChildren": "{{adults}}, {{children}}",
+    "nightsAtRate": "{{nights}} × {{price}}",
+    "alternateRoom_other": "Phòng đã chọn không còn trống; chúng tôi sẽ xếp phòng khác cùng hạng (còn {{count}} phòng).",
+    "noRoomsAvailable": "Hạng phòng này đã hết cho ngày bạn chọn.",
+    "creatingBooking": "Đang tạo đặt phòng...",
+    "continueToPayment": "Tiếp tục thanh toán",
+    "adding": "Đang thêm...",
+    "addToCart": "Thêm vào giỏ hàng",
+    "holdPolicy": "Phòng được giữ 15 phút sau khi bạn tiếp tục. Thêm vào giỏ hàng không giữ phòng.",
+    "findHotel": "Tìm khách sạn",
+    "errors": {
+      "missingRoomInfo": "Thiếu thông tin phòng",
+      "createBooking": "Không tạo được đặt phòng.",
+      "addToCart": "Không thêm được vào giỏ hàng."
+    },
+    "validation": {
+      "maxGuests_other": "Phòng chứa tối đa {{count}} khách.",
+      "checkOutAfterCheckIn": "Ngày trả phòng phải sau ngày nhận phòng."
+    }
+  },
+  "payment": {
+    "title": "Thanh toán",
+    "order": "Đơn hàng",
+    "method": "Phương thức",
+    "created": "Ngày tạo",
+    "amount": "Số tiền",
+    "testEnvironment": "Môi trường thử nghiệm: cổng thanh toán được giả lập, không trừ tiền thật.",
+    "payAmount": "Thanh toán {{amount}}",
+    "simulateFailed": "Giả lập thanh toán thất bại",
+    "viewBookings_other": "Xem {{count}} đặt phòng",
+    "viewBooking": "Xem đặt phòng"
+  },
+  "tripPayment": {
+    "loading": "Đang tải thông tin thanh toán...",
+    "myTrips": "Chuyến đi của tôi",
+    "secureCheckout": "Thanh toán an toàn",
+    "title": "Hoàn tất thanh toán",
+    "holdPolicy": "Chỗ của bạn được giữ trong 15 phút",
+    "paymentFailed": "Thanh toán thất bại hoặc đã hết thời gian giữ chỗ. Vui lòng đặt lại.",
+    "viewMyTrips": "Xem chuyến đi của tôi"
+  },
+  "detail": {
+    "cancelReasonPrompt": "Lý do huỷ đặt phòng (không bắt buộc):",
+    "booking": "Đặt phòng",
+    "room": "Phòng",
+    "roomNumber": "Số {{number}}",
+    "nights": "Số đêm",
+    "guestsSummary": "{{adults}}",
+    "guestsWithChildren": "{{adults}}, {{children}}",
+    "specialRequests": "Yêu cầu đặc biệt",
+    "paidAt": "Thanh toán lúc",
+    "refund": "Hoàn tiền",
+    "refundReason": "Lý do hoàn tiền",
+    "payNow": "Thanh toán ngay",
+    "cancelling": "Đang huỷ...",
+    "cancelBooking": "Huỷ đặt phòng",
+    "allBookings": "Tất cả đặt phòng"
+  },
+  "history": {
+    "memberDashboard": "Trang thành viên",
+    "title": "Lịch sử đặt phòng",
+    "totalTrips": "Tổng số chuyến",
+    "totalSpent": "Tổng chi tiêu",
+    "empty": "Không có đặt phòng nào trong mục này.",
+    "findHotel": "Tìm khách sạn",
+    "showingBookings": "Hiển thị {{shown}} / {{total}} đặt phòng"
+  },
+  "listItem": {
+    "stay": "Lưu trú",
+    "guestsSummary": "{{adults}}",
+    "guestsWithChildren": "{{adults}}, {{children}}",
+    "payView": "Thanh toán / Xem"
+  },
+  "cart": {
+    "title": "Giỏ hàng của bạn",
+    "empty": "Giỏ hàng của bạn đang trống.",
+    "selectRoom": "Chọn {{room}}",
+    "itemSummary": "{{checkIn}} → {{checkOut}} · {{nights}} · {{adults}}",
+    "itemSummaryWithChildren": "{{checkIn}} → {{checkOut}} · {{nights}} · {{adults}}, {{children}}",
+    "roomsRemaining_other": " (còn {{count}})",
+    "priceChanged": "Giá đã thay đổi so với {{price}} lúc thêm vào giỏ.",
+    "adultsTotal": "Người lớn (tổng)",
+    "childrenTotal": "Trẻ em (tổng)",
+    "checkoutPolicy": "Các phòng được đặt trong một đơn, thanh toán một lần và giữ trong 15 phút. Mục đang có vấn đề không thể thanh toán.",
+    "validation": {
+      "checkOutAfterCheckIn": "Ngày trả phòng phải sau ngày nhận phòng.",
+      "adultPerRoom": "Mỗi phòng cần ít nhất một người lớn."
+    },
+    "issues": {
+      "expired": "Ngày nhận phòng đã qua — vui lòng đổi ngày.",
+      "inactive": "Phòng này hiện không nhận đặt.",
+      "unavailable": "Không đủ phòng trống cho số lượng đã chọn."
+    },
+    "intro": "Khách sạn, tour, thuê xe và chuyến bay bạn định đặt. Giá và tình trạng chỗ được cập nhật mỗi lần mở giỏ. Mỗi nhóm được thanh toán thành một đơn riêng.",
+    "types": {
+      "hotel": "Khách sạn"
+    },
+    "exploreTypes": {
+      "hotel": "khách sạn",
+      "tour": "tour",
+      "car": "xe cho thuê",
+      "flight": "chuyến bay"
+    },
+    "clearHotels": "Xoá tất cả khách sạn",
+    "clearHotelsConfirm": "Xoá tất cả phòng khách sạn khỏi giỏ?"
+  },
+  "tripCart": {
+    "planJourney": "Lên kế hoạch hành trình",
+    "explore": "Khám phá {{type}}",
+    "selectItem": "Chọn {{item}}",
+    "added": "Đã thêm {{date}}",
+    "was": "trước đây",
+    "selected": "Đã chọn {{selected}} / {{total}}",
+    "paymentMethodFor": "Phương thức thanh toán cho {{type}}",
+    "checkout": "Thanh toán {{type}}",
+    "types": {
+      "tour": "Tour",
+      "car": "Thuê xe",
+      "flight": "Chuyến bay"
+    }
+  }
+}

@@ -6,17 +6,19 @@ import Pagination from "../../../components/common/Pagination";
 import FormAlert from "../../../components/common/FormAlert";
 import { fetchMyBookings, fetchMyDashboard } from "../../../services/meService";
 import { formatMoney } from "../../../utils/formatters";
+import { useT } from "../../../i18n/I18nContext";
 
-const STATUS_FILTERS = [
-    { value: "all", label: "All" },
-    { value: "upcoming", label: "Upcoming" },
-    { value: "pending", label: "Awaiting payment" },
-    { value: "completed", label: "Completed" },
-    { value: "cancelled", label: "Cancelled" },
-];
 const PAGE_SIZE = 5;
 
 function BookingHistory() {
+    const t = useT();
+    const statusFilters = [
+        { value: "all", label: t("common.status.all") },
+        { value: "upcoming", label: t("common.status.upcoming") },
+        { value: "pending", label: t("booking.statuses.awaitingPayment") },
+        { value: "completed", label: t("common.status.completed") },
+        { value: "cancelled", label: t("common.status.cancelled") },
+    ];
     const [status, setStatus] = useState("all");
     const [page, setPage] = useState(1);
     const [result, setResult] = useState({ items: [], total: 0 });
@@ -49,15 +51,15 @@ function BookingHistory() {
     return (
         <DashboardLayout>
             <section className="mb-10">
-                <span className="uppercase tracking-[0.15em] text-[10px] font-bold text-primary-container mb-2 block">Member Dashboard</span>
-                <h2 className="text-4xl font-extrabold tracking-tighter text-on-surface font-headline">Booking History</h2>
+                <span className="uppercase tracking-[0.15em] text-[10px] font-bold text-primary-container mb-2 block">{t("booking.history.memberDashboard")}</span>
+                <h2 className="text-4xl font-extrabold tracking-tighter text-on-surface font-headline">{t("booking.history.title")}</h2>
             </section>
 
             <section className="grid grid-cols-12 gap-6 mb-12">
                 <div className="col-span-12 lg:col-span-8 bg-surface-container-low p-6 rounded-xl">
-                    <span className="uppercase text-[9px] font-bold text-on-surface-variant mb-2 block">Status</span>
+                    <span className="uppercase text-[9px] font-bold text-on-surface-variant mb-2 block">{t("common.fields.status")}</span>
                     <div className="flex flex-wrap gap-2">
-                        {STATUS_FILTERS.map((f) => (
+                        {statusFilters.map((f) => (
                             <button
                                 key={f.value}
                                 type="button"
@@ -75,11 +77,11 @@ function BookingHistory() {
                 </div>
                 <div className="col-span-12 lg:col-span-4 bg-primary text-white p-6 rounded-xl relative overflow-hidden flex items-center">
                     <div className="z-10">
-                        <p className="text-[10px] font-bold tracking-widest uppercase opacity-70 mb-1">Total Trips</p>
+                        <p className="text-[10px] font-bold tracking-widest uppercase opacity-70 mb-1">{t("booking.history.totalTrips")}</p>
                         <h3 className="text-3xl font-black font-headline">{stats?.totalBookings ?? "–"}</h3>
                     </div>
                     <div className="ml-auto z-10 text-right">
-                        <p className="text-[10px] font-bold tracking-widest uppercase opacity-70 mb-1">Total Spent</p>
+                        <p className="text-[10px] font-bold tracking-widest uppercase opacity-70 mb-1">{t("booking.history.totalSpent")}</p>
                         <h3 className="text-xl font-bold font-headline">
                             {stats ? formatMoney(stats.totalSpent, stats.currencyCode) : "–"}
                         </h3>
@@ -98,9 +100,9 @@ function BookingHistory() {
                 {!loading && result.items.length === 0 && !error && (
                     <div className="bg-surface-container-lowest rounded-xl p-12 text-center">
                         <span className="material-symbols-outlined text-5xl text-outline mb-3">luggage</span>
-                        <p className="text-on-surface-variant mb-6">Chưa có đặt phòng nào ở mục này.</p>
+                        <p className="text-on-surface-variant mb-6">{t("booking.history.empty")}</p>
                         <Link to="/hotels" className="bg-primary text-white px-6 py-3 rounded-lg font-bold">
-                            Find a hotel
+                            {t("booking.history.findHotel")}
                         </Link>
                     </div>
                 )}
@@ -110,7 +112,7 @@ function BookingHistory() {
             <Pagination page={page} total={result.total} limit={PAGE_SIZE} onChange={setPage} />
             {!loading && result.total > 0 && (
                 <p className="mt-4 text-center text-xs font-medium text-on-surface-variant opacity-60">
-                    Showing {result.items.length} of {result.total} bookings
+                    {t("booking.history.showingBookings", { shown: result.items.length, total: result.total })}
                 </p>
             )}
             <div className="h-24"></div>

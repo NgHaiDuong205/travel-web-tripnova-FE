@@ -1,0 +1,4 @@
+{
+  "title": "Search TripNova", "placeholder": "Where do you want to go?", "emptyPrompt": "Search hotels, tours, cars, flights and destinations.", "noResults": "No results for \"{{query}}\"", "seeAll": "See all {{count}}", "fromPrice": "From {{price}} / {{unit}}",
+  "types": { "all": "All", "destination": "Destinations", "hotel": "Hotels", "tour": "Tours", "car": "Cars", "flight": "Flights" }
+}

@@ -40,6 +40,9 @@ export function normalizeHotel(raw) {
             return Number.isNaN(n) ? undefined : n;
         })(),
         amenities: Array.isArray(amenities) ? amenities : [],
+        latitude: raw.latitude != null ? Number(raw.latitude) : null,
+        longitude: raw.longitude != null ? Number(raw.longitude) : null,
+        distanceKm: raw.distanceKm != null ? Number(raw.distanceKm) : null,
     };
 }
 
@@ -60,6 +63,7 @@ export function buildHotelQueryParams(filters = {}) {
     const params = {};
 
     if (filters.name?.trim()) params.name = filters.name.trim();
+    if (filters.destinationId) params.destinationId = filters.destinationId;
     if (filters.destinationName?.trim()) {
         params.destinationName = filters.destinationName.trim();
     }
@@ -119,7 +123,19 @@ export async function fetchHotels(filters = {}) {
     };
 }
 
+/** Khách sạn gần một toạ độ, gần nhất trước (mỗi mục có distanceKm). */
+export async function fetchNearbyHotels(lat, lng, { radiusKm = 10, limit = 6 } = {}) {
+    const { data } = await apiClient.get("/api/hotels/nearby/", { params: { lat, lng, radiusKm, limit } });
+    return (Array.isArray(data) ? data : []).map(normalizeHotel);
+}
+
 export async function fetchHotelById(id) {
     const { data } = await apiClient.get(`/api/hotels/${id}/`);
     return normalizeHotel(data);
+}
+
+/** Ảnh gallery của khách sạn (đã sắp theo sortOrder). @returns {Promise<{id,url,caption}[]>} */
+export async function fetchHotelImages(id) {
+    const { data } = await apiClient.get(`/api/hotels/${id}/images/`);
+    return data;
 }

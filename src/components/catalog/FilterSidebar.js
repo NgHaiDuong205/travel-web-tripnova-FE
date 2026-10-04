@@ -1,13 +1,16 @@
+import { useT } from "../../i18n/I18nContext";
+
 /** Thanh bộ lọc cho danh mục. */
-function FilterSidebar({ title = "Refine Selection", onReset, children }) {
+function FilterSidebar({ title, onReset, children }) {
+    const t = useT();
     return (
         <aside className="w-full md:w-72 flex-shrink-0 space-y-10">
             <div>
                 <div className="flex items-center justify-between mb-6">
-                    <h3 className="font-headline font-bold text-xl text-primary">{title}</h3>
+                    <h3 className="font-headline font-bold text-xl text-primary">{title || t("catalog.filters.refineSelection")}</h3>
                     {onReset && (
                         <button type="button" onClick={onReset} className="text-xs font-bold text-primary hover:underline">
-                            Reset
+                            {t("common.actions.reset")}
                         </button>
                     )}
                 </div>

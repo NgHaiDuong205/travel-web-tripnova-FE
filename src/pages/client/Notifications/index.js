@@ -11,10 +11,12 @@ import {
     notificationStyle,
 } from "../../../services/notificationService";
 import { formatDateTime } from "../../../utils/formatters";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 15;
 
 function Notifications() {
+    const t = useT();
     const navigate = useNavigate();
     const [unreadOnly, setUnreadOnly] = useState(false);
     const [page, setPage] = useState(1);
@@ -66,7 +68,7 @@ function Notifications() {
     };
 
     const remove = async (id) => {
-        if (!window.confirm("Delete this notification?")) return;
+        if (!window.confirm(t("account.notifications.deleteConfirm"))) return;
         setError("");
         try {
             const item = result.items.find((entry) => entry.id === id);
@@ -95,9 +97,9 @@ function Notifications() {
     return (
         <DashboardLayout>
             <section className="mb-10">
-                <span className="text-[0.75rem] uppercase tracking-[0.2em] text-on-tertiary-fixed-variant mb-2 block">Inbox</span>
-                <h1 className="font-headline text-5xl font-extrabold text-on-surface tracking-tight mb-2">Notifications</h1>
-                <p className="text-on-surface-variant text-lg">Booking updates, refunds and replies to your reviews.</p>
+                <span className="text-[0.75rem] uppercase tracking-[0.2em] text-on-tertiary-fixed-variant mb-2 block">{t("account.notifications.inbox")}</span>
+                <h1 className="font-headline text-5xl font-extrabold text-on-surface tracking-tight mb-2">{t("nav.sidebar.notifications")}</h1>
+                <p className="text-on-surface-variant text-lg">{t("account.notifications.subtitle")}</p>
             </section>
 
             <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
@@ -110,7 +112,7 @@ function Notifications() {
                         }}
                         className={`px-4 py-2 rounded-lg text-sm font-bold ${!unreadOnly ? "bg-primary text-on-primary" : "bg-surface-container-high text-on-surface"}`}
                     >
-                        All
+                        {t("common.status.all")}
                     </button>
                     <button
                         type="button"
@@ -120,7 +122,7 @@ function Notifications() {
                         }}
                         className={`px-4 py-2 rounded-lg text-sm font-bold ${unreadOnly ? "bg-primary text-on-primary" : "bg-surface-container-high text-on-surface"}`}
                     >
-                        Unread ({result.unread})
+                        {t("account.notifications.unread", { count: result.unread })}
                     </button>
                 </div>
                 <button
@@ -129,7 +131,7 @@ function Notifications() {
                     onClick={markAll}
                     className="px-4 py-2 rounded-lg text-sm font-bold border border-outline-variant/40 text-primary disabled:opacity-50"
                 >
-                    Mark all as read
+                    {t("account.notifications.markAllRead")}
                 </button>
             </div>
 
@@ -143,7 +145,7 @@ function Notifications() {
             ) : result.items.length === 0 ? (
                 <div className="text-center py-16 bg-surface-container-low rounded-xl">
                     <span className="material-symbols-outlined text-5xl text-outline mb-3">notifications_off</span>
-                    <p className="text-on-surface-variant">You&apos;re all caught up.</p>
+                    <p className="text-on-surface-variant">{t("account.notifications.caughtUp")}</p>
                 </div>
             ) : (
                 <div className="space-y-3">
@@ -184,7 +186,7 @@ function Notifications() {
                                         <button
                                             type="button"
                                             onClick={() => markRead(item.id)}
-                                            title="Mark read"
+                                            title={t("account.notifications.markRead")}
                                             className="p-2 rounded-lg text-primary hover:bg-surface-container-high"
                                         >
                                             <span className="material-symbols-outlined text-lg">done</span>
@@ -193,7 +195,7 @@ function Notifications() {
                                     <button
                                         type="button"
                                         onClick={() => remove(item.id)}
-                                        title="Delete"
+                                        title={t("common.actions.delete")}
                                         className="p-2 rounded-lg text-red-600 hover:bg-red-50"
                                     >
                                         <span className="material-symbols-outlined text-lg">delete</span>

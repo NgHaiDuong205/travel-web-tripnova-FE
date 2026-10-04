@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom";
+import { useT } from "../../i18n/I18nContext";
+import { formatMoney } from "../../utils/formatters";
 import FavoriteButton from "../common/FavoriteButton";
 
 const PLACEHOLDER_IMAGE =
     "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80";
 
 function HotelListCard({ hotel }) {
+    const t = useT();
     const imageSrc = hotel.imageUrl || PLACEHOLDER_IMAGE;
     const location = [hotel.destinationName, hotel.countryName]
         .filter(Boolean)
@@ -21,14 +24,14 @@ function HotelListCard({ hotel }) {
             >
                 <img
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    alt={hotel.name || "Hotel"}
+                    alt={hotel.name || t("hotels.card.hotelAlt")}
                     src={imageSrc}
                     loading="lazy"
                 />
                 {hotel.starRating != null && (
                     <div className="absolute top-4 left-4">
                         <span className="bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
-                            {hotel.starRating} Star
+                            {t("hotels.filters.starRatingValue", { count: hotel.starRating })}
                         </span>
                     </div>
                 )}
@@ -42,8 +45,8 @@ function HotelListCard({ hotel }) {
                             }`}
                         >
                             {remaining === 0
-                                ? "No rooms left"
-                                : `${remaining} room${remaining !== 1 ? "s" : ""} left`}
+                                ? t("hotels.card.noRoomsLeft")
+                                : t("hotels.card.roomsLeft", { count: remaining })}
                         </span>
                     </div>
                 )}
@@ -100,8 +103,8 @@ function HotelListCard({ hotel }) {
                         </span>
                         <span>
                             {remaining === 0
-                                ? "No rooms available for selected dates"
-                                : `${remaining} room${remaining !== 1 ? "s" : ""} available for your dates`}
+                                ? t("hotels.card.noRoomsForDates")
+                                : t("hotels.card.roomsForDates", { count: remaining })}
                         </span>
                     </div>
                 )}
@@ -122,18 +125,18 @@ function HotelListCard({ hotel }) {
                         {hotel.pricePerNight != null ? (
                             <>
                                 <span className="text-[10px] uppercase font-bold text-outline tracking-widest block mb-1">
-                                    Starting from
+                                    {t("hotels.card.startingFrom")}
                                 </span>
                                 <span className="text-2xl font-black text-primary">
-                                    ${Number(hotel.pricePerNight).toLocaleString()}
+                                    {formatMoney(hotel.pricePerNight, "USD")}
                                     <span className="text-sm font-medium text-on-surface-variant">
-                                        /night
+                                        {t("common.units.perNight")}
                                     </span>
                                 </span>
                             </>
                         ) : !showRemaining && hotel.totalRooms != null ? (
                             <span className="text-sm text-on-surface-variant font-medium">
-                                {hotel.totalRooms} rooms available
+                                {t("hotels.card.roomsAvailable", { count: hotel.totalRooms })}
                             </span>
                         ) : null}
                     </div>
@@ -141,7 +144,7 @@ function HotelListCard({ hotel }) {
                         to={`/hotel/${hotel.id}`}
                         className="text-primary font-bold text-sm border-b-2 border-primary/20 hover:border-primary transition-all pb-1 shrink-0"
                     >
-                        View Details
+                        {t("common.actions.viewDetails")}
                     </Link>
                 </div>
             </div>

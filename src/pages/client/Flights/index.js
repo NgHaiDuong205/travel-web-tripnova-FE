@@ -17,12 +17,14 @@ import {
 } from "../../../services/flightService";
 import { formatMoney } from "../../../utils/formatters";
 import { AirlineLogo, FlightTimeline, flightDateLabel } from "../../../components/catalog/FlightTimeline";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 8;
 const HERO_IMAGE = "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1800&q=80";
 
 /** Thẻ chuyến bay theo FLIGHT.HTML. */
 function FlightCard({ flight, detailQuery }) {
+    const t = useT();
     const link = `/flights/${flight.id}${detailQuery ? `?${detailQuery}` : ""}`;
     return (
         <div className="bg-surface-container-lowest rounded-xl p-6 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col lg:flex-row lg:items-center gap-6">
@@ -39,16 +41,16 @@ function FlightCard({ flight, detailQuery }) {
             </div>
             <FlightTimeline flight={flight} />
             <div className="lg:w-44 shrink-0 lg:text-right lg:border-l lg:border-outline-variant/30 lg:pl-6">
-                <div className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">From</div>
+                <div className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">{t("flights.list.from")}</div>
                 <div className="font-headline text-3xl font-black text-primary">{formatMoney(flight.fromPrice, flight.currencyCode)}</div>
                 <div className="text-xs text-on-surface-variant mb-3">
-                    Per person · {flight.availableSeats} seat{flight.availableSeats === 1 ? "" : "s"} left
+                    {t("common.units.perPerson")} · {t("flights.list.seatsLeft", { count: flight.availableSeats })}
                 </div>
                 <Link
                     to={link}
                     className="inline-block editorial-gradient text-on-primary px-6 py-2.5 rounded-lg font-bold text-sm hover:opacity-90 transition-all"
                 >
-                    Select Flight
+                    {t("flights.list.selectFlight")}
                 </Link>
             </div>
         </div>
@@ -57,6 +59,7 @@ function FlightCard({ flight, detailQuery }) {
 
 /** Kết quả một chiều (đi hoặc về). */
 function FlightResults({ title, query, detailQuery, page, onPage, onCount }) {
+    const t = useT();
     const [result, setResult] = useState({ items: [], total: 0 });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -88,7 +91,7 @@ function FlightResults({ title, query, detailQuery, page, onPage, onCount }) {
             ) : result.items.length === 0 ? (
                 <div className="text-center py-16 bg-surface-container-low rounded-xl">
                     <span className="material-symbols-outlined text-5xl text-outline mb-3">airplanemode_inactive</span>
-                    <p className="text-on-surface-variant">No flights match your search. Try another date or fewer filters.</p>
+                    <p className="text-on-surface-variant">{t("flights.list.empty")}</p>
                 </div>
             ) : (
                 result.items.map((flight) => <FlightCard key={flight.id} flight={flight} detailQuery={detailQuery} />)
@@ -100,6 +103,7 @@ function FlightResults({ title, query, detailQuery, page, onPage, onCount }) {
 
 /** Tìm chuyến bay: một chiều / khứ hồi (hiện thêm danh sách chuyến về), lọc theo hãng, giá, khung giờ. */
 function Flights() {
+    const t = useT();
     const [params, setParams] = useSearchParams();
     const [options, setOptions] = useState(null);
     const [airports, setAirports] = useState([]);
@@ -155,7 +159,7 @@ function Flights() {
     const handleSearch = () => {
         setError("");
         if (search.trip === "round" && search.depart && search.ret && search.ret < search.depart) {
-            setError("Return date must be on or after the departure date.");
+            setError(t("flights.validation.returnDate"));
             return;
         }
         update({
@@ -188,28 +192,28 @@ function Flights() {
             </datalist>
             <CatalogHero
                 image={HERO_IMAGE}
-                alt="Aircraft wing above the clouds"
+                alt={t("flights.hero.imageAlt")}
                 title={
                     <>
-                        Skyward Bound. <br />
-                        Elegance in Flight.
+                        {t("flights.hero.titleLineOne")} <br />
+                        {t("flights.hero.titleLineTwo")}
                     </>
                 }
-                subtitle="Compare schedules, pick your seat on the cabin map and pay securely in minutes."
+                subtitle={t("flights.hero.subtitle")}
             >
                 <div className="max-w-5xl w-full">
                     <div className="flex gap-2 mb-3">
                         <button type="button" className={tabClass(search.trip === "round")} onClick={() => setSearch((s) => ({ ...s, trip: "round" }))}>
-                            Round Trip
+                            {t("flights.search.roundTrip")}
                         </button>
                         <button type="button" className={tabClass(search.trip !== "round")} onClick={() => setSearch((s) => ({ ...s, trip: "oneway" }))}>
-                            One Way
+                            {t("flights.search.oneWay")}
                         </button>
                     </div>
                     <SearchPanel
                         columns={4}
                         onSubmit={handleSearch}
-                        submitLabel="Search Flights"
+                        submitLabel={t("flights.search.submit")}
                         submitIcon="flight_takeoff"
                         footer={
                             <div className="flex flex-wrap gap-3">
@@ -222,7 +226,7 @@ function Flights() {
                                     >
                                         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
                                             <option key={n} value={n}>
-                                                {n} Passenger{n > 1 ? "s" : ""}
+                                                {t("common.units.passenger", { count: n })}
                                             </option>
                                         ))}
                                     </select>
@@ -234,9 +238,9 @@ function Flights() {
                                         value={search.cls}
                                         onChange={(e) => setSearch((s) => ({ ...s, cls: e.target.value }))}
                                     >
-                                        {Object.entries(SEAT_CLASS_LABELS).map(([value, label]) => (
+                                        {Object.entries(SEAT_CLASS_LABELS).map(([value]) => (
                                             <option key={value} value={value}>
-                                                {label}
+                                                {t(`flights.classes.${value}`, { defaultValue: value })}
                                             </option>
                                         ))}
                                     </select>
@@ -244,25 +248,25 @@ function Flights() {
                             </div>
                         }
                     >
-                        <SearchField label="From (Departure)" icon="flight_takeoff">
+                        <SearchField label={t("flights.search.from")} icon="flight_takeoff">
                             <input
                                 list="airport-options"
                                 className={fieldInputClass}
-                                placeholder="City or airport code"
+                                placeholder={t("flights.search.fromPlaceholder")}
                                 value={search.from}
                                 onChange={(e) => setSearch((s) => ({ ...s, from: e.target.value }))}
                             />
                         </SearchField>
-                        <SearchField label="To (Destination)" icon="flight_land">
+                        <SearchField label={t("flights.search.to")} icon="flight_land">
                             <input
                                 list="airport-options"
                                 className={fieldInputClass}
-                                placeholder="Where to?"
+                                placeholder={t("flights.search.toPlaceholder")}
                                 value={search.to}
                                 onChange={(e) => setSearch((s) => ({ ...s, to: e.target.value }))}
                             />
                         </SearchField>
-                        <SearchField label="Departure Date" icon="calendar_month">
+                        <SearchField label={t("flights.search.departureDate")} icon="calendar_month">
                             <input
                                 type="date"
                                 className={fieldInputClass}
@@ -270,7 +274,7 @@ function Flights() {
                                 onChange={(e) => setSearch((s) => ({ ...s, depart: e.target.value }))}
                             />
                         </SearchField>
-                        <SearchField label="Return Date" icon="calendar_month">
+                        <SearchField label={t("flights.search.returnDate")} icon="calendar_month">
                             <input
                                 type="date"
                                 className={`${fieldInputClass} disabled:opacity-40`}
@@ -285,9 +289,9 @@ function Flights() {
             </CatalogHero>
 
             <div id="results" className="max-w-screen-2xl mx-auto px-8 py-20 flex flex-col md:flex-row gap-12 scroll-mt-24">
-                <FilterSidebar title="Filters" onReset={() => setParams(new URLSearchParams())}>
+                <FilterSidebar title={t("flights.filters.title")} onReset={() => setParams(new URLSearchParams())}>
                     {options?.airlines?.length > 0 && (
-                        <FilterGroup title="Airlines">
+                        <FilterGroup title={t("flights.filters.airlines")}>
                             {options.airlines.map((airline) => (
                                 <FilterCheckbox
                                     key={airline}
@@ -298,7 +302,7 @@ function Flights() {
                             ))}
                         </FilterGroup>
                     )}
-                    <FilterGroup title="Price Range">
+                    <FilterGroup title={t("flights.filters.priceRange")}>
                         <input
                             className="w-full accent-primary"
                             type="range"
@@ -309,15 +313,15 @@ function Flights() {
                         />
                         <div className="flex justify-between text-xs font-bold text-on-surface-variant">
                             <span>{formatMoney(priceFloor, options?.currencyCode)}</span>
-                            <span>up to {formatMoney(Math.min(priceMax, priceCeiling), options?.currencyCode)}</span>
+                            <span>{t("flights.filters.upTo", { price: formatMoney(Math.min(priceMax, priceCeiling), options?.currencyCode) })}</span>
                         </div>
                     </FilterGroup>
-                    <FilterGroup title="Flight Times">
+                    <FilterGroup title={t("flights.filters.flightTimes")}>
                         <div className="grid grid-cols-2 gap-2">
                             {TIME_SLOTS.map((slot) => (
                                 <FilterChip
                                     key={slot.value}
-                                    label={slot.label}
+                                    label={t(`flights.times.${slot.value}`, { defaultValue: slot.value })}
                                     active={params.get("time") === slot.value}
                                     onClick={() => update({ time: params.get("time") === slot.value ? "" : slot.value })}
                                 />
@@ -328,15 +332,15 @@ function Flights() {
 
                 <div className="flex-grow space-y-10">
                     <ListHeader
-                        eyebrow={params.get("from") && params.get("to") ? `${params.get("from")} → ${params.get("to")}` : "All routes"}
-                        title={outboundCount == null ? "Finding flights..." : `Showing ${outboundCount} flight match${outboundCount === 1 ? "" : "es"}`}
-                        sortOptions={FLIGHT_SORTS}
+                        eyebrow={params.get("from") && params.get("to") ? `${params.get("from")} → ${params.get("to")}` : t("flights.list.allRoutes")}
+                        title={outboundCount == null ? t("flights.list.finding") : t("flights.list.matches", { count: outboundCount })}
+                        sortOptions={FLIGHT_SORTS.map((sort) => ({ ...sort, label: t(`flights.sort.${sort.value}`, { defaultValue: sort.value }) }))}
                         sort={params.get("sort") || "departure"}
                         onSortChange={(value) => update({ sort: value === "departure" ? "" : value })}
                     />
                     <FormAlert>{error}</FormAlert>
                     <FlightResults
-                        title={roundTrip ? "Outbound" : null}
+                        title={roundTrip ? t("flights.list.outbound") : null}
                         query={outbound}
                         detailQuery={detailQuery}
                         page={page}
@@ -345,7 +349,7 @@ function Flights() {
                     />
                     {roundTrip && (
                         <FlightResults
-                            title={`Return · ${params.get("to")} → ${params.get("from")}`}
+                            title={t("flights.list.return", { route: `${params.get("to")} → ${params.get("from")}` })}
                             query={inbound}
                             detailQuery={detailQuery}
                             page={returnPage}

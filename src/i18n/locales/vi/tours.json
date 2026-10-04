@@ -1,0 +1,82 @@
+{
+  "list": {
+    "departs": "Khởi hành {{date}}",
+    "startingFrom": "Giá chỉ từ",
+    "exclusiveCollection": "Bộ sưu tập độc quyền",
+    "heroTitleLineOne": "Hành trình tuyển chọn.",
+    "heroTitleLineTwo": "Bí mật bản địa.",
+    "heroDescription": "Trải nghiệm do chuyên gia dẫn dắt, vượt xa sách hướng dẫn. Khám phá linh hồn của mỗi điểm đến qua đôi mắt của chính người bản địa.",
+    "exploreExperiences": "Khám phá trải nghiệm",
+    "browseDestinations": "Xem điểm đến",
+    "heroImageAlt": "Phong cảnh núi non lúc bình minh",
+    "resultsFor": "Kết quả cho \"{{query}}\"",
+    "handPicked": "Những khoảnh khắc khó quên, được chọn lọc kỹ càng",
+    "editorsPicks": "Biên tập viên đề xuất",
+    "emptyState": "Chưa có tour phù hợp. Hãy thử điểm đến hoặc thời lượng khác.",
+    "experience_other": "{{count}} trải nghiệm"
+  },
+  "search": {
+    "destinationPlaceholder": "Bạn muốn đi đâu?",
+    "length": "Thời lượng",
+    "budgetPerPerson": "Ngân sách mỗi người",
+    "anyBudget": "Mọi mức giá",
+    "upToBudget": "Tối đa {{amount}}",
+    "duration": {
+      "any": "Mọi thời lượng",
+      "short": "1 - 3 ngày",
+      "week": "4 - 7 ngày",
+      "long": "Từ 8 ngày"
+    }
+  },
+  "sort": {
+    "newest": "Biên tập viên đề xuất",
+    "price_asc": "Giá: thấp đến cao",
+    "price_desc": "Giá: cao đến thấp",
+    "duration_asc": "Ngắn nhất trước",
+    "duration_desc": "Dài nhất trước",
+    "departure": "Khởi hành sớm nhất"
+  },
+  "detail": {
+    "fewer": "Giảm {{label}}",
+    "more": "Thêm {{label}}",
+    "noLongerAvailable": "Tour này không còn mở bán.",
+    "backToTours": "Quay lại danh sách tour",
+    "dayJourney_other": "Hành trình {{count}} ngày",
+    "fromLocation": "Khởi hành từ {{location}}",
+    "startingFrom": "Giá chỉ từ",
+    "nextDeparture": "Khởi hành tiếp theo",
+    "flexible": "Linh hoạt",
+    "availability": "Tình trạng chỗ",
+    "spotsLeft_other": "Còn {{count}} chỗ",
+    "open": "Còn nhận khách",
+    "bookThisTour": "Đặt tour này",
+    "flexibleCancellation_other": "Huỷ linh hoạt trước {{count}} ngày",
+    "theJourney": "Hành trình",
+    "staysIncluded": "Nơi lưu trú bao gồm",
+    "handpickedProperty_other": "{{count}} khách sạn tuyển chọn",
+    "day": "Ngày {{count}}",
+    "theItinerary": "Lịch trình",
+    "gettingAround": "Di chuyển",
+    "flight": "Chuyến bay",
+    "transfer": "Xe đưa đón",
+    "seats_other": "{{count}} chỗ{{withDriver}}",
+    "withDriver": " · kèm tài xế",
+    "curatedInclusions": "Dịch vụ bao gồm",
+    "notIncluded": "Không bao gồm:",
+    "travellerReviews": "Đánh giá của du khách"
+  },
+  "booking": {
+    "contactNameRequired": "Vui lòng nhập tên người liên hệ.",
+    "summary": "Tóm tắt đặt chỗ",
+    "adultQuantity": "Người lớn × {{count}}",
+    "childQuantity": "Trẻ em × {{count}}",
+    "totalPrice": "Tổng giá",
+    "notEnoughSpots": "Không đủ chỗ",
+    "confirmBooking": "Xác nhận đặt tour",
+    "freeCancellationUntil": "Huỷ miễn phí đến {{date}}",
+    "departure": "Ngày khởi hành",
+    "fixedDateDeparture": "Khởi hành theo ngày cố định",
+    "spotsLeftForDate_other": "Còn {{count}} chỗ cho ngày này",
+    "contactName": "Tên người liên hệ *"
+  }
+}

@@ -14,17 +14,11 @@ import {
 import { BOOKING_STATUS_LABELS } from "../../../services/bookingService";
 import { formatDate, formatMoney } from "../../../utils/formatters";
 import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 20;
-const ACTION_LABELS = {
-    checked_in: "Check in",
-    checked_out: "Check out",
-    completed: "Complete",
-    no_show: "No show",
-    cancelled: "Cancel",
-};
-
 function AdminBookings() {
+    const t = useT();
     const [searchParams] = useSearchParams();
     const [status, setStatus] = useState(searchParams.get("status") || "all");
     const [keyword, setKeyword] = useState("");
@@ -62,8 +56,8 @@ function AdminBookings() {
         if (nextStatus === "cancelled") {
             reason = window.prompt(
                 booking.status === "confirmed"
-                    ? "Huỷ booking đã thanh toán sẽ hoàn tiền 100% và trả phòng. Lý do huỷ:"
-                    : "Lý do huỷ:",
+                    ? t("admin.bookings.cancelConfirmedPrompt")
+                    : t("admin.bookings.cancelReasonPrompt"),
                 ""
             );
             if (reason === null) return;
@@ -85,17 +79,16 @@ function AdminBookings() {
     const handleRefund = async (booking) => {
         const remaining = remainingRefundable(booking);
         const input = window.prompt(
-            `Số tiền hoàn (tối đa ${formatMoney(remaining, booking.currencyCode)}). ` +
-                "Hoàn đủ sẽ chuyển booking sang Refunded và trả phòng nếu khách chưa ở:",
+            t("admin.bookings.refundPrompt", { amount: formatMoney(remaining, booking.currencyCode) }),
             String(remaining)
         );
         if (input === null) return;
         const amount = Number(input);
         if (!Number.isFinite(amount) || amount <= 0 || amount > remaining) {
-            setError(`Số tiền hoàn phải trong khoảng (0, ${remaining}]`);
+            setError(t("admin.bookings.invalidRefund", { amount: remaining }));
             return;
         }
-        const reason = window.prompt("Lý do hoàn tiền:", "");
+        const reason = window.prompt(t("admin.bookings.refundReasonPrompt"), "");
         if (reason === null) return;
         setBusyId(booking.id);
         setError("");
@@ -109,7 +102,7 @@ function AdminBookings() {
     };
 
     const handleDelete = async (booking) => {
-        if (!window.confirm(`Xoá hẳn booking ${booking.orderCode}? Chỉ xoá được booking đã huỷ và chưa thanh toán.`)) return;
+        if (!window.confirm(t("admin.bookings.confirmDelete", { order: booking.orderCode }))) return;
         setBusyId(booking.id);
         setError("");
         try {
@@ -124,7 +117,7 @@ function AdminBookings() {
 
     return (
         <div className="space-y-6">
-            <h1 className="text-3xl font-extrabold text-primary">Hotel bookings</h1>
+            <h1 className="text-3xl font-extrabold text-primary">{t("admin.bookings.title")}</h1>
             <AdminStatsPanel section="bookings" />
 
             <div className="flex flex-wrap gap-3 items-center">
@@ -136,21 +129,21 @@ function AdminBookings() {
                     }}
                     className="rounded-lg border-gray-200 text-sm"
                 >
-                    <option value="all">All statuses</option>
+                    <option value="all">{t("common.status.all")}</option>
                     {Object.entries(BOOKING_STATUS_LABELS).map(([value, cfg]) => (
-                        <option key={value} value={value}>{cfg.label}</option>
+                        <option key={value} value={value}>{t(`admin.status.${value}`, { defaultValue: cfg.label })}</option>
                     ))}
                 </select>
                 <form onSubmit={handleSearch} className="flex gap-2">
                     <input
                         value={keyword}
                         onChange={(e) => setKeyword(e.target.value)}
-                        placeholder="Order code, guest, email, hotel..."
+                        placeholder={t("admin.bookings.searchPlaceholder")}
                         className="rounded-lg border-gray-200 text-sm w-72"
                     />
-                    <button type="submit" className="bg-primary text-white px-4 rounded-lg text-sm font-bold">Search</button>
+                    <button type="submit" className="bg-primary text-white px-4 rounded-lg text-sm font-bold">{t("common.actions.search")}</button>
                 </form>
-                <span className="ml-auto text-sm text-gray-500">{result.total.toLocaleString()} bookings</span>
+                <span className="ml-auto text-sm text-gray-500">{t("admin.bookings.count", { count: result.total })}</span>
             </div>
 
             <FormAlert>{error}</FormAlert>
@@ -159,21 +152,21 @@ function AdminBookings() {
                 <table className="w-full text-left text-sm min-w-[960px]">
                     <thead className="bg-gray-50">
                         <tr className="text-xs uppercase text-gray-500">
-                            <th className="px-4 py-3">Order</th>
-                            <th className="px-4 py-3">Guest</th>
-                            <th className="px-4 py-3">Hotel / Room</th>
-                            <th className="px-4 py-3">Stay</th>
-                            <th className="px-4 py-3">Status</th>
-                            <th className="px-4 py-3 text-right">Total</th>
-                            <th className="px-4 py-3 text-right">Actions</th>
+                            <th className="px-4 py-3">{t("admin.bookings.order")}</th>
+                            <th className="px-4 py-3">{t("admin.bookings.guest")}</th>
+                            <th className="px-4 py-3">{t("admin.bookings.hotelRoom")}</th>
+                            <th className="px-4 py-3">{t("admin.bookings.stay")}</th>
+                            <th className="px-4 py-3">{t("common.fields.status")}</th>
+                            <th className="px-4 py-3 text-right">{t("common.fields.total")}</th>
+                            <th className="px-4 py-3 text-right">{t("admin.bookings.actions")}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {loading && (
-                            <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-500">Đang tải...</td></tr>
+                            <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-500">{t("common.state.loading")}</td></tr>
                         )}
                         {!loading && result.items.length === 0 && (
-                            <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-500">Không có booking nào.</td></tr>
+                            <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-500">{t("admin.bookings.empty")}</td></tr>
                         )}
                         {!loading &&
                             result.items.map((b) => (
@@ -187,19 +180,19 @@ function AdminBookings() {
                                         <p className="font-semibold truncate">{b.hotelName}</p>
                                         <p className="text-xs text-gray-500">
                                             {b.roomTypeName}
-                                            {b.roomNumber ? ` · No. ${b.roomNumber}` : ""}
+                                            {b.roomNumber ? t("admin.bookings.roomNumber", { room: b.roomNumber }) : ""}
                                         </p>
                                     </td>
                                     <td className="px-4 py-3 whitespace-nowrap">
                                         {formatDate(b.checkInDate)} → {formatDate(b.checkOutDate)}
-                                        <p className="text-xs text-gray-500">{b.numNights} nights · {b.numAdults + (b.numChildren || 0)} guests</p>
+                                        <p className="text-xs text-gray-500">{t("admin.bookings.staySummary", { nights: b.numNights, guests: b.numAdults + (b.numChildren || 0) })}</p>
                                     </td>
                                     <td className="px-4 py-3"><StatusBadge status={b.status} labels={BOOKING_STATUS_LABELS} /></td>
                                     <td className="px-4 py-3 text-right font-semibold whitespace-nowrap">
                                         {formatMoney(b.totalPrice, b.currencyCode)}
                                         {Number(b.refundAmount) > 0 && (
                                             <p className="text-xs font-normal text-purple-700" title={b.refundReason || ""}>
-                                                Refunded {formatMoney(b.refundAmount, b.currencyCode)}
+                                                {t("admin.bookings.refunded", { amount: formatMoney(b.refundAmount, b.currencyCode) })}
                                             </p>
                                         )}
                                     </td>
@@ -217,7 +210,7 @@ function AdminBookings() {
                                                             : "border-blue-200 text-primary hover:bg-blue-50"
                                                     }`}
                                                 >
-                                                    {ACTION_LABELS[next]}
+                                                    {t(`admin.bookings.actionsByStatus.${next}`, { defaultValue: next })}
                                                 </button>
                                             ))}
                                             {remainingRefundable(b) > 0 && (
@@ -227,7 +220,7 @@ function AdminBookings() {
                                                     onClick={() => handleRefund(b)}
                                                     className="px-3 py-1 rounded-lg text-xs font-bold border border-purple-200 text-purple-700 hover:bg-purple-50 disabled:opacity-50"
                                                 >
-                                                    Refund
+                                                    {t("admin.bookings.refund")}
                                                 </button>
                                             )}
                                             {b.status === "cancelled" && !b.refundedAt && (
@@ -237,7 +230,7 @@ function AdminBookings() {
                                                     onClick={() => handleDelete(b)}
                                                     className="px-3 py-1 rounded-lg text-xs font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
                                                 >
-                                                    Delete
+                                                    {t("common.actions.delete")}
                                                 </button>
                                             )}
                                         </div>

@@ -1,0 +1,79 @@
+{
+  "summary": {
+    "ratedReviews_one": "{{count}} rated review",
+    "ratedReviews_other": "{{count}} rated reviews"
+  },
+  "section": {
+    "defaultTitle": "Guest Reviews",
+    "updatedPending": "Your review was updated and is waiting for approval again.",
+    "submittedPending": "Thanks! Your review was submitted and will appear once a moderator approves it. You can track it under My Reviews.",
+    "writeReview": "Write a review",
+    "signInToWrite": "Sign in to write a review",
+    "empty": "No reviews yet. Be the first to share your experience."
+  },
+  "sort": {
+    "newest": "Newest",
+    "top": "Most helpful",
+    "rating_high": "Highest rating",
+    "rating_low": "Lowest rating",
+    "oldest": "Oldest"
+  },
+  "status": {
+    "pending": "Pending review",
+    "approved": "Published",
+    "rejected": "Rejected"
+  },
+  "postCard": {
+    "deleteConfirm": "Delete this review? This cannot be undone.",
+    "ownVote": "You can't vote on your own review",
+    "helpful": "Helpful",
+    "notHelpful": "Not helpful",
+    "comments_one": "{{count}} comment",
+    "comments_other": "{{count}} comments",
+    "verified": {
+      "hotel": "Verified stay",
+      "tour": "Verified traveller",
+      "car": "Verified rental",
+      "flight": "Verified flyer",
+      "booking": "Verified booking"
+    }
+  },
+  "form": {
+    "maxImages": "At most {{count}} image URLs.",
+    "rating": "Your rating",
+    "ratingOutOfFive": "{{rating}} out of 5",
+    "title": "Title",
+    "titlePlaceholder": "Sum up your experience",
+    "reviewRequired": "Your review *",
+    "contentPlaceholder": "What did you like? What could be better?",
+    "photoUrls": "Photo URLs (one per line, optional)",
+    "approvalNotice": "Reviews are published after a moderator approves them. Editing a review sends it back for approval.",
+    "submit": "Submit review"
+  },
+  "comments": {
+    "sending": "Sending...",
+    "edited": "edited",
+    "deleteConfirm": "Delete this comment?",
+    "removed": "This comment was removed.",
+    "replyPlaceholder": "Reply to {{name}}...",
+    "writePlaceholder": "Write a comment...",
+    "comment": "Comment",
+    "signIn": "Sign in",
+    "joinConversation": " to join the conversation.",
+    "loading": "Loading comments...",
+    "empty": "No comments yet."
+  },
+  "starRating": {
+    "outOfFive": "{{rating}} out of 5",
+    "stars_one": "{{count}} star",
+    "stars_other": "{{count}} stars"
+  },
+  "myReviews": {
+    "community": "Community",
+    "title": "My Reviews",
+    "subtitle": "Reviews you wrote. New and edited reviews appear publicly after approval.",
+    "empty": "You haven't written any reviews yet.",
+    "emptyFiltered": "You haven't written any reviews in this status yet.",
+    "findHotel": "Find a hotel you stayed at"
+  }
+}

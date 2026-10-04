@@ -1,0 +1,46 @@
+{
+  "language": { "choose": "Choose language" },
+  "theme": { "switchToDark": "Switch to dark mode", "switchToLight": "Switch to light mode" },
+  "actions": {
+    "save": "Save", "saveChanges": "Save changes", "cancel": "Cancel", "delete": "Delete", "remove": "Remove",
+    "edit": "Edit", "close": "Close", "back": "Back", "search": "Search", "apply": "Apply", "reset": "Reset",
+    "clear": "Clear", "clearAll": "Clear all", "submit": "Submit", "confirm": "Confirm", "continue": "Continue",
+    "next": "Next", "previous": "Previous", "viewDetails": "View details", "viewAll": "View all", "seeMore": "See more",
+    "showLess": "Show less", "retry": "Try again", "bookNow": "Book now", "download": "Download", "send": "Send",
+    "reply": "Reply", "add": "Add", "update": "Update", "yes": "Yes", "no": "No"
+  },
+  "state": {
+    "loading": "Loading…", "saving": "Saving…", "processing": "Processing…", "noResults": "No results found.",
+    "error": "Something went wrong. Please try again.", "notFound": "Not found.", "optional": "Optional", "required": "Required", "underConstruction": "This page is under construction...", "forbidden": "You do not have permission to access this page."
+  },
+  "pagination": { "previous": "Previous page", "next": "Next page" },
+  "status": {
+    "pending": "Pending", "confirmed": "Confirmed", "cancelled": "Cancelled", "completed": "Completed",
+    "checked_in": "Checked in", "checked_out": "Checked out", "no_show": "No-show", "refunded": "Refunded",
+    "partially_refunded": "Partially refunded", "paid": "Paid", "unpaid": "Unpaid", "success": "Successful",
+    "failed": "Failed", "expired": "Expired", "approved": "Approved", "rejected": "Rejected", "active": "Active",
+    "inactive": "Inactive", "upcoming": "Upcoming", "all": "All"
+  },
+  "units": {
+    "night_one": "{{count}} night", "night_other": "{{count}} nights",
+    "day_one": "{{count}} day", "day_other": "{{count}} days",
+    "guest_one": "{{count}} guest", "guest_other": "{{count}} guests",
+    "adult_one": "{{count}} adult", "adult_other": "{{count}} adults",
+    "child_one": "{{count}} child", "child_other": "{{count}} children",
+    "room_one": "{{count}} room", "room_other": "{{count}} rooms",
+    "passenger_one": "{{count}} passenger", "passenger_other": "{{count}} passengers",
+    "review_one": "{{count}} review", "review_other": "{{count}} reviews",
+    "result_one": "{{count}} result", "result_other": "{{count}} results",
+    "perNight": "/ night", "perDay": "/ day", "perPerson": "/ person"
+  },
+  "fields": {
+    "email": "Email", "password": "Password", "fullName": "Full name", "phone": "Phone number",
+    "checkIn": "Check-in", "checkOut": "Check-out", "guests": "Guests", "adults": "Adults", "children": "Children",
+    "from": "From", "to": "To", "date": "Date", "total": "Total", "price": "Price", "status": "Status",
+    "destination": "Destination", "paymentMethod": "Payment method", "notes": "Notes", "sortBy": "Sort by"
+  },
+  "paymentMethods": {
+    "credit_card": "Credit card", "debit_card": "Debit card", "bank_transfer": "Bank transfer", "e_wallet": "E-wallet",
+    "momo": "MoMo", "zalopay": "ZaloPay", "vnpay": "VNPay", "cash": "Cash"
+  }
+}

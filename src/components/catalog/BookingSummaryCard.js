@@ -1,12 +1,14 @@
+import { useT } from "../../i18n/I18nContext";
+
 /** Thẻ tóm tắt đặt chỗ cố định trên trang chi tiết. */
 function BookingSummaryCard({
-    eyebrow = "Price",
+    eyebrow,
     price,
     priceSuffix,
     badge,
     children,
     rows = [],
-    totalLabel = "Total",
+    totalLabel,
     total,
     ctaLabel,
     onCta,
@@ -15,13 +17,14 @@ function BookingSummaryCard({
     footnote,
     footnoteIcon = "verified_user",
 }) {
+    const t = useT();
     return (
         <aside className="relative">
             <div className="sticky top-24 bg-surface-container-lowest rounded-xl p-8 shadow-[0_32px_48px_-12px_rgba(27,28,28,0.06)] border border-outline-variant/15">
                 <div className="flex justify-between items-end mb-8">
                     <div>
                         <span className="block text-on-surface-variant text-xs font-bold uppercase tracking-widest mb-1">
-                            {eyebrow}
+                            {eyebrow || t("common.fields.price")}
                         </span>
                         <div className="flex items-baseline gap-1">
                             <span className="text-4xl font-extrabold text-primary font-headline">{price}</span>
@@ -40,7 +43,7 @@ function BookingSummaryCard({
                     ))}
                     {total != null && (
                         <div className="pt-4 border-t border-outline-variant/10 flex justify-between">
-                            <span className="font-bold text-on-surface">{totalLabel}</span>
+                            <span className="font-bold text-on-surface">{totalLabel || t("common.fields.total")}</span>
                             <span className="text-xl font-black text-primary font-headline">{total}</span>
                         </div>
                     )}
@@ -51,7 +54,7 @@ function BookingSummaryCard({
                     onClick={onCta}
                     className="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-4 rounded-lg font-bold font-headline shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all mb-4 disabled:opacity-50"
                 >
-                    {ctaBusy ? "Processing..." : ctaLabel}
+                    {ctaBusy ? t("common.state.processing") : ctaLabel}
                 </button>
                 {footnote && (
                     <p className="text-center text-[10px] text-on-surface-variant font-medium uppercase tracking-tighter">

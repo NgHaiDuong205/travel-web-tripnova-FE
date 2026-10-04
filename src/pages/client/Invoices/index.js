@@ -5,13 +5,16 @@ import FormAlert from "../../../components/common/FormAlert";
 import Pagination from "../../../components/common/Pagination";
 import StatusBadge from "../../../components/common/StatusBadge";
 import InvoiceDetail from "../../../components/common/InvoiceDetail";
-import { ORDER_STATUS_LABELS, downloadMyInvoice, fetchMyInvoice, fetchMyInvoices } from "../../../services/invoiceService";
+import InvoiceBillingForm from "../../../components/client/InvoiceBillingForm";
+import { downloadMyInvoice, fetchMyInvoice, fetchMyInvoices } from "../../../services/invoiceService";
 import { formatDateTime, formatMoney } from "../../../utils/formatters";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 10;
 
 /** Hoá đơn của user: mỗi order đã thanh toán có một hoá đơn, tải được file PDF. */
 function Invoices() {
+    const t = useT();
     const [page, setPage] = useState(1);
     const [result, setResult] = useState({ items: [], total: 0 });
     const [loading, setLoading] = useState(true);
@@ -19,6 +22,7 @@ function Invoices() {
     const [openId, setOpenId] = useState(null);
     const [details, setDetails] = useState({});
     const [downloadingId, setDownloadingId] = useState(null);
+    const [editingBillingId, setEditingBillingId] = useState(null);
 
     useEffect(() => {
         let cancelled = false;
@@ -64,9 +68,9 @@ function Invoices() {
     return (
         <DashboardLayout>
             <section className="mb-10">
-                <span className="text-[0.75rem] uppercase tracking-[0.2em] text-on-tertiary-fixed-variant mb-2 block">Billing</span>
-                <h1 className="font-headline text-5xl font-extrabold text-on-surface tracking-tight mb-2">Invoices</h1>
-                <p className="text-on-surface-variant text-lg">An invoice is issued automatically for every paid order.</p>
+                <span className="text-[0.75rem] uppercase tracking-[0.2em] text-on-tertiary-fixed-variant mb-2 block">{t("account.invoices.billing")}</span>
+                <h1 className="font-headline text-5xl font-extrabold text-on-surface tracking-tight mb-2">{t("nav.sidebar.invoices")}</h1>
+                <p className="text-on-surface-variant text-lg">{t("account.invoices.subtitle")}</p>
             </section>
 
             <FormAlert>{error}</FormAlert>
@@ -80,8 +84,8 @@ function Invoices() {
             ) : result.items.length === 0 ? (
                 <div className="text-center py-16 bg-surface-container-low rounded-xl">
                     <span className="material-symbols-outlined text-5xl text-outline mb-3">receipt_long</span>
-                    <p className="text-on-surface-variant mb-4">No invoices yet. They appear here once a booking is paid.</p>
-                    <Link to="/hotels" className="text-sm font-bold text-primary hover:underline">Book a stay</Link>
+                    <p className="text-on-surface-variant mb-4">{t("account.invoices.empty")}</p>
+                    <Link to="/hotels" className="text-sm font-bold text-primary hover:underline">{t("account.invoices.bookStay")}</Link>
                 </div>
             ) : (
                 <div className="space-y-4">
@@ -94,19 +98,19 @@ function Invoices() {
                                 <div className="flex-1 min-w-[180px]">
                                     <p className="font-bold">{invoice.invoiceNumber}</p>
                                     <p className="text-xs text-on-surface-variant">
-                                        Order {invoice.orderCode} · issued {formatDateTime(invoice.issuedAt)}
+                                        {t("account.invoices.orderIssued", { order: invoice.orderCode, date: formatDateTime(invoice.issuedAt) })}
                                     </p>
                                 </div>
-                                <StatusBadge status={invoice.orderStatus} labels={ORDER_STATUS_LABELS} />
+                                <StatusBadge status={invoice.orderStatus} />
                                 <div className="text-right">
                                     <p className="font-headline font-bold text-lg">{formatMoney(invoice.totalAmount, invoice.currencyCode)}</p>
                                     {invoice.refundedAmount > 0 && (
-                                        <p className="text-xs text-red-600">Refunded {formatMoney(invoice.refundedAmount, invoice.currencyCode)}</p>
+                                        <p className="text-xs text-red-600">{t("account.invoices.refundedAmount", { amount: formatMoney(invoice.refundedAmount, invoice.currencyCode) })}</p>
                                     )}
                                 </div>
                                 <div className="flex gap-2">
                                     <button type="button" onClick={() => toggle(invoice.id)} className="px-3 py-2 rounded-lg text-xs font-bold hover:bg-surface-container-high">
-                                        {openId === invoice.id ? "Hide" : "Details"}
+                                        {openId === invoice.id ? t("account.invoices.hide") : t("account.invoices.details")}
                                     </button>
                                     <button
                                         type="button"
@@ -115,16 +119,37 @@ function Invoices() {
                                         className="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-bold bg-primary text-on-primary disabled:opacity-50"
                                     >
                                         <span className="material-symbols-outlined text-[16px]">download</span>
-                                        {downloadingId === invoice.id ? "Preparing..." : "PDF"}
+                                        {downloadingId === invoice.id ? t("account.invoices.preparing") : t("account.invoices.pdf")}
                                     </button>
                                 </div>
                             </div>
                             {openId === invoice.id && (
                                 <div className="border-t border-outline-variant/20 p-5">
                                     {details[invoice.id] ? (
-                                        <InvoiceDetail invoice={details[invoice.id]} bookingLink={(id) => `/bookings/${id}`} />
+                                        <>
+                                            <InvoiceDetail invoice={details[invoice.id]} bookingLink={(id) => `/bookings/${id}`} />
+                                            {editingBillingId === invoice.id ? (
+                                                <InvoiceBillingForm
+                                                    invoice={details[invoice.id]}
+                                                    onSaved={(updated) => {
+                                                        setDetails((prev) => ({ ...prev, [invoice.id]: updated }));
+                                                        setEditingBillingId(null);
+                                                    }}
+                                                    onCancel={() => setEditingBillingId(null)}
+                                                />
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setEditingBillingId(invoice.id)}
+                                                    className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-primary hover:underline"
+                                                >
+                                                    <span className="material-symbols-outlined text-[18px]">edit</span>
+                                                    {t("account.invoiceBilling.edit")}
+                                                </button>
+                                            )}
+                                        </>
                                     ) : (
-                                        <p className="text-sm text-on-surface-variant">Loading...</p>
+                                        <p className="text-sm text-on-surface-variant">{t("common.state.loading")}</p>
                                     )}
                                 </div>
                             )}

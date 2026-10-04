@@ -8,6 +8,7 @@ import {
     toNumberOrNull,
 } from "../../../services/adminGeographyService";
 import { ActionButton, AddButton, Field, InlineForm, SearchBox, inputClass } from "./shared";
+import { useT } from "../../../i18n/I18nContext";
 
 const EMPTY = { continentId: "", countryCode: "", name: "", slug: "", imageUrl: "", description: "", latitude: "", longitude: "" };
 
@@ -25,35 +26,36 @@ function toPayload(form) {
 }
 
 function CountryForm({ initial, continents, onSave, onCancel }) {
+    const t = useT();
     return (
         <InlineForm initial={initial} onSave={(f) => onSave(toPayload(f))} onCancel={onCancel}>
             {(form, set) => (
                 <div className="grid md:grid-cols-3 gap-3">
-                    <Field label="Name *">
+                    <Field label={`${t("admin.geography.name")} *`}>
                         <input required maxLength={100} value={form.name} onChange={set("name")} className={inputClass} />
                     </Field>
-                    <Field label="Code * (ISO 3 chữ cái)">
+                    <Field label={t("admin.geography.countryCode")}>
                         <input required maxLength={3} value={form.countryCode} onChange={set("countryCode")} className={`${inputClass} uppercase`} />
                     </Field>
-                    <Field label="Continent *">
+                    <Field label={`${t("admin.geography.continent")} *`}>
                         <select required value={form.continentId} onChange={set("continentId")} className={inputClass}>
                             <option value="">—</option>
                             {continents.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
                     </Field>
-                    <Field label="Slug">
-                        <input maxLength={150} value={form.slug || ""} onChange={set("slug")} placeholder="tự sinh từ tên nếu để trống" className={inputClass} />
+                    <Field label={t("admin.geography.slug")}>
+                        <input maxLength={150} value={form.slug || ""} onChange={set("slug")} placeholder={t("admin.geography.slugPlaceholder")} className={inputClass} />
                     </Field>
-                    <Field label="Latitude">
+                    <Field label={t("admin.geography.latitude")}>
                         <input type="number" step="any" min={-90} max={90} value={form.latitude ?? ""} onChange={set("latitude")} className={inputClass} />
                     </Field>
-                    <Field label="Longitude">
+                    <Field label={t("admin.geography.longitude")}>
                         <input type="number" step="any" min={-180} max={180} value={form.longitude ?? ""} onChange={set("longitude")} className={inputClass} />
                     </Field>
-                    <Field label="Image URL" className="md:col-span-3">
+                    <Field label={t("admin.geography.imageUrl")} className="md:col-span-3">
                         <input type="url" maxLength={255} value={form.imageUrl || ""} onChange={set("imageUrl")} className={inputClass} />
                     </Field>
-                    <Field label="Description" className="md:col-span-3">
+                    <Field label={t("admin.geography.description")} className="md:col-span-3">
                         <textarea rows={2} value={form.description || ""} onChange={set("description")} className={inputClass} />
                     </Field>
                 </div>
@@ -63,6 +65,7 @@ function CountryForm({ initial, continents, onSave, onCancel }) {
 }
 
 function CountriesTab() {
+    const t = useT();
     const [filters, setFilters] = useState({ q: "", continentId: "" });
     const [continents, setContinents] = useState([]);
     const [countries, setCountries] = useState([]);
@@ -98,7 +101,7 @@ function CountriesTab() {
     };
 
     const handleDelete = async (country) => {
-        if (!window.confirm(`Xoá quốc gia "${country.name}"?`)) return;
+        if (!window.confirm(t("admin.geography.confirmDeleteCountry", { name: country.name }))) return;
         setBusyId(country.id);
         setError("");
         try {
@@ -114,15 +117,15 @@ function CountriesTab() {
     return (
         <div className="space-y-4">
             <div className="flex flex-wrap gap-3 items-center">
-                <SearchBox placeholder="Name or code..." onSearch={(q) => setFilters((f) => ({ ...f, q }))} />
+                <SearchBox placeholder={t("admin.geography.countrySearchPlaceholder")} onSearch={(q) => setFilters((f) => ({ ...f, q }))} />
                 <select value={filters.continentId} onChange={(e) => setFilters((f) => ({ ...f, continentId: e.target.value }))} className="rounded-lg border-gray-200 text-sm">
-                    <option value="">All continents</option>
+                    <option value="">{t("admin.geography.allContinents")}</option>
                     {continents.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
-                <span className="text-sm text-gray-500">{countries.length} countries</span>
-                {editing !== "new" && <div className="ml-auto"><AddButton onClick={() => setEditing("new")}>New country</AddButton></div>}
+                <span className="text-sm text-gray-500">{t("admin.geography.countryCount", { count: countries.length })}</span>
+                {editing !== "new" && <div className="ml-auto"><AddButton onClick={() => setEditing("new")}>{t("admin.geography.newCountry")}</AddButton></div>}
             </div>
-            <p className="text-xs text-gray-500">Chỉ xoá được quốc gia không còn điểm đến nào.</p>
+            <p className="text-xs text-gray-500">{t("admin.geography.deleteCountryNote")}</p>
             <FormAlert>{error}</FormAlert>
             {editing === "new" && (
                 <CountryForm initial={{ ...EMPTY, continentId: filters.continentId }} continents={continents} onSave={(p) => handleSave(null, p)} onCancel={() => setEditing(null)} />
@@ -132,17 +135,13 @@ function CountriesTab() {
                 <table className="w-full text-left text-sm min-w-[720px]">
                     <thead className="bg-gray-50">
                         <tr className="text-xs uppercase text-gray-500">
-                            <th className="px-4 py-3">Country</th>
-                            <th className="px-4 py-3">Code</th>
-                            <th className="px-4 py-3">Continent</th>
-                            <th className="px-4 py-3">Destinations</th>
-                            <th className="px-4 py-3 text-right">Actions</th>
+                            <th className="px-4 py-3">{t("admin.geography.country")}</th><th className="px-4 py-3">{t("admin.geography.code")}</th><th className="px-4 py-3">{t("admin.geography.continent")}</th><th className="px-4 py-3">{t("admin.geography.destinations")}</th><th className="px-4 py-3 text-right">{t("admin.geography.actions")}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {loading && <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-500">Đang tải...</td></tr>}
+                        {loading && <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-500">{t("common.state.loading")}</td></tr>}
                         {!loading && countries.length === 0 && (
-                            <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-500">Không có quốc gia nào.</td></tr>
+                            <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-500">{t("admin.geography.emptyCountries")}</td></tr>
                         )}
                         {!loading &&
                             countries.map((c) => (
@@ -164,8 +163,8 @@ function CountriesTab() {
                                             <td className="px-4 py-3">{c.destinationCount}</td>
                                             <td className="px-4 py-3">
                                                 <div className="flex justify-end gap-2">
-                                                    <ActionButton onClick={() => setEditing(c.id)}>Edit</ActionButton>
-                                                    <ActionButton tone="danger" disabled={busyId === c.id} onClick={() => handleDelete(c)}>Delete</ActionButton>
+                                                    <ActionButton onClick={() => setEditing(c.id)}>{t("common.actions.edit")}</ActionButton>
+                                                    <ActionButton tone="danger" disabled={busyId === c.id} onClick={() => handleDelete(c)}>{t("common.actions.delete")}</ActionButton>
                                                 </div>
                                             </td>
                                         </tr>

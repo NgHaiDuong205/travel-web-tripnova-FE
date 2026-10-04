@@ -11,11 +11,12 @@ import {
     fetchManagerRoomTypes,
     updateManagerHotel,
 } from "../../../services/managerHotelService";
+import { useT } from "../../../i18n/I18nContext";
 
 const TABS = [
-    { key: "info", label: "Hotel info", icon: "info" },
-    { key: "rooms", label: "Room types & rooms", icon: "bed" },
-    { key: "gallery", label: "Photos", icon: "photo_library" },
+    { key: "info", labelKey: "manager.hotelEdit.hotelInfo", icon: "info" },
+    { key: "rooms", labelKey: "manager.hotelEdit.rooms", icon: "bed" },
+    { key: "gallery", labelKey: "manager.hotelEdit.photos", icon: "photo_library" },
 ];
 
 /**
@@ -23,6 +24,7 @@ const TABS = [
  * Các component dùng chung với admin gọi API /api/manager/** nhờ HotelApiContext ở ManagerRoutes.
  */
 function ManagerHotelEdit() {
+    const t = useT();
     const { hotelId } = useParams();
     const [hotel, setHotel] = useState(null);
     const [roomTypes, setRoomTypes] = useState([]);
@@ -58,7 +60,7 @@ function ManagerHotelEdit() {
     const handleHide = async () => {
         if (
             !window.confirm(
-                `Ẩn "${hotel.name}" khỏi trang public? Booking hiện có vẫn giữ nguyên; chỉ quản trị viên mới hiện lại được.`,
+                t("manager.hotelEdit.confirmHide", { name: hotel.name }),
             )
         ) {
             return;
@@ -79,23 +81,23 @@ function ManagerHotelEdit() {
         return (
             <div className="space-y-4">
                 <Link to="/manager/hotels" className="text-primary font-bold">
-                    ← My hotels
+                    {t("manager.hotelEdit.backToHotels")}
                 </Link>
-                <FormAlert>Không tìm thấy khách sạn, hoặc khách sạn không thuộc tài khoản của bạn.</FormAlert>
+                <FormAlert>{t("manager.hotelEdit.notFound")}</FormAlert>
             </div>
         );
     }
-    if (!hotel) return error ? <FormAlert>{error}</FormAlert> : <p className="text-gray-500">Đang tải...</p>;
+    if (!hotel) return error ? <FormAlert>{error}</FormAlert> : <p className="text-gray-500">{t("common.state.loading")}</p>;
 
     return (
         <div className="space-y-6">
             <div className="flex flex-wrap items-center gap-3">
-                <Link to="/manager/hotels" className="text-gray-500 hover:text-primary" aria-label="Back to my hotels">
+                <Link to="/manager/hotels" className="text-gray-500 hover:text-primary" aria-label={t("manager.hotelEdit.backToHotels")}>
                     <span className="material-symbols-outlined">arrow_back</span>
                 </Link>
                 <h1 className="text-3xl font-extrabold text-primary">{hotel.name}</h1>
                 <span className="text-sm text-gray-500">
-                    {hotel.roomTypeCount} room types · {hotel.totalRooms} rooms
+                    {t("manager.hotelEdit.roomSummary", { roomTypes: hotel.roomTypeCount, rooms: hotel.totalRooms })}
                 </span>
                 <div className="ml-auto flex items-center gap-3">
                     {hotel.isActive && (
@@ -105,7 +107,7 @@ function ManagerHotelEdit() {
                             disabled={hiding}
                             className="px-4 py-2 rounded-lg text-sm font-bold border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50"
                         >
-                            {hiding ? "Hiding..." : "Hide hotel"}
+                            {hiding ? t("manager.hotelEdit.hiding") : t("manager.hotelEdit.hideHotel")}
                         </button>
                     )}
                 </div>
@@ -113,23 +115,23 @@ function ManagerHotelEdit() {
 
             {!hotel.isActive && (
                 <FormAlert type="warning">
-                    Khách sạn đang bị ẩn khỏi trang public (không nhận đặt phòng mới). Liên hệ quản trị viên TripNova để hiện lại.
+                    {t("manager.hotelEdit.hiddenNotice")}
                 </FormAlert>
             )}
             <FormAlert>{error}</FormAlert>
 
             <div className="flex gap-2 border-b border-gray-200">
-                {TABS.map((t) => (
+                {TABS.map((item) => (
                     <button
-                        key={t.key}
+                        key={item.key}
                         type="button"
-                        onClick={() => setTab(t.key)}
+                        onClick={() => setTab(item.key)}
                         className={`flex items-center gap-2 px-4 py-2 text-sm font-bold border-b-2 -mb-px ${
-                            tab === t.key ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-800"
+                            tab === item.key ? "border-primary text-primary" : "border-transparent text-gray-500 hover:text-gray-800"
                         }`}
                     >
-                        <span className="material-symbols-outlined text-[18px]">{t.icon}</span>
-                        {t.label}
+                        <span className="material-symbols-outlined text-[18px]">{item.icon}</span>
+                        {t(item.labelKey)}
                     </button>
                 ))}
             </div>

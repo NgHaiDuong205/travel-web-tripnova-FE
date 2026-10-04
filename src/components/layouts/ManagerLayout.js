@@ -1,9 +1,9 @@
 import AdminLayout from "./AdminLayout";
 
 const MANAGER_NAV = [
-    { to: "/manager", label: "Dashboard", icon: "monitoring", end: true },
-    { to: "/manager/hotels", label: "My Hotels", icon: "apartment" },
-    { to: "/manager/account", label: "Account", icon: "manage_accounts" },
+    { to: "/manager", labelKey: "manager.layout.dashboard", icon: "monitoring", end: true },
+    { to: "/manager/hotels", labelKey: "manager.layout.myHotels", icon: "apartment" },
+    { to: "/manager/account", labelKey: "manager.layout.account", icon: "manage_accounts" },
 ];
 
 /** Khung trang quản lý khách sạn (role HOTEL_MANAGER) — cùng giao diện với trang admin, không có lối ra site khách. */

@@ -24,6 +24,7 @@ import {
 import { fetchTourCars, fetchTourFlights, fetchTourHotels } from "../../../services/tourService";
 import { formatDate, formatDateTime, formatMoney } from "../../../utils/formatters";
 import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 20;
 const inputClass = "rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm w-full";
@@ -69,6 +70,7 @@ function nullableNumber(value) {
 
 /** Biểu mẫu thêm hoặc sửa tour. */
 function TourForm({ initial, destinations, onSave, onCancel }) {
+    const t = useT();
     const [form, setForm] = useState(() => ({
         ...EMPTY_TOUR,
         ...initial,
@@ -129,12 +131,12 @@ function TourForm({ initial, destinations, onSave, onCancel }) {
             className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 grid grid-cols-1 md:grid-cols-2 gap-4"
         >
             <label className="text-xs font-bold text-gray-600">
-                Name *<input required value={form.name} onChange={set("name")} className={inputClass} />
+                {t("admin.tours.name")} *<input required value={form.name} onChange={set("name")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Destination
+                {t("common.fields.destination")}
                 <select value={form.destinationId || ""} onChange={set("destinationId")} className={inputClass}>
-                    <option value="">— None —</option>
+                    <option value="">{t("admin.tours.none")}</option>
                     {destinations.map((item) => (
                         <option key={item.id} value={item.id}>
                             {item.name}
@@ -143,11 +145,11 @@ function TourForm({ initial, destinations, onSave, onCancel }) {
                 </select>
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Departure location
+                {t("admin.tours.departureLocation")}
                 <input value={form.departureLocation || ""} onChange={set("departureLocation")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Duration days *
+                {t("admin.tours.durationDays")} *
                 <input
                     required
                     min="1"
@@ -159,7 +161,7 @@ function TourForm({ initial, destinations, onSave, onCancel }) {
                 />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Duration nights
+                {t("admin.tours.durationNights")}
                 <input
                     min="0"
                     type="number"
@@ -169,7 +171,7 @@ function TourForm({ initial, destinations, onSave, onCancel }) {
                 />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Minimum participants
+                {t("admin.tours.minimumParticipants")}
                 <input
                     min="0"
                     type="number"
@@ -179,7 +181,7 @@ function TourForm({ initial, destinations, onSave, onCancel }) {
                 />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Maximum participants
+                {t("admin.tours.maximumParticipants")}
                 <input
                     min="0"
                     type="number"
@@ -189,7 +191,7 @@ function TourForm({ initial, destinations, onSave, onCancel }) {
                 />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Adult price *
+                {t("admin.tours.adultPrice")} *
                 <input
                     required
                     min="0"
@@ -201,7 +203,7 @@ function TourForm({ initial, destinations, onSave, onCancel }) {
                 />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Child price
+                {t("admin.tours.childPrice")}
                 <input
                     min="0"
                     step="0.01"
@@ -212,40 +214,40 @@ function TourForm({ initial, destinations, onSave, onCancel }) {
                 />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Departure date
+                {t("admin.tours.departureDate")}
                 <input type="date" value={form.departureDate || ""} onChange={set("departureDate")} className={inputClass} />
-                <span className="font-normal text-gray-400">leave empty = customer picks a date</span>
+                <span className="font-normal text-gray-400">{t("admin.tours.flexibleDateNote")}</span>
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Return date
+                {t("admin.tours.returnDate")}
                 <input type="date" value={form.returnDate || ""} onChange={set("returnDate")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600 md:col-span-2">
-                Cover image URL
+                {t("admin.tours.coverImageUrl")}
                 <input value={form.coverImageUrl || ""} onChange={set("coverImageUrl")} className={inputClass} />
                 {form.coverImageUrl && (
-                    <img src={form.coverImageUrl} alt="Tour preview" className="mt-2 h-28 w-44 rounded object-cover" />
+                    <img src={form.coverImageUrl} alt={t("admin.tours.previewAlt")} className="mt-2 h-28 w-44 rounded object-cover" />
                 )}
             </label>
             <label className="text-xs font-bold text-gray-600 md:col-span-2">
-                Description
+                {t("admin.tours.description")}
                 <textarea rows="4" value={form.description || ""} onChange={set("description")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Highlights
+                {t("admin.tours.highlights")}
                 <textarea rows="4" value={form.highlights} onChange={set("highlights")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600">
-                Included
+                {t("admin.tours.included")}
                 <textarea rows="4" value={form.included} onChange={set("included")} className={inputClass} />
             </label>
             <label className="text-xs font-bold text-gray-600 md:col-span-2">
-                Excluded
+                {t("admin.tours.excluded")}
                 <textarea rows="4" value={form.excluded} onChange={set("excluded")} className={inputClass} />
             </label>
             <div className="md:col-span-2 space-y-3">
                 <div className="flex justify-between">
-                    <span className="text-xs font-bold text-gray-600">Itinerary</span>
+                    <span className="text-xs font-bold text-gray-600">{t("admin.tours.itinerary")}</span>
                     <button
                         type="button"
                         onClick={() =>
@@ -256,25 +258,25 @@ function TourForm({ initial, destinations, onSave, onCancel }) {
                         }
                         className="text-primary text-xs font-bold"
                     >
-                        Add row
+                        {t("admin.tours.addRow")}
                     </button>
                 </div>
                 {form.itinerary.map((item, index) => (
                     <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-2">
                         <input
-                            placeholder="Label"
+                            placeholder={t("admin.tours.label")}
                             value={item.label}
                             onChange={(e) => setItinerary(index, "label", e.target.value)}
                             className={inputClass}
                         />
                         <input
-                            placeholder="Title"
+                            placeholder={t("admin.tours.itemTitle")}
                             value={item.title}
                             onChange={(e) => setItinerary(index, "title", e.target.value)}
                             className={inputClass}
                         />
                         <input
-                            placeholder="Description"
+                            placeholder={t("admin.tours.description")}
                             value={item.description}
                             onChange={(e) => setItinerary(index, "description", e.target.value)}
                             className={inputClass}
@@ -289,7 +291,7 @@ function TourForm({ initial, destinations, onSave, onCancel }) {
                             }
                             className="text-red-600 text-xs font-bold"
                         >
-                            Remove
+                            {t("common.actions.remove")}
                         </button>
                     </div>
                 ))}
@@ -297,17 +299,17 @@ function TourForm({ initial, destinations, onSave, onCancel }) {
             <div className="md:col-span-2 flex flex-wrap gap-4 items-center">
                 <label className="flex items-center gap-2 text-sm">
                     <input type="checkbox" checked={form.isActive} onChange={set("isActive")} />
-                    Active
+                    {t("admin.status.active")}
                 </label>
                 <div className="ml-auto flex gap-2">
                     <button type="button" onClick={onCancel} className="px-4 py-2 text-sm font-bold text-gray-500">
-                        Cancel
+                        {t("common.actions.cancel")}
                     </button>
                     <button
                         disabled={saving}
                         className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold disabled:opacity-50"
                     >
-                        {saving ? "Saving..." : "Save"}
+                        {saving ? t("common.state.saving") : t("common.actions.save")}
                     </button>
                 </div>
             </div>
@@ -320,6 +322,7 @@ function TourForm({ initial, destinations, onSave, onCancel }) {
 
 /** Bảng liên kết khách sạn, xe và chuyến bay của tour. */
 function LinksPanel({ tour, onClose }) {
+    const t = useT();
     const [links, setLinks] = useState({ hotels: [], cars: [], flights: [] });
     const [options, setOptions] = useState({ hotels: [], cars: [], flights: [] });
     const [values, setValues] = useState({
@@ -386,7 +389,7 @@ function LinksPanel({ tour, onClose }) {
                 <div key={item[`${kind.slice(0, -1)}Id`]} className="flex justify-between text-sm">
                     <span>{label(item)}</span>
                     <button type="button" onClick={() => change(kind, item, true)} className="text-red-600 font-bold">
-                        Remove
+                        {t("common.actions.remove")}
                     </button>
                 </div>
             ))}
@@ -396,7 +399,7 @@ function LinksPanel({ tour, onClose }) {
                     onChange={(e) => setValues((prev) => ({ ...prev, [`${kind.slice(0, -1)}Id`]: e.target.value }))}
                     className={filterClass}
                 >
-                    <option value="">Select {kind.slice(0, -1)}</option>
+                    <option value="">{t("admin.tours.selectLink", { type: t(`admin.tours.${kind}`) })}</option>
                     {options[kind].map((item) => (
                         <option key={item.id} value={item.id}>
                             {label(item)}
@@ -408,7 +411,7 @@ function LinksPanel({ tour, onClose }) {
                         <input
                             type="number"
                             min="1"
-                            placeholder="Check-in day"
+                            placeholder={t("admin.tours.checkInDay")}
                             value={values.checkInDay}
                             onChange={(e) => setValues((prev) => ({ ...prev, checkInDay: e.target.value }))}
                             className={filterClass}
@@ -416,7 +419,7 @@ function LinksPanel({ tour, onClose }) {
                         <input
                             type="number"
                             min="1"
-                            placeholder="Nights"
+                            placeholder={t("admin.tours.nights")}
                             value={values.nights}
                             onChange={(e) => setValues((prev) => ({ ...prev, nights: e.target.value }))}
                             className={filterClass}
@@ -427,7 +430,7 @@ function LinksPanel({ tour, onClose }) {
                     <input
                         type="number"
                         min="1"
-                        placeholder="Usage day"
+                        placeholder={t("admin.tours.usageDay")}
                         value={values.usageDay}
                         onChange={(e) => setValues((prev) => ({ ...prev, usageDay: e.target.value }))}
                         className={filterClass}
@@ -439,9 +442,9 @@ function LinksPanel({ tour, onClose }) {
                         onChange={(e) => setValues((prev) => ({ ...prev, leg: e.target.value }))}
                         className={filterClass}
                     >
-                        <option value="outbound">outbound</option>
-                        <option value="return">return</option>
-                        <option value="internal">internal</option>
+                        <option value="outbound">{t("admin.tours.outbound")}</option>
+                        <option value="return">{t("admin.tours.return")}</option>
+                        <option value="internal">{t("admin.tours.internal")}</option>
                     </select>
                 )}
                 <button
@@ -450,7 +453,7 @@ function LinksPanel({ tour, onClose }) {
                     onClick={() => change(kind)}
                     className="bg-primary text-white px-3 py-2 rounded-lg text-xs font-bold"
                 >
-                    Add
+                    {t("common.actions.add")}
                 </button>
             </div>
         </section>
@@ -458,17 +461,17 @@ function LinksPanel({ tour, onClose }) {
     return (
         <div className="bg-white rounded-xl border p-6 space-y-4">
             <div className="flex justify-between">
-                <h2 className="font-extrabold text-primary">Links: {tour.name}</h2>
+                <h2 className="font-extrabold text-primary">{t("admin.tours.links", { name: tour.name })}</h2>
                 <button type="button" onClick={onClose} className="text-sm font-bold text-gray-500">
-                    Close
+                    {t("common.actions.close")}
                 </button>
             </div>
             <FormAlert>{error}</FormAlert>
-            {section("hotels", "Hotels", (item) => item.name)}
-            {section("cars", "Cars", (item) => item.name)}
+            {section("hotels", t("admin.tours.hotels"), (item) => item.name)}
+            {section("cars", t("admin.tours.cars"), (item) => item.name)}
             {section(
                 "flights",
-                "Flights",
+                t("admin.tours.flights"),
                 (item) =>
                     `${item.airline} ${item.flightNumber} · ${item.departureAirportCode}→${item.arrivalAirportCode} · ${formatDateTime(item.departureTime)}`,
             )}
@@ -478,6 +481,7 @@ function LinksPanel({ tour, onClose }) {
 
 /** Tab quản lý danh sách tour. */
 function ToursTab() {
+    const t = useT();
     const [q, setQ] = useState("");
     const [search, setSearch] = useState("");
     const [active, setActive] = useState("");
@@ -514,7 +518,7 @@ function ToursTab() {
     };
     /** Ngừng kích hoạt tour sau xác nhận. */
     const deactivate = async (tour) => {
-        if (!window.confirm(`Deactivate ${tour.name}?`)) return;
+        if (!window.confirm(t("admin.tours.confirmDeactivate", { name: tour.name }))) return;
         try {
             await deleteAdminTour(tour.id);
             await load();
@@ -535,7 +539,7 @@ function ToursTab() {
                 <input
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search tours"
+                    placeholder={t("admin.tours.searchPlaceholder")}
                     className={`${filterClass} w-72`}
                 />
                 <select
@@ -546,11 +550,11 @@ function ToursTab() {
                     }}
                     className={filterClass}
                 >
-                    <option value="">All statuses</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
+                    <option value="">{t("common.status.all")}</option>
+                    <option value="active">{t("admin.status.active")}</option>
+                    <option value="inactive">{t("admin.tours.inactive")}</option>
                 </select>
-                <button className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold">Search</button>
+                <button className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold">{t("common.actions.search")}</button>
                 <button
                     type="button"
                     onClick={() => {
@@ -559,7 +563,7 @@ function ToursTab() {
                     }}
                     className="ml-auto bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold"
                 >
-                    Add tour
+                    {t("admin.tours.addTour")}
                 </button>
             </form>
             {editing && (
@@ -571,14 +575,14 @@ function ToursTab() {
                 <table className="w-full text-sm">
                     <thead className="bg-gray-50 text-left text-xs text-gray-500">
                         <tr>
-                            <th className="p-4">Tour</th>
-                            <th>Duration</th>
-                            <th>Adult price</th>
-                            <th>Departure</th>
-                            <th>Capacity</th>
-                            <th>Hotels</th>
-                            <th>Status</th>
-                            <th className="p-4">Actions</th>
+                            <th className="p-4">{t("admin.tours.tour")}</th>
+                            <th>{t("admin.tours.duration")}</th>
+                            <th>{t("admin.tours.adultPrice")}</th>
+                            <th>{t("admin.tours.departure")}</th>
+                            <th>{t("admin.tours.capacity")}</th>
+                            <th>{t("admin.tours.hotels")}</th>
+                            <th>{t("common.fields.status")}</th>
+                            <th className="p-4">{t("admin.tours.actions")}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -596,17 +600,17 @@ function ToursTab() {
                                     </div>
                                 </td>
                                 <td>
-                                    {tour.durationDays} days / {tour.durationNights} nights
+                                    {t("admin.tours.durationSummary", { days: tour.durationDays, nights: tour.durationNights })}
                                 </td>
                                 <td>{formatMoney(tour.priceAdult, tour.currencyCode)}</td>
-                                <td>{tour.departureDate ? formatDate(tour.departureDate) : "Flexible"}</td>
+                                <td>{tour.departureDate ? formatDate(tour.departureDate) : t("admin.tours.flexible")}</td>
                                 <td>{tour.maxParticipants || "—"}</td>
                                 <td>{tour.hotelCount}</td>
                                 <td>
                                     <span
                                         className={`rounded-full px-2 py-1 text-xs font-bold ${tour.isActive ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-600"}`}
                                     >
-                                        {tour.isActive ? "Active" : "Inactive"}
+                                        {tour.isActive ? t("admin.status.active") : t("admin.tours.inactive")}
                                     </span>
                                 </td>
                                 <td className="p-4 whitespace-nowrap">
@@ -618,7 +622,7 @@ function ToursTab() {
                                         }}
                                         className="text-primary font-bold text-xs"
                                     >
-                                        Edit
+                                        {t("common.actions.edit")}
                                     </button>
                                     <button
                                         type="button"
@@ -628,7 +632,7 @@ function ToursTab() {
                                         }}
                                         className="ml-3 text-primary font-bold text-xs"
                                     >
-                                        Links
+                                        {t("admin.tours.linksAction")}
                                     </button>
                                     {tour.isActive && (
                                         <button
@@ -636,7 +640,7 @@ function ToursTab() {
                                             onClick={() => deactivate(tour)}
                                             className="ml-3 text-red-600 font-bold text-xs"
                                         >
-                                            Deactivate
+                                            {t("admin.tours.deactivate")}
                                         </button>
                                     )}
                                 </td>
@@ -652,6 +656,7 @@ function ToursTab() {
 
 /** Tab quản lý đơn đặt tour. */
 function BookingsTab() {
+    const t = useT();
     const [status, setStatus] = useState("");
     const [q, setQ] = useState("");
     const [search, setSearch] = useState("");
@@ -673,7 +678,7 @@ function BookingsTab() {
     /** Thay đổi trạng thái một đơn tour. */
     const update = async (booking, next) => {
         if (!next) return;
-        const reason = next === "cancelled" ? window.prompt("Cancellation reason:") : undefined;
+        const reason = next === "cancelled" ? window.prompt(t("admin.tours.cancellationReason")) : undefined;
         if (reason === null) return;
         setBusyId(booking.id);
         try {
@@ -703,34 +708,34 @@ function BookingsTab() {
                     }}
                     className={filterClass}
                 >
-                    <option value="">All statuses</option>
+                    <option value="">{t("common.status.all")}</option>
                     {Object.entries(BOOKING_STATUS_LABELS).map(([key, value]) => (
                         <option key={key} value={key}>
-                            {value.label}
+                            {t(`admin.status.${key}`, { defaultValue: value.label })}
                         </option>
                     ))}
                 </select>
                 <input
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Order, customer, contact, tour"
+                    placeholder={t("admin.tours.bookingSearchPlaceholder")}
                     className={`${filterClass} w-72`}
                 />
-                <button className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold">Search</button>
+                <button className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold">{t("common.actions.search")}</button>
             </form>
             <FormAlert>{error}</FormAlert>
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
                 <table className="w-full text-sm">
                     <thead className="bg-gray-50 text-left text-xs text-gray-500">
                         <tr>
-                            <th className="p-4">Order</th>
-                            <th>Customer</th>
-                            <th>Tour</th>
-                            <th>Departure → return</th>
-                            <th>Guests</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th className="p-4">Action</th>
+                            <th className="p-4">{t("admin.tours.order")}</th>
+                            <th>{t("admin.tours.customer")}</th>
+                            <th>{t("admin.tours.tour")}</th>
+                            <th>{t("admin.tours.departureReturn")}</th>
+                            <th>{t("common.fields.guests")}</th>
+                            <th>{t("common.fields.total")}</th>
+                            <th>{t("common.fields.status")}</th>
+                            <th className="p-4">{t("admin.tours.action")}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -746,11 +751,11 @@ function BookingsTab() {
                                     {formatDate(booking.departureDate)} → {formatDate(booking.returnDate)}
                                 </td>
                                 <td>
-                                    {booking.numAdults} adults + {booking.numChildren} children
+                                    {t("admin.tours.guestsSummary", { adults: booking.numAdults, children: booking.numChildren })}
                                 </td>
                                 <td>{formatMoney(booking.totalPrice, booking.currencyCode)}</td>
                                 <td>
-                                    <StatusBadge status={booking.status} labels={BOOKING_STATUS_LABELS} />
+                                    <StatusBadge status={booking.status} labels={Object.fromEntries(Object.entries(BOOKING_STATUS_LABELS).map(([value, cfg]) => [value, { ...cfg, label: t(`admin.status.${value}`, { defaultValue: cfg.label }) }]))} />
                                 </td>
                                 <td className="p-4">
                                     <select
@@ -761,10 +766,10 @@ function BookingsTab() {
                                         onChange={(e) => update(booking, e.target.value)}
                                         className="rounded-lg border border-gray-300 bg-white px-2 py-1 text-xs"
                                     >
-                                        <option value="">Change status…</option>
+                                        <option value="">{t("admin.tours.changeStatus")}</option>
                                         {(TOUR_BOOKING_NEXT_STATUSES[booking.status] || []).map((next) => (
                                             <option key={next} value={next}>
-                                                {BOOKING_STATUS_LABELS[next].label}
+                                                {t(`admin.status.${next}`, { defaultValue: BOOKING_STATUS_LABELS[next].label })}
                                             </option>
                                         ))}
                                     </select>
@@ -781,20 +786,21 @@ function BookingsTab() {
 
 /** Trang quản trị tour và đơn đặt tour. */
 function AdminTours() {
+    const t = useT();
     const [tab, setTab] = useState("tours");
     /** Tạo lớp hiển thị cho nút tab. */
     const tabClass = (active) =>
         `px-4 py-2 text-sm font-bold border-b-2 ${active ? "border-primary text-primary" : "border-transparent text-gray-500"}`;
     return (
         <div className="space-y-6">
-            <h1 className="text-3xl font-extrabold text-primary">Tours</h1>
+            <h1 className="text-3xl font-extrabold text-primary">{t("admin.tours.title")}</h1>
             <AdminStatsPanel section="tours" />
             <div className="flex gap-2 border-b border-gray-200">
                 <button type="button" onClick={() => setTab("tours")} className={tabClass(tab === "tours")}>
-                    Tours
+                    {t("admin.tours.tours")}
                 </button>
                 <button type="button" onClick={() => setTab("bookings")} className={tabClass(tab === "bookings")}>
-                    Bookings
+                    {t("admin.tours.bookings")}
                 </button>
             </div>
             {tab === "tours" ? <ToursTab /> : <BookingsTab />}

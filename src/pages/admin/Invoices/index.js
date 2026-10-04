@@ -12,12 +12,14 @@ import {
 } from "../../../services/adminInvoiceService";
 import { formatDateTime, formatMoney } from "../../../utils/formatters";
 import AdminStatsPanel from "../../../components/admin/AdminStatsPanel";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 20;
 const EMPTY_FILTERS = { q: "", from: "", to: "" };
 const buttonClass = "px-3 py-1 rounded-lg text-xs font-bold border disabled:opacity-50";
 
 function AdminInvoices() {
+    const t = useT();
     const [form, setForm] = useState(EMPTY_FILTERS);
     const [filters, setFilters] = useState(EMPTY_FILTERS);
     const [page, setPage] = useState(1);
@@ -73,7 +75,7 @@ function AdminInvoices() {
 
     return (
         <div className="space-y-6">
-            <h1 className="text-3xl font-extrabold text-primary">Invoices</h1>
+            <h1 className="text-3xl font-extrabold text-primary">{t("admin.invoices.title")}</h1>
             <AdminStatsPanel section="invoices" />
 
             <form
@@ -85,18 +87,18 @@ function AdminInvoices() {
                 className="flex flex-wrap items-end gap-3"
             >
                 <label className="text-xs font-semibold text-gray-500">
-                    Search
-                    <input value={form.q} onChange={set("q")} placeholder="Invoice no., order code, email, name" className="block mt-1 rounded-lg border-gray-200 text-sm w-72" />
+                    {t("common.actions.search")}
+                    <input value={form.q} onChange={set("q")} placeholder={t("admin.invoices.searchPlaceholder")} className="block mt-1 rounded-lg border-gray-200 text-sm w-72" />
                 </label>
                 <label className="text-xs font-semibold text-gray-500">
-                    Issued from
+                    {t("admin.invoices.issuedFrom")}
                     <input type="date" value={form.from} onChange={set("from")} className="block mt-1 rounded-lg border-gray-200 text-sm" />
                 </label>
                 <label className="text-xs font-semibold text-gray-500">
-                    to
+                    {t("common.fields.to")}
                     <input type="date" value={form.to} min={form.from || undefined} onChange={set("to")} className="block mt-1 rounded-lg border-gray-200 text-sm" />
                 </label>
-                <button type="submit" className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white">Filter</button>
+                <button type="submit" className="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white">{t("admin.invoices.filter")}</button>
                 <button
                     type="button"
                     onClick={() => {
@@ -106,26 +108,26 @@ function AdminInvoices() {
                     }}
                     className="px-4 py-2 rounded-lg text-sm border border-gray-200 text-gray-600"
                 >
-                    Reset
+                    {t("common.actions.reset")}
                 </button>
-                <span className="ml-auto text-sm text-gray-500">{result.total.toLocaleString()} invoices</span>
+                <span className="ml-auto text-sm text-gray-500">{t("admin.invoices.count", { count: result.total })}</span>
             </form>
 
             <FormAlert type="success">{notice}</FormAlert>
             <FormAlert>{error}</FormAlert>
-            {loading && <p className="text-gray-500">Đang tải...</p>}
-            {!loading && result.items.length === 0 && <p className="text-gray-500">Không có hoá đơn nào.</p>}
+            {loading && <p className="text-gray-500">{t("common.state.loading")}</p>}
+            {!loading && result.items.length === 0 && <p className="text-gray-500">{t("admin.invoices.empty")}</p>}
 
             {!loading && result.items.length > 0 && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <table className="w-full text-sm">
                         <thead className="bg-gray-50 text-xs uppercase text-gray-500">
                             <tr>
-                                <th className="px-4 py-3 text-left">Invoice</th>
-                                <th className="px-4 py-3 text-left">Customer</th>
-                                <th className="px-4 py-3 text-left">Issued</th>
-                                <th className="px-4 py-3 text-left">Order status</th>
-                                <th className="px-4 py-3 text-right">Total</th>
+                                <th className="px-4 py-3 text-left">{t("admin.invoices.invoice")}</th>
+                                <th className="px-4 py-3 text-left">{t("admin.invoices.customer")}</th>
+                                <th className="px-4 py-3 text-left">{t("admin.invoices.issued")}</th>
+                                <th className="px-4 py-3 text-left">{t("admin.invoices.orderStatus")}</th>
+                                <th className="px-4 py-3 text-right">{t("common.fields.total")}</th>
                                 <th className="px-4 py-3" />
                             </tr>
                         </thead>
@@ -142,7 +144,7 @@ function AdminInvoices() {
                                     onResend={() =>
                                         run(inv.id, async () => {
                                             await resendAdminInvoice(inv.id);
-                                            setNotice(`Invoice ${inv.invoiceNumber} was re-sent to ${inv.customerEmail}.`);
+                                            setNotice(t("admin.invoices.resent", { invoice: inv.invoiceNumber, email: inv.customerEmail }));
                                         })
                                     }
                                 />
@@ -157,19 +159,26 @@ function AdminInvoices() {
 }
 
 function InvoiceRow({ inv, open, busy, detail, onToggle, onDownload, onResend }) {
+    const t = useT();
+    const statusLabels = Object.fromEntries(
+        Object.entries(ORDER_STATUS_LABELS).map(([value, cfg]) => [
+            value,
+            { ...cfg, label: t(`admin.status.${value}`, { defaultValue: cfg.label }) },
+        ]),
+    );
     return (
         <>
             <tr className="border-t border-gray-100 align-top">
                 <td className="px-4 py-3">
                     <p className="font-bold text-gray-900">{inv.invoiceNumber}</p>
-                    <p className="text-xs text-gray-500">Order {inv.orderCode}</p>
+                    <p className="text-xs text-gray-500">{t("admin.invoices.order", { order: inv.orderCode })}</p>
                 </td>
                 <td className="px-4 py-3">
                     <p className="font-semibold">{inv.customerName}</p>
                     <p className="text-xs text-gray-500">{inv.customerEmail}</p>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">{formatDateTime(inv.issuedAt)}</td>
-                <td className="px-4 py-3"><StatusBadge status={inv.orderStatus} labels={ORDER_STATUS_LABELS} /></td>
+                <td className="px-4 py-3"><StatusBadge status={inv.orderStatus} labels={statusLabels} /></td>
                 <td className="px-4 py-3 text-right whitespace-nowrap">
                     <p className="font-bold">{formatMoney(inv.totalAmount, inv.currencyCode)}</p>
                     {inv.refundedAmount > 0 && <p className="text-xs text-red-600">−{formatMoney(inv.refundedAmount, inv.currencyCode)}</p>}
@@ -177,13 +186,13 @@ function InvoiceRow({ inv, open, busy, detail, onToggle, onDownload, onResend })
                 <td className="px-4 py-3">
                     <div className="flex justify-end gap-2">
                         <button type="button" onClick={onToggle} className={`${buttonClass} border-gray-200 text-gray-700 hover:bg-gray-50`}>
-                            {open ? "Hide" : "Details"}
+                            {open ? t("admin.invoices.hide") : t("admin.invoices.details")}
                         </button>
                         <button type="button" disabled={busy} onClick={onDownload} className={`${buttonClass} border-blue-200 text-primary hover:bg-blue-50`}>
                             PDF
                         </button>
                         <button type="button" disabled={busy} onClick={onResend} className={`${buttonClass} border-green-200 text-green-700 hover:bg-green-50`}>
-                            Resend
+                            {t("admin.invoices.resend")}
                         </button>
                     </div>
                 </td>
@@ -191,7 +200,7 @@ function InvoiceRow({ inv, open, busy, detail, onToggle, onDownload, onResend })
             {open && (
                 <tr className="bg-gray-50/60">
                     <td colSpan={6} className="px-6 py-5">
-                        {detail ? <InvoiceDetail invoice={detail} /> : <p className="text-gray-500">Đang tải...</p>}
+                        {detail ? <InvoiceDetail invoice={detail} /> : <p className="text-gray-500">{t("common.state.loading")}</p>}
                     </td>
                 </tr>
             )}

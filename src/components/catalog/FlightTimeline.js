@@ -1,9 +1,10 @@
-import { formatDuration } from "../../services/flightService";
+import { getCurrentLocale } from "../../i18n/currentLocale";
+import { useT } from "../../i18n/I18nContext";
 
 const timeOf = (iso) => (iso ? iso.slice(11, 16) : "");
 /** "Mon, 12 Oct" */
 export const flightDateLabel = (iso) =>
-    iso ? new Date(iso).toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short" }) : "";
+    iso ? new Date(iso).toLocaleDateString(getCurrentLocale(), { weekday: "short", day: "2-digit", month: "short" }) : "";
 
 /** Logo hãng bay; không có ảnh thì hiện 2 chữ cái đầu. */
 export function AirlineLogo({ flight, size = "w-16 h-16" }) {
@@ -33,6 +34,7 @@ export function AirlineLogo({ flight, size = "w-16 h-16" }) {
 
 /** Dòng giờ đi — đường bay — giờ đến (dùng chung cho danh sách và trang chi tiết). */
 export function FlightTimeline({ flight, compact = false }) {
+    const t = useT();
     return (
         <div className="flex items-center gap-4 flex-1 min-w-0">
             <div>
@@ -45,13 +47,13 @@ export function FlightTimeline({ flight, compact = false }) {
                 </div>
             </div>
             <div className="flex-1 flex flex-col items-center min-w-[80px]">
-                <div className="text-xs font-bold text-on-surface-variant">{formatDuration(flight.durationMinutes)}</div>
+                <div className="text-xs font-bold text-on-surface-variant">{flight.durationMinutes == null ? "" : t("flights.duration", { h: Math.floor(Number(flight.durationMinutes) / 60), m: Number(flight.durationMinutes) % 60 })}</div>
                 <div className="relative w-full flex items-center my-1">
                     <div className="h-px flex-1 bg-outline-variant" />
                     <span className="material-symbols-outlined text-primary text-lg mx-1 rotate-90">flight</span>
                     <div className="h-px flex-1 bg-outline-variant" />
                 </div>
-                <div className="text-[10px] font-bold uppercase tracking-widest text-green-700">Non-stop</div>
+                <div className="text-[10px] font-bold uppercase tracking-widest text-green-700">{t("catalog.flight.nonStop")}</div>
             </div>
             <div className="text-right">
                 <div className={`font-headline font-extrabold text-on-surface ${compact ? "text-xl" : "text-3xl"}`}>

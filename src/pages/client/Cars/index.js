@@ -11,6 +11,7 @@ import Pagination from "../../../components/common/Pagination";
 import { CAR_SORTS, CAR_TYPE_LABELS, fetchCarFilters, fetchCars } from "../../../services/carService";
 import { formatMoney } from "../../../utils/formatters";
 import { withSeconds } from "../../../utils/dateTime";
+import { useT } from "../../../i18n/I18nContext";
 
 const PAGE_SIZE = 9;
 const HERO_IMAGE =
@@ -20,6 +21,7 @@ const FUEL_ICONS = { electric: "bolt", hybrid: "electric_car" };
 
 /** Thẻ xe trong lưới kết quả (theo CAR.html). */
 function CarCard({ car, query }) {
+    const t = useT();
     const link = `/cars/${car.id}${query ? `?${query}` : ""}`;
     return (
         <div className="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
@@ -31,11 +33,11 @@ function CarCard({ car, query }) {
                 />
                 <div className="absolute top-4 right-4 bg-surface/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1">
                     <span className="material-symbols-outlined text-primary text-sm">directions_car</span>
-                    <span className="text-xs font-bold">{CAR_TYPE_LABELS[car.carType] || car.carType}</span>
+                    <span className="text-xs font-bold">{t(`cars.types.${car.carType}`, { defaultValue: CAR_TYPE_LABELS[car.carType] || car.carType })}</span>
                 </div>
                 {car.withDriver && (
                     <div className="absolute top-4 left-4 editorial-gradient text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                        With driver
+                        {t("cars.card.withDriver")}
                     </div>
                 )}
             </Link>
@@ -48,20 +50,20 @@ function CarCard({ car, query }) {
                     {car.destinationName ? ` · ${car.destinationName}` : ""}
                 </p>
                 <div className="grid grid-cols-3 gap-2 mb-6">
-                    <SpecChip icon={car.seats > 5 ? "groups" : "airline_seat_recline_normal"} label={`${car.seats} Seats`} />
-                    <SpecChip icon="settings_input_component" label={car.transmission === "manual" ? "Manual" : "Auto"} />
-                    <SpecChip icon={FUEL_ICONS[car.fuelType] || "local_gas_station"} label={car.fuelType || "—"} />
+                    <SpecChip icon={car.seats > 5 ? "groups" : "airline_seat_recline_normal"} label={t("cars.card.seats", { count: car.seats })} />
+                    <SpecChip icon="settings_input_component" label={t(`cars.transmission.${car.transmission}`, { defaultValue: car.transmission || "—" })} />
+                    <SpecChip icon={FUEL_ICONS[car.fuelType] || "local_gas_station"} label={t(`cars.fuelType.${car.fuelType}`, { defaultValue: car.fuelType || "—" })} />
                 </div>
                 <div className="flex justify-between items-center">
                     <div>
                         <span className="text-2xl font-black text-primary">{formatMoney(car.pricePerDay, car.currencyCode)}</span>
-                        <span className="text-xs font-bold text-on-surface-variant uppercase tracking-tighter"> / day</span>
+                        <span className="text-xs font-bold text-on-surface-variant uppercase tracking-tighter"> {t("common.units.perDay")}</span>
                     </div>
                     <Link
                         to={link}
                         className="editorial-gradient text-on-primary px-4 py-2 rounded-lg font-bold text-xs hover:opacity-90 transition-all"
                     >
-                        Rent Now
+                        {t("cars.actions.rentNow")}
                     </Link>
                 </div>
             </div>
@@ -71,6 +73,7 @@ function CarCard({ car, query }) {
 
 /** Danh sách xe cho thuê: hero + tìm kiếm, bộ lọc bên trái, lưới xe. Bộ lọc lưu trên URL để chia sẻ / quay lại được. */
 function Cars() {
+    const t = useT();
     const [params, setParams] = useSearchParams();
     const [options, setOptions] = useState(null);
     const [result, setResult] = useState({ items: [], total: 0 });
@@ -133,11 +136,11 @@ function Cars() {
 
     const handleSearch = () => {
         if ((search.pickup && !search.dropoff) || (!search.pickup && search.dropoff)) {
-            setError("Please choose both pick-up and drop-off time, or leave both empty.");
+            setError(t("cars.validation.bothDates"));
             return;
         }
         if (search.pickup && search.dropoff && search.dropoff <= search.pickup) {
-            setError("Drop-off must be after pick-up.");
+            setError(t("cars.validation.dropoffAfterPickup"));
             return;
         }
         update({ q: search.q.trim(), pickup: search.pickup, dropoff: search.dropoff, type: search.type });
@@ -156,25 +159,25 @@ function Cars() {
         <div className="bg-surface text-on-surface">
             <CatalogHero
                 image={HERO_IMAGE}
-                alt="Car driving on a scenic road"
+                alt={t("cars.hero.imageAlt")}
                 title={
                     <>
-                        Precision Engineering. <br />
-                        Unforgettable Journeys.
+                        {t("cars.hero.titleFirst")} <br />
+                        {t("cars.hero.titleSecond")}
                     </>
                 }
-                subtitle="Experience the open road with our curated collection of vehicles, from city runabouts to spacious family vans."
+                subtitle={t("cars.hero.subtitle")}
             >
-                <SearchPanel columns={4} onSubmit={handleSearch} submitLabel="Search Collection">
-                    <SearchField label="Location" icon="location_on">
+                <SearchPanel columns={4} onSubmit={handleSearch} submitLabel={t("cars.search.submit")}>
+                    <SearchField label={t("cars.search.location")} icon="location_on">
                         <input
                             className={fieldInputClass}
-                            placeholder="City, airport, car name..."
+                            placeholder={t("cars.search.locationPlaceholder")}
                             value={search.q}
                             onChange={(e) => setSearch((s) => ({ ...s, q: e.target.value }))}
                         />
                     </SearchField>
-                    <SearchField label="Pick-up" icon="calendar_today">
+                    <SearchField label={t("cars.search.pickup")} icon="calendar_today">
                         <input
                             type="datetime-local"
                             className={fieldInputClass}
@@ -182,7 +185,7 @@ function Cars() {
                             onChange={(e) => setSearch((s) => ({ ...s, pickup: e.target.value }))}
                         />
                     </SearchField>
-                    <SearchField label="Drop-off" icon="event">
+                    <SearchField label={t("cars.search.dropoff")} icon="event">
                         <input
                             type="datetime-local"
                             className={fieldInputClass}
@@ -191,16 +194,16 @@ function Cars() {
                             onChange={(e) => setSearch((s) => ({ ...s, dropoff: e.target.value }))}
                         />
                     </SearchField>
-                    <SearchField label="Car Type" icon="directions_car">
+                    <SearchField label={t("cars.search.carType")} icon="directions_car">
                         <select
                             className={fieldInputClass}
                             value={search.type}
                             onChange={(e) => setSearch((s) => ({ ...s, type: e.target.value }))}
                         >
-                            <option value="">Any type</option>
+                            <option value="">{t("cars.search.anyType")}</option>
                             {Object.entries(CAR_TYPE_LABELS).map(([value, label]) => (
                                 <option key={value} value={value}>
-                                    {label}
+                                    {t(`cars.types.${value}`, { defaultValue: label })}
                                 </option>
                             ))}
                         </select>
@@ -211,7 +214,7 @@ function Cars() {
             <div id="fleet" className="max-w-screen-2xl mx-auto px-8 py-20 flex flex-col md:flex-row gap-12 scroll-mt-24">
                 <FilterSidebar onReset={() => setParams(new URLSearchParams())}>
                     {options?.brands?.length > 0 && (
-                        <FilterGroup title="Brand">
+                        <FilterGroup title={t("cars.filters.brand")}>
                             {options.brands.map((brand) => (
                                 <FilterCheckbox
                                     key={brand}
@@ -222,7 +225,7 @@ function Cars() {
                             ))}
                         </FilterGroup>
                     )}
-                    <FilterGroup title="Price Range (Daily)">
+                    <FilterGroup title={t("cars.filters.priceRangeDaily")}>
                         <input
                             className="w-full accent-primary"
                             type="range"
@@ -233,45 +236,45 @@ function Cars() {
                         />
                         <div className="flex justify-between text-xs font-bold text-on-surface-variant">
                             <span>{formatMoney(priceFloor, options?.currencyCode)}</span>
-                            <span>up to {formatMoney(Math.min(priceMax, priceCeiling), options?.currencyCode)}</span>
+                            <span>{t("cars.filters.upTo", { price: formatMoney(Math.min(priceMax, priceCeiling), options?.currencyCode) })}</span>
                         </div>
                     </FilterGroup>
                     {options?.transmissions?.length > 0 && (
-                        <FilterGroup title="Transmission">
+                        <FilterGroup title={t("cars.filters.transmission")}>
                             <div className="flex flex-wrap gap-2">
-                                {options.transmissions.map((t) => (
+                                {options.transmissions.map((code) => (
                                     <FilterChip
-                                        key={t}
-                                        label={t.charAt(0).toUpperCase() + t.slice(1)}
-                                        active={params.get("transmission") === t}
-                                        onClick={() => toggleParam("transmission", t)}
+                                        key={code}
+                                        label={t(`cars.transmission.${code}`, { defaultValue: code })}
+                                        active={params.get("transmission") === code}
+                                        onClick={() => toggleParam("transmission", code)}
                                     />
                                 ))}
                             </div>
                         </FilterGroup>
                     )}
                     {options?.fuelTypes?.length > 0 && (
-                        <FilterGroup title="Fuel">
+                        <FilterGroup title={t("cars.filters.fuel")}>
                             <div className="flex flex-wrap gap-2">
-                                {options.fuelTypes.map((f) => (
+                                {options.fuelTypes.map((code) => (
                                     <FilterChip
-                                        key={f}
-                                        label={f.charAt(0).toUpperCase() + f.slice(1)}
-                                        active={params.get("fuel") === f}
-                                        onClick={() => toggleParam("fuel", f)}
+                                        key={code}
+                                        label={t(`cars.fuelType.${code}`, { defaultValue: code })}
+                                        active={params.get("fuel") === code}
+                                        onClick={() => toggleParam("fuel", code)}
                                     />
                                 ))}
                             </div>
                         </FilterGroup>
                     )}
-                    <FilterGroup title="Features">
+                    <FilterGroup title={t("cars.filters.features")}>
                         <FilterCheckbox
-                            label="Chauffeur included"
+                            label={t("cars.filters.chauffeurIncluded")}
                             checked={params.get("driver") === "yes"}
                             onChange={(checked) => update({ driver: checked ? "yes" : "" })}
                         />
                         <FilterCheckbox
-                            label="6+ seats"
+                            label={t("cars.filters.sixPlusSeats")}
                             checked={params.get("seats") === "6"}
                             onChange={(checked) => update({ seats: checked ? 6 : "" })}
                         />
@@ -280,9 +283,9 @@ function Cars() {
 
                 <div className="flex-grow">
                     <ListHeader
-                        eyebrow={datesChosen ? "Available for your dates" : "Available Now"}
-                        title="Curated Fleet"
-                        sortOptions={CAR_SORTS}
+                        eyebrow={datesChosen ? t("cars.list.availableForDates") : t("cars.list.availableNow")}
+                        title={t("cars.list.title")}
+                        sortOptions={CAR_SORTS.map((option) => ({ ...option, label: t(`cars.sort.${option.value}`, { defaultValue: option.label }) }))}
                         sort={params.get("sort") || "newest"}
                         onSortChange={(value) => update({ sort: value === "newest" ? "" : value })}
                     />
@@ -297,13 +300,13 @@ function Cars() {
                         <div className="text-center py-20 bg-surface-container-low rounded-xl">
                             <span className="material-symbols-outlined text-5xl text-outline mb-3">no_crash</span>
                             <p className="text-on-surface-variant">
-                                No cars match your search{datesChosen ? " for these dates" : ""}. Try other filters.
+                                {t(datesChosen ? "cars.list.emptyDates" : "cars.list.empty")}
                             </p>
                         </div>
                     ) : (
                         <>
                             <p className="text-sm text-on-surface-variant mb-6">
-                                <span className="font-bold text-on-surface">{result.total}</span> vehicle{result.total === 1 ? "" : "s"}
+                                {t("cars.list.vehicleCount", { count: result.total })}
                             </p>
                             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
                                 {result.items.map((car) => (

@@ -3,11 +3,15 @@ import NavigationMenu from "../client/NavigationMenu";
 import UserAvatar from "../common/UserAvatar";
 import NotificationBell from "../common/NotificationBell";
 import { useAuth } from "../../context/AuthContext";
+import { useT } from "../../i18n/I18nContext";
+import LanguageSwitcher from "../common/LanguageSwitcher";
+import ThemeToggle from "../common/ThemeToggle";
 
 function DashboardLayout({ children }) {
     const location = useLocation();
     const navigate = useNavigate();
     const { user, logout } = useAuth();
+    const t = useT();
 
     const handleSignOut = async () => {
         await logout();
@@ -27,7 +31,9 @@ function DashboardLayout({ children }) {
                         <NavigationMenu />
                     </div>
 
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-4">
+                        <LanguageSwitcher compact />
+                        <ThemeToggle />
                         <NotificationBell />
                         <Link to="/account-settings" className="overflow-hidden">
                             <UserAvatar user={user} />
@@ -45,7 +51,7 @@ function DashboardLayout({ children }) {
                             <div className="min-w-0">
                                 <h3 className="font-headline font-bold text-on-surface truncate">{user?.fullName}</h3>
                                 <p className="text-xs text-on-surface-variant tracking-wide">
-                                    {(user?.loyaltyPoints ?? 0).toLocaleString()} POINTS
+                                    {t("nav.sidebar.points", { points: (user?.loyaltyPoints ?? 0).toLocaleString() })}
                                 </p>
                             </div>
                         </div>
@@ -53,61 +59,61 @@ function DashboardLayout({ children }) {
                     <nav className="flex-1 flex flex-col gap-1">
                         <Link to="/profile" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/profile' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">dashboard</span>
-                            <span className="font-medium text-sm tracking-wide">Dashboard</span>
+                            <span className="font-medium text-sm tracking-wide">{t("nav.sidebar.dashboard")}</span>
                         </Link>
                         <Link to="/my-trips" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/my-trips' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">luggage</span>
-                            <span className="font-medium text-sm tracking-wide">My Trips</span>
+                            <span className="font-medium text-sm tracking-wide">{t("nav.sidebar.myTrips")}</span>
                         </Link>
                         <Link to="/payment-history" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/payment-history' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">payments</span>
-                            <span className="font-medium text-sm tracking-wide">Payment History</span>
+                            <span className="font-medium text-sm tracking-wide">{t("nav.sidebar.paymentHistory")}</span>
                         </Link>
                         <Link to="/invoices" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/invoices' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">receipt_long</span>
-                            <span className="font-medium text-sm tracking-wide">Invoices</span>
+                            <span className="font-medium text-sm tracking-wide">{t("nav.sidebar.invoices")}</span>
                         </Link>
                         <Link to="/saved-trips" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/saved-trips' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">favorite</span>
-                            <span className="font-medium text-sm tracking-wide">Saved Trips</span>
+                            <span className="font-medium text-sm tracking-wide">{t("nav.sidebar.savedTrips")}</span>
                         </Link>
-                        <Link to="/trip-cart" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/trip-cart' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
-                            <span className="material-symbols-outlined">shopping_bag</span>
-                            <span className="font-medium text-sm tracking-wide">Trip Cart</span>
+                        <Link to="/cart" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/cart' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
+                            <span className="material-symbols-outlined">shopping_cart</span>
+                            <span className="font-medium text-sm tracking-wide">{t("nav.sidebar.cart")}</span>
                         </Link>
                         <Link to="/itineraries" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname.startsWith('/itineraries') ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">map</span>
-                            <span className="font-medium text-sm tracking-wide">My Itineraries</span>
+                            <span className="font-medium text-sm tracking-wide">{t("nav.sidebar.itineraries")}</span>
                         </Link>
                         <Link to="/my-reviews" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/my-reviews' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">rate_review</span>
-                            <span className="font-medium text-sm tracking-wide">My Reviews</span>
+                            <span className="font-medium text-sm tracking-wide">{t("nav.sidebar.myReviews")}</span>
                         </Link>
                         <Link to="/notifications" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/notifications' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">notifications</span>
-                            <span className="font-medium text-sm tracking-wide">Notifications</span>
+                            <span className="font-medium text-sm tracking-wide">{t("nav.sidebar.notifications")}</span>
                         </Link>
                         <Link to="/account/security" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/account/security' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">shield_person</span>
-                            <span className="font-medium text-sm tracking-wide">Login & Security</span>
+                            <span className="font-medium text-sm tracking-wide">{t("nav.sidebar.security")}</span>
                         </Link>
                         <Link to="/account-settings" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-transform duration-200 hover:translate-x-1 ${location.pathname === '/account-settings' ? 'sidebar-active text-primary' : 'text-on-surface-variant hover:bg-white/50'}`}>
                             <span className="material-symbols-outlined">settings</span>
-                            <span className="font-medium text-sm tracking-wide">Account Settings</span>
+                            <span className="font-medium text-sm tracking-wide">{t("nav.sidebar.accountSettings")}</span>
                         </Link>
                     </nav>
                     <Link to="/hotels" className="mt-4 w-full primary-gradient text-white py-3 rounded-xl font-bold text-sm shadow-lg active:scale-95 duration-150 flex items-center justify-center gap-2 block text-center">
                         <span className="material-symbols-outlined text-sm">add</span>
-                        Book New Trip
+                        {t("nav.sidebar.bookNewTrip")}
                     </Link>
                     <div className="mt-8 pt-6 border-t border-outline-variant/20 flex flex-col gap-1">
                         <span className="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:bg-white/50 text-sm cursor-pointer">
                             <span className="material-symbols-outlined text-[20px]">help</span>
-                            Help Center
+                            {t("nav.sidebar.helpCenter")}
                         </span>
                         <button type="button" onClick={handleSignOut} className="flex items-center gap-3 px-4 py-2 rounded-lg text-error hover:bg-error-container/10 text-sm text-left">
                             <span className="material-symbols-outlined text-[20px]">logout</span>
-                            Sign Out
+                            {t("nav.signOut")}
                         </button>
                     </div>
                 </aside>
@@ -122,19 +128,19 @@ function DashboardLayout({ children }) {
             <nav className="md:hidden fixed bottom-0 left-0 right-0 glass-nav h-16 flex items-center justify-around px-4 z-50">
                 <Link to="/profile" className={`flex flex-col items-center gap-1 ${location.pathname === '/profile' ? 'text-primary' : 'text-on-surface-variant'}`}>
                     <span className="material-symbols-outlined" style={location.pathname === '/profile' ? {fontVariationSettings: "'FILL' 1"} : {}}>dashboard</span>
-                    <span className="text-[10px] font-bold">Dashboard</span>
+                    <span className="text-[10px] font-bold">{t("nav.sidebar.dashboard")}</span>
                 </Link>
                 <Link to="/my-trips" className={`flex flex-col items-center gap-1 ${location.pathname === '/my-trips' ? 'text-primary' : 'text-on-surface-variant'}`}>
                     <span className="material-symbols-outlined" style={location.pathname === '/my-trips' ? {fontVariationSettings: "'FILL' 1"} : {}}>luggage</span>
-                    <span className="text-[10px] font-medium">Trips</span>
+                    <span className="text-[10px] font-medium">{t("nav.sidebar.trips")}</span>
                 </Link>
                 <span className="flex flex-col items-center gap-1 text-on-surface-variant cursor-pointer">
                     <span className="material-symbols-outlined">favorite</span>
-                    <span className="text-[10px] font-medium">Saved</span>
+                    <span className="text-[10px] font-medium">{t("nav.sidebar.saved")}</span>
                 </span>
                 <span className="flex flex-col items-center gap-1 text-on-surface-variant cursor-pointer">
                     <span className="material-symbols-outlined">account_circle</span>
-                    <span className="text-[10px] font-medium">Account</span>
+                    <span className="text-[10px] font-medium">{t("nav.sidebar.account")}</span>
                 </span>
             </nav>
         </div>

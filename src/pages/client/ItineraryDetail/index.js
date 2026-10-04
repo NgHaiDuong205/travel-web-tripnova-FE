@@ -5,22 +5,31 @@ import FormAlert from "../../../components/common/FormAlert";
 import StatusBadge from "../../../components/common/StatusBadge";
 import { fetchDestinations } from "../../../services/destinationService";
 import {
-    ITEM_TYPES,
-    ITINERARY_STATUS_LABELS,
     addItineraryItem,
     deleteItinerary,
     deleteItineraryItem,
     fetchItinerary,
     fetchLinkOptions,
     updateItinerary,
+    updateItineraryItem,
 } from "../../../services/itineraryService";
 import { formatDate, formatMoney } from "../../../utils/formatters";
 import { ItineraryFields, toItineraryBody } from "../Itineraries";
+import { useT } from "../../../i18n/I18nContext";
 
 const MAX_DAYS = 60; // khớp ItineraryServiceImpl.MAX_DAYS
 const inputClass = "w-full rounded-lg border-outline-variant/40 bg-surface-container-lowest text-sm";
 const EMPTY_ITEM = { entityType: "activity", entityId: "", title: "", startTime: "", endTime: "", estimatedCost: "", notes: "" };
-const TYPE_BY_VALUE = Object.fromEntries(ITEM_TYPES.map((t) => [t.value, t]));
+const ITEM_TYPES = [
+    { value: "landmark", labelKey: "trips.itineraryDetail.itemTypes.sightseeing", icon: "photo_camera" },
+    { value: "hotel", labelKey: "trips.itineraryDetail.itemTypes.hotel", icon: "hotel" },
+    { value: "restaurant", labelKey: "trips.itineraryDetail.itemTypes.foodAndDrink", icon: "restaurant" },
+    { value: "activity", labelKey: "trips.itineraryDetail.itemTypes.activity", icon: "hiking" },
+    { value: "transport", labelKey: "trips.itineraryDetail.itemTypes.transport", icon: "directions_car" },
+    { value: "destination", labelKey: "trips.itineraryDetail.itemTypes.destination", icon: "location_on" },
+    { value: "other", labelKey: "trips.itineraryDetail.itemTypes.other", icon: "more_horiz" },
+];
+const TYPE_BY_VALUE = Object.fromEntries(ITEM_TYPES.map((itemType) => [itemType.value, itemType]));
 
 function toForm(itinerary) {
     return {
@@ -34,8 +43,23 @@ function toForm(itinerary) {
     };
 }
 
-function AddItemForm({ itinerary, dayNumber, onAdded, onCancel }) {
-    const [form, setForm] = useState(EMPTY_ITEM);
+function itemToForm(item) {
+    return {
+        entityType: item.entityType || "other",
+        entityId: item.entityId || "",
+        title: item.title || "",
+        startTime: item.startTime ? item.startTime.slice(0, 5) : "",
+        endTime: item.endTime ? item.endTime.slice(0, 5) : "",
+        estimatedCost: item.estimatedCost ?? "",
+        notes: item.notes || "",
+        dayNumber: item.dayNumber,
+    };
+}
+
+/** Form thêm hoạt động vào `dayNumber`, hoặc sửa `item` (khi sửa có thể chuyển sang ngày khác trong `dayCount` ngày). */
+function ItemForm({ itinerary, dayNumber, item, dayCount, onSaved, onCancel }) {
+    const t = useT();
+    const [form, setForm] = useState(() => (item ? itemToForm(item) : { ...EMPTY_ITEM, dayNumber }));
     const [options, setOptions] = useState([]);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
@@ -58,27 +82,31 @@ function AddItemForm({ itinerary, dayNumber, onAdded, onCancel }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!form.title.trim() && !form.entityId) {
-            setError("Nhập tiêu đề hoặc chọn một địa điểm");
+            setError(t("trips.itineraryDetail.validation.titleOrPlaceRequired"));
             return;
         }
         if (form.startTime && form.endTime && form.endTime <= form.startTime) {
-            setError("Giờ kết thúc phải sau giờ bắt đầu");
+            setError(t("trips.itineraryDetail.validation.endTimeAfterStartTime"));
             return;
         }
         setSaving(true);
         setError("");
         try {
-            const updated = await addItineraryItem(itinerary.id, {
-                dayNumber,
+            const body = {
+                dayNumber: Number(form.dayNumber),
                 entityType: form.entityType,
-                entityId: linkable && form.entityId ? form.entityId : null,
+                // Hoạt động "điểm đến" (không chọn lại được trong form) giữ nguyên liên kết cũ
+                entityId: (linkable || form.entityType === "destination") && form.entityId ? form.entityId : null,
                 title: form.title.trim() || null,
                 startTime: form.startTime || null,
                 endTime: form.endTime || null,
                 estimatedCost: form.estimatedCost === "" ? null : Number(form.estimatedCost),
                 notes: form.notes.trim() || null,
-            });
-            onAdded(updated);
+            };
+            const updated = item
+                ? await updateItineraryItem(itinerary.id, item.id, body)
+                : await addItineraryItem(itinerary.id, body);
+            onSaved(updated);
         } catch (err) {
             setError(err.message);
             setSaving(false);
@@ -88,19 +116,29 @@ function AddItemForm({ itinerary, dayNumber, onAdded, onCancel }) {
     return (
         <form onSubmit={handleSubmit} className="mt-3 bg-surface-container-low rounded-xl p-4 space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {item && (
+                    <label className="text-xs font-bold text-on-surface-variant">
+                        {t("trips.itineraryDetail.dayField")}
+                        <select value={form.dayNumber} onChange={set("dayNumber")} className={`${inputClass} mt-1`}>
+                            {Array.from({ length: Math.max(dayCount, item.dayNumber) }, (_, i) => i + 1).map((d) => (
+                                <option key={d} value={d}>{t("trips.itineraryDetail.day", { day: d })}</option>
+                            ))}
+                        </select>
+                    </label>
+                )}
                 <label className="text-xs font-bold text-on-surface-variant">
-                    Type
+                    {t("trips.itineraryDetail.type")}
                     <select value={form.entityType} onChange={(e) => setForm((prev) => ({ ...prev, entityType: e.target.value, entityId: "" }))} className={`${inputClass} mt-1`}>
-                        {ITEM_TYPES.filter((t) => t.value !== "destination").map((t) => (
-                            <option key={t.value} value={t.value}>{t.label}</option>
+                        {ITEM_TYPES.filter((itemType) => itemType.value !== "destination" || form.entityType === "destination").map((itemType) => (
+                            <option key={itemType.value} value={itemType.value}>{t(itemType.labelKey)}</option>
                         ))}
                     </select>
                 </label>
                 {linkable && (
                     <label className="md:col-span-2 text-xs font-bold text-on-surface-variant">
-                        {form.entityType === "hotel" ? "Hotel" : "Landmark"} in {itinerary.destinationName} (optional)
+                        {t(form.entityType === "hotel" ? "trips.itineraryDetail.hotelInDestinationOptional" : "trips.itineraryDetail.landmarkInDestinationOptional", { destination: itinerary.destinationName })}
                         <select value={form.entityId} onChange={set("entityId")} className={`${inputClass} mt-1`}>
-                            <option value="">— None —</option>
+                            <option value="">{t("trips.itineraryDetail.none")}</option>
                             {options.map((o) => (
                                 <option key={o.id} value={o.id}>{o.name}</option>
                             ))}
@@ -108,31 +146,33 @@ function AddItemForm({ itinerary, dayNumber, onAdded, onCancel }) {
                     </label>
                 )}
                 <label className={`${linkable ? "md:col-span-3" : "md:col-span-2"} text-xs font-bold text-on-surface-variant`}>
-                    Title {form.entityId ? "(để trống = tên địa điểm)" : "*"}
+                    {t(form.entityId ? "trips.itineraryDetail.titleOptionalPlaceName" : "trips.itineraryDetail.titleRequired")}
                     <input maxLength={255} value={form.title} onChange={set("title")} className={`${inputClass} mt-1`} />
                 </label>
                 <label className="text-xs font-bold text-on-surface-variant">
-                    From
+                    {t("common.fields.from")}
                     <input type="time" value={form.startTime} onChange={set("startTime")} className={`${inputClass} mt-1`} />
                 </label>
                 <label className="text-xs font-bold text-on-surface-variant">
-                    To
+                    {t("common.fields.to")}
                     <input type="time" value={form.endTime} onChange={set("endTime")} className={`${inputClass} mt-1`} />
                 </label>
                 <label className="text-xs font-bold text-on-surface-variant">
-                    Estimated cost (USD)
+                    {t("trips.itineraryDetail.estimatedCostUsd")}
                     <input type="number" min={0} step="0.01" value={form.estimatedCost} onChange={set("estimatedCost")} className={`${inputClass} mt-1`} />
                 </label>
                 <label className="md:col-span-3 text-xs font-bold text-on-surface-variant">
-                    Notes
+                    {t("common.fields.notes")}
                     <textarea rows={2} maxLength={2000} value={form.notes} onChange={set("notes")} className={`${inputClass} mt-1`} />
                 </label>
             </div>
             <FormAlert>{error}</FormAlert>
             <div className="flex justify-end gap-2">
-                <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg text-sm font-bold text-on-surface-variant">Cancel</button>
+                <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg text-sm font-bold text-on-surface-variant">{t("common.actions.cancel")}</button>
                 <button type="submit" disabled={saving} className="primary-gradient text-white px-5 py-2 rounded-lg text-sm font-bold disabled:opacity-50">
-                    {saving ? "Adding..." : "Add activity"}
+                    {item
+                        ? saving ? t("common.state.saving") : t("common.actions.save")
+                        : saving ? t("trips.itineraryDetail.adding") : t("trips.itineraryDetail.addActivity")}
                 </button>
             </div>
         </form>
@@ -140,6 +180,7 @@ function AddItemForm({ itinerary, dayNumber, onAdded, onCancel }) {
 }
 
 function ItineraryDetail() {
+    const t = useT();
     const { id } = useParams();
     const navigate = useNavigate();
     const [itinerary, setItinerary] = useState(null);
@@ -151,16 +192,23 @@ function ItineraryDetail() {
     const [addingDay, setAddingDay] = useState(null);
     const [extraDays, setExtraDays] = useState(0);
     const [busyItemId, setBusyItemId] = useState(null);
+    const [editingItemId, setEditingItemId] = useState(null);
 
     useEffect(() => {
         let cancelled = false;
         fetchItinerary(id)
             .then((data) => !cancelled && setItinerary(data))
-            .catch((err) => !cancelled && setError(err.status === 404 ? "Không tìm thấy lịch trình" : err.message));
+            .catch((err) => !cancelled && setError(err.status === 404 ? t("trips.itineraryDetail.notFound") : err.message));
         return () => {
             cancelled = true;
         };
-    }, [id]);
+    }, [id, t]);
+
+    const itineraryStatusLabels = useMemo(() => ({
+        draft: { label: t("trips.itineraryDetail.status.draft"), className: "bg-gray-50 text-gray-700 border-gray-200" },
+        saved: { label: t("trips.itineraryDetail.status.saved"), className: "bg-blue-50 text-blue-700 border-blue-200" },
+        booked: { label: t("trips.itineraryDetail.status.booked"), className: "bg-green-50 text-green-700 border-green-200" },
+    }), [t]);
 
     useEffect(() => {
         if (editing && destinations.length === 0) {
@@ -202,7 +250,7 @@ function ItineraryDetail() {
     };
 
     const handleDelete = async () => {
-        if (!window.confirm(`Xoá lịch trình "${itinerary.title}" và toàn bộ hoạt động?`)) return;
+        if (!window.confirm(t("trips.itineraryDetail.confirmDelete", { title: itinerary.title }))) return;
         try {
             await deleteItinerary(id);
             navigate("/itineraries");
@@ -228,7 +276,7 @@ function ItineraryDetail() {
         return (
             <DashboardLayout>
                 {error ? <FormAlert>{error}</FormAlert> : <div className="h-40 bg-surface-container-high rounded-xl animate-pulse" />}
-                <Link to="/itineraries" className="inline-block mt-6 text-primary font-bold text-sm">← Back to itineraries</Link>
+                <Link to="/itineraries" className="inline-block mt-6 text-primary font-bold text-sm">{t("trips.itineraryDetail.backToItineraries")}</Link>
             </DashboardLayout>
         );
     }
@@ -237,24 +285,24 @@ function ItineraryDetail() {
 
     return (
         <DashboardLayout>
-            <Link to="/itineraries" className="text-primary font-bold text-sm">← My itineraries</Link>
+            <Link to="/itineraries" className="text-primary font-bold text-sm">{t("trips.itineraryDetail.myItineraries")}</Link>
 
             {editing ? (
                 <form onSubmit={handleSave} className="bg-surface-container-lowest rounded-xl p-6 my-6 space-y-5 editorial-shadow">
                     <ItineraryFields form={form} setForm={setForm} destinations={destinations} />
                     <label className="block text-xs font-bold text-on-surface-variant max-w-xs">
-                        Status
+                        {t("common.fields.status")}
                         <select value={form.status} onChange={(e) => setForm((prev) => ({ ...prev, status: e.target.value }))} className={`${inputClass} mt-1`}>
-                            {Object.entries(ITINERARY_STATUS_LABELS).map(([value, cfg]) => (
+                            {Object.entries(itineraryStatusLabels).map(([value, cfg]) => (
                                 <option key={value} value={value}>{cfg.label}</option>
                             ))}
                         </select>
                     </label>
                     <FormAlert>{error}</FormAlert>
                     <div className="flex justify-end gap-3">
-                        <button type="button" onClick={() => { setEditing(false); setError(""); }} className="px-4 py-2 rounded-lg text-sm font-bold text-on-surface-variant">Cancel</button>
+                        <button type="button" onClick={() => { setEditing(false); setError(""); }} className="px-4 py-2 rounded-lg text-sm font-bold text-on-surface-variant">{t("common.actions.cancel")}</button>
                         <button type="submit" disabled={saving} className="primary-gradient text-white px-6 py-2 rounded-lg text-sm font-bold disabled:opacity-50">
-                            {saving ? "Saving..." : "Save"}
+                            {saving ? t("common.state.saving") : t("common.actions.save")}
                         </button>
                     </div>
                 </form>
@@ -263,25 +311,26 @@ function ItineraryDetail() {
                     <div className="min-w-0">
                         <div className="flex items-center gap-3 mb-2">
                             <h1 className="font-headline text-4xl font-extrabold text-on-surface tracking-tight">{itinerary.title}</h1>
-                            <StatusBadge status={itinerary.status} labels={ITINERARY_STATUS_LABELS} />
+                            <StatusBadge status={itinerary.status} labels={itineraryStatusLabels} />
                         </div>
                         <p className="text-on-surface-variant flex flex-wrap gap-x-5 gap-y-1 text-sm">
-                            <span>{itinerary.destinationName ? `${itinerary.destinationName}${itinerary.countryName ? `, ${itinerary.countryName}` : ""}` : "Destination not set"}</span>
-                            <span>{itinerary.startDate ? `${formatDate(itinerary.startDate)} – ${formatDate(itinerary.endDate || itinerary.startDate)}` : "Dates not set"}</span>
-                            {itinerary.partySize && <span>{itinerary.partySize} travellers</span>}
+                            <span>{itinerary.destinationName ? `${itinerary.destinationName}${itinerary.countryName ? `, ${itinerary.countryName}` : ""}` : t("trips.itineraryDetail.destinationNotSet")}</span>
+                            <span>{itinerary.startDate ? t("trips.itineraryDetail.dateRange", { startDate: formatDate(itinerary.startDate), endDate: formatDate(itinerary.endDate || itinerary.startDate) }) : t("trips.itineraryDetail.datesNotSet")}</span>
+                            {itinerary.partySize && <span>{t("trips.itineraryDetail.travellers", { count: itinerary.partySize })}</span>}
                         </p>
                         <p className={`mt-2 text-sm font-semibold ${overBudget ? "text-error" : "text-on-surface"}`}>
-                            Estimated {formatMoney(itinerary.estimatedTotal, "USD")}
-                            {itinerary.totalBudget != null && ` of ${formatMoney(itinerary.totalBudget, "USD")} budget`}
-                            {overBudget && " — over budget"}
+                            {t(overBudget ? "trips.itineraryDetail.estimatedOverBudget" : itinerary.totalBudget != null ? "trips.itineraryDetail.estimatedWithBudget" : "trips.itineraryDetail.estimated", {
+                                estimated: formatMoney(itinerary.estimatedTotal, "USD"),
+                                budget: itinerary.totalBudget != null ? formatMoney(itinerary.totalBudget, "USD") : undefined,
+                            })}
                         </p>
                     </div>
                     <div className="flex gap-2">
                         <button type="button" onClick={() => { setForm(toForm(itinerary)); setEditing(true); }} className="px-4 py-2 rounded-lg text-sm font-bold border border-outline-variant/40 text-on-surface hover:bg-surface-container-low">
-                            Edit trip
+                            {t("trips.itineraryDetail.editTrip")}
                         </button>
                         <button type="button" onClick={handleDelete} className="px-4 py-2 rounded-lg text-sm font-bold border border-error/40 text-error hover:bg-error-container/10">
-                            Delete
+                            {t("common.actions.delete")}
                         </button>
                     </div>
                 </section>
@@ -297,27 +346,43 @@ function ItineraryDetail() {
                         <section key={day} className="bg-surface-container-lowest rounded-xl p-6 editorial-shadow">
                             <div className="flex items-center justify-between mb-4">
                                 <h2 className="font-headline text-lg font-bold text-on-surface">
-                                    Day {day}
+                                    {t("trips.itineraryDetail.day", { day })}
                                     {date && <span className="ml-2 text-sm font-normal text-on-surface-variant">{formatDate(date)}</span>}
                                 </h2>
                                 {addingDay !== day && (
-                                    <button type="button" onClick={() => setAddingDay(day)} className="text-primary text-sm font-bold flex items-center gap-1">
+                                    <button type="button" onClick={() => { setEditingItemId(null); setAddingDay(day); }} className="text-primary text-sm font-bold flex items-center gap-1">
                                         <span className="material-symbols-outlined text-base">add</span>
-                                        Add activity
+                                        {t("trips.itineraryDetail.addActivity")}
                                     </button>
                                 )}
                             </div>
-                            {items.length === 0 && addingDay !== day && <p className="text-sm text-on-surface-variant">Chưa có hoạt động.</p>}
+                            {items.length === 0 && addingDay !== day && <p className="text-sm text-on-surface-variant">{t("trips.itineraryDetail.noActivities")}</p>}
                             <ol className="space-y-3">
                                 {items.map((item) => {
                                     const type = TYPE_BY_VALUE[item.entityType] || TYPE_BY_VALUE.other;
+                                    if (editingItemId === item.id) {
+                                        return (
+                                            <li key={item.id}>
+                                                <ItemForm
+                                                    itinerary={itinerary}
+                                                    item={item}
+                                                    dayCount={dayCount}
+                                                    onSaved={(updated) => {
+                                                        setItinerary(updated);
+                                                        setEditingItemId(null);
+                                                    }}
+                                                    onCancel={() => setEditingItemId(null)}
+                                                />
+                                            </li>
+                                        );
+                                    }
                                     return (
                                         <li key={item.id} className="flex gap-4 items-start">
                                             <span className="w-24 shrink-0 text-xs font-semibold text-on-surface-variant pt-1">
-                                                {item.startTime ? item.startTime.slice(0, 5) : "Anytime"}
+                                                {item.startTime ? item.startTime.slice(0, 5) : t("trips.itineraryDetail.anytime")}
                                                 {item.endTime ? ` – ${item.endTime.slice(0, 5)}` : ""}
                                             </span>
-                                            <span className="material-symbols-outlined text-primary" title={type.label}>{type.icon}</span>
+                                            <span className="material-symbols-outlined text-primary" title={t(type.labelKey)}>{type.icon}</span>
                                             <div className="min-w-0 flex-1">
                                                 <p className="font-semibold text-on-surface">{item.title}</p>
                                                 {item.entityName && item.entityName !== item.title && (
@@ -330,9 +395,21 @@ function ItineraryDetail() {
                                             )}
                                             <button
                                                 type="button"
+                                                onClick={() => {
+                                                    setAddingDay(null);
+                                                    setEditingItemId(item.id);
+                                                }}
+                                                aria-label={t("trips.itineraryDetail.editItem", { title: item.title })}
+                                                title={t("trips.itineraryDetail.editItem", { title: item.title })}
+                                                className="text-on-surface-variant hover:text-primary"
+                                            >
+                                                <span className="material-symbols-outlined text-base">edit</span>
+                                            </button>
+                                            <button
+                                                type="button"
                                                 disabled={busyItemId === item.id}
                                                 onClick={() => handleDeleteItem(item)}
-                                                aria-label={`Remove ${item.title}`}
+                                                aria-label={t("trips.itineraryDetail.removeItem", { title: item.title })}
                                                 className="text-on-surface-variant hover:text-error disabled:opacity-50"
                                             >
                                                 <span className="material-symbols-outlined text-base">delete</span>
@@ -342,10 +419,10 @@ function ItineraryDetail() {
                                 })}
                             </ol>
                             {addingDay === day && (
-                                <AddItemForm
+                                <ItemForm
                                     itinerary={itinerary}
                                     dayNumber={day}
-                                    onAdded={(updated) => {
+                                    onSaved={(updated) => {
                                         setItinerary(updated);
                                         setAddingDay(null);
                                     }}
@@ -360,7 +437,7 @@ function ItineraryDetail() {
             {!itinerary.days && dayCount < MAX_DAYS && (
                 <button type="button" onClick={() => setExtraDays((n) => n + 1)} className="mt-6 text-primary font-bold text-sm flex items-center gap-1">
                     <span className="material-symbols-outlined text-base">add</span>
-                    Add day
+                    {t("trips.itineraryDetail.addDay")}
                 </button>
             )}
         </DashboardLayout>

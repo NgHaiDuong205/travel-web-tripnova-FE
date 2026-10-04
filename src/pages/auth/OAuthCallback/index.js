@@ -3,11 +3,8 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import FormAlert from "../../../components/common/FormAlert";
 import { useAuth } from "../../../context/AuthContext";
 import { OAUTH_PROVIDERS, OAUTH_REDIRECT_KEY, exchangeOAuthCode } from "../../../services/accountService";
-
-/** Chỉ cho phép redirect nội bộ (bắt đầu bằng "/") để tránh open-redirect. */
-function safeRedirect(value) {
-    return value && value.startsWith("/") && !value.startsWith("//") ? value : null;
-}
+import { useT } from "../../../i18n/I18nContext";
+import { safeRedirect } from "../../../utils/authRedirect";
 
 function takeRedirect() {
     try {
@@ -24,6 +21,7 @@ function takeRedirect() {
  * ?code= (đổi lấy JWT) · ?linked={provider} (liên kết xong) · ?error= (thông báo lỗi).
  */
 function OAuthCallback() {
+    const t = useT();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const { refreshUser } = useAuth();
@@ -46,7 +44,7 @@ function OAuthCallback() {
             return;
         }
         if (!code) {
-            setError("Missing sign-in code. Please try again.");
+            setError(t("auth.oauth.missingCode"));
             return;
         }
         exchangeOAuthCode(code)
@@ -56,6 +54,7 @@ function OAuthCallback() {
                 navigate(takeRedirect() || fallback, { replace: true });
             })
             .catch((err) => setError(err.message));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- chạy 1 lần; đổi ngôn ngữ không cần gọi lại
     }, [searchParams, navigate, refreshUser]);
 
     const linkedLabel = OAUTH_PROVIDERS[searchParams.get("linked")]?.label;
@@ -64,16 +63,16 @@ function OAuthCallback() {
         <section className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-gray-50 py-12 px-4">
             <div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md border border-gray-100 text-center">
                 <h1 className="text-3xl font-black text-[#003580] tracking-tight mb-4">
-                    {error ? "Sign-in failed" : linkedLabel ? `${linkedLabel} linked` : "Signing you in..."}
+                    {error ? t("auth.oauth.signInFailed") : linkedLabel ? t("auth.oauth.linked", { provider: linkedLabel }) : t("auth.oauth.signingIn")}
                 </h1>
-                {error ? <FormAlert>{error}</FormAlert> : <p className="text-gray-500 font-medium">Please wait a moment.</p>}
+                {error ? <FormAlert>{error}</FormAlert> : <p className="text-gray-500 font-medium">{t("auth.oauth.wait")}</p>}
                 {error && (
                     <div className="mt-8 flex justify-center gap-6 text-sm font-bold">
                         <Link to="/login" className="text-[#003580] hover:underline">
-                            Back to sign in
+                            {t("auth.forgotPassword.backToSignIn")}
                         </Link>
                         <Link to="/" className="text-gray-500 hover:underline">
-                            Home
+                            {t("nav.home")}
                         </Link>
                     </div>
                 )}
