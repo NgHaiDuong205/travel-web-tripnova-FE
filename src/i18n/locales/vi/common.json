@@ -37,7 +37,8 @@
     "add": "Thêm",
     "update": "Cập nhật",
     "yes": "Có",
-    "no": "Không"
+    "no": "Không",
+    "backToTop": "Lên đầu trang"
   },
   "state": {
     "loading": "Đang tải…",

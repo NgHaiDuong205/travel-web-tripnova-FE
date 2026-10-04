@@ -7,7 +7,7 @@
     "clear": "Clear", "clearAll": "Clear all", "submit": "Submit", "confirm": "Confirm", "continue": "Continue",
     "next": "Next", "previous": "Previous", "viewDetails": "View details", "viewAll": "View all", "seeMore": "See more",
     "showLess": "Show less", "retry": "Try again", "bookNow": "Book now", "download": "Download", "send": "Send",
-    "reply": "Reply", "add": "Add", "update": "Update", "yes": "Yes", "no": "No"
+    "reply": "Reply", "add": "Add", "update": "Update", "yes": "Yes", "no": "No", "backToTop": "Back to top"
   },
   "state": {
     "loading": "Loading…", "saving": "Saving…", "processing": "Processing…", "noResults": "No results found.",

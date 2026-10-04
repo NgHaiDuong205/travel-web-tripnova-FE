@@ -175,3 +175,106 @@ html.dark .recharts-wrapper [stroke="#003580"] { stroke: #6f9bff; }
   .tn-panel-in, .tn-msg-in, .tn-online-dot { animation: none !important; }
   .tn-greeting { transform: translateY(-50%); }
 }
+
+/* ===== Hiệu ứng chung site khách (components/common/SiteEffects, body.tn-fx) ===== */
+
+/* chuyển trang */
+.tn-page-in { animation: tn-page-in 0.5s ease-out both; }
+@keyframes tn-page-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* hiện dần khi cuộn — dùng `translate` riêng để không đè `transform` sẵn có của phần tử */
+.tn-reveal {
+  opacity: 0;
+  translate: 0 26px;
+  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) var(--tn-delay, 0ms),
+              translate 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) var(--tn-delay, 0ms);
+}
+.tn-reveal.tn-revealed { opacity: 1; translate: 0 0; }
+
+/* thanh tiến trình cuộn */
+.tn-scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 60;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, #002155, #2f6fe0, #f59e0b);
+  pointer-events: none;
+  transition: transform 0.1s linear;
+}
+
+/* header đổ bóng khi cuộn */
+.tn-fx header.fixed, .tn-fx nav.fixed.top-0 { transition: box-shadow 0.3s ease, background-color 0.3s ease; }
+.tn-fx.tn-scrolled header.fixed, .tn-fx.tn-scrolled nav.fixed.top-0 { box-shadow: 0 10px 30px rgba(0, 33, 85, 0.12); }
+
+/* ảnh trong khung bo tròn phóng nhẹ khi rê chuột */
+.tn-fx main .overflow-hidden > img { transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.tn-fx main .overflow-hidden:hover > img { transform: scale(1.06); }
+
+/* thẻ dạng link nhấc lên */
+.tn-fx main a.rounded-xl, .tn-fx main a.rounded-2xl, .tn-fx main a.rounded-3xl {
+  transition: translate 0.25s ease, box-shadow 0.25s ease;
+}
+.tn-fx main a.rounded-xl:hover, .tn-fx main a.rounded-2xl:hover, .tn-fx main a.rounded-3xl:hover {
+  translate: 0 -4px;
+  box-shadow: 0 16px 34px rgba(0, 33, 85, 0.14);
+}
+
+/* nút chính sáng lên + phát sáng nhẹ */
+.tn-fx main .bg-primary:is(button, a):not(:disabled) { transition: filter 0.2s ease, box-shadow 0.2s ease; }
+.tn-fx main .bg-primary:is(button, a):not(:disabled):hover {
+  filter: brightness(1.15);
+  box-shadow: 0 8px 22px rgba(0, 53, 128, 0.32);
+}
+
+/* link footer gạch chân chạy ra */
+.tn-fx footer a {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s ease;
+}
+.tn-fx footer a:hover { background-size: 100% 1px; }
+
+/* gợn sóng tại điểm bấm */
+.tn-click-ripple {
+  position: fixed;
+  z-index: 80;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 9999px;
+  border: 2px solid rgba(47, 111, 224, 0.7);
+  pointer-events: none;
+  animation: tn-click-ripple 0.6s ease-out forwards;
+}
+@keyframes tn-click-ripple {
+  from { transform: scale(0.4); opacity: 1; }
+  to { transform: scale(3.2); opacity: 0; }
+}
+
+/* nút lên đầu trang */
+.tn-back-top {
+  opacity: 0;
+  translate: 0 20px;
+  pointer-events: none;
+  transition: opacity 0.3s ease, translate 0.3s ease, box-shadow 0.2s ease;
+}
+.tn-back-top-visible { opacity: 1; translate: 0 0; pointer-events: auto; }
+.tn-back-top:hover { box-shadow: 0 10px 24px rgba(0, 33, 85, 0.25); translate: 0 -2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tn-page-in, .tn-click-ripple { animation: none !important; }
+  .tn-reveal { opacity: 1 !important; translate: none !important; transition: none !important; }
+  .tn-fx main .overflow-hidden:hover > img { transform: none; }
+}
+@media print {
+  .tn-reveal { opacity: 1 !important; translate: none !important; }
+  .tn-scroll-progress, .tn-back-top { display: none !important; }
+}
