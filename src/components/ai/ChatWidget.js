@@ -79,7 +79,7 @@ function ChatWidget() {
     const [error, setError] = useState("");
     const [launcherPos, setLauncherPos] = useState(null);
     const [greetingReady, setGreetingReady] = useState(false);
-    const [greetingDismissed, setGreetingDismissed] = useState(!!stored.current.greetingDismissed);
+    const [greetingDismissed, setGreetingDismissed] = useState(false);
     const bottomRef = useRef(null);
     const inputRef = useRef(null);
     const skipLoadRef = useRef(null);
@@ -99,18 +99,20 @@ function ChatWidget() {
     }, [userId, initializing]);
 
     useEffect(() => {
-        if (!initializing) writeStored({ open, activeId, userId, greetingDismissed });
-    }, [open, activeId, userId, initializing, greetingDismissed]);
+        if (!initializing) writeStored({ open, activeId, userId });
+    }, [open, activeId, userId, initializing]);
 
-    // Lời chào hiện sau một nhịp khi trang đã tải; mở chat hoặc bấm ✕ thì ẩn (nhớ theo tab).
+    // Lời chào hiện lại sau một nhịp mỗi khi sang trang mới (khung chat đang đóng); mở chat / bấm ✕ chỉ ẩn ở trang hiện tại.
     useEffect(() => {
+        setGreetingReady(false);
+        setGreetingDismissed(false);
         const timer = window.setTimeout(() => setGreetingReady(true), GREETING_DELAY_MS);
         return () => window.clearTimeout(timer);
-    }, []);
+    }, [location.pathname]);
 
     useEffect(() => {
         if (open) setGreetingDismissed(true);
-    }, [open]);
+    }, [open, location.pathname]);
 
     const loadSessions = useCallback(() => {
         return fetchChatSessions({ limit: 30 })
