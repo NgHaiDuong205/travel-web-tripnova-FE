@@ -41,3 +41,35 @@ export async function savePlannedItinerary(plan) {
     });
     return data;
 }
+
+// ---- Đặt trọn gói (khách sạn + xe) từ lịch trình đã lưu: /api/me/itineraries/{id}/booking/*
+
+/** Báo giá: hạng phòng còn trống, xe tại điểm đến, chính sách huỷ, chi phí trả tại chỗ. hotelId: đổi khách sạn (tuỳ chọn). */
+export async function fetchTripQuote(itineraryId, hotelId) {
+    const { data } = await apiClient.get(`/api/me/itineraries/${itineraryId}/booking/quote/`, { params: hotelId ? { hotelId } : {} });
+    return data;
+}
+
+/** Lượt đặt gần nhất: state none | pending | paid | partial | cancelled. */
+export async function fetchTripBooking(itineraryId) {
+    const { data } = await apiClient.get(`/api/me/itineraries/${itineraryId}/booking/`);
+    return data;
+}
+
+/** Giữ chỗ: tạo order khách sạn + order xe (chờ thanh toán). */
+export async function createTripBooking(itineraryId, body) {
+    const { data } = await apiClient.post(`/api/me/itineraries/${itineraryId}/booking/`, body);
+    return data;
+}
+
+/** Thanh toán (cổng giả lập) mọi order đang chờ; success = false giả lập thất bại. */
+export async function payTripBooking(itineraryId, success = true) {
+    const { data } = await apiClient.post(`/api/me/itineraries/${itineraryId}/booking/pay/`, { success }, { timeout: 60000 });
+    return data;
+}
+
+/** Huỷ giữ chỗ (các order chưa thanh toán). */
+export async function cancelTripBooking(itineraryId) {
+    const { data } = await apiClient.post(`/api/me/itineraries/${itineraryId}/booking/cancel/`);
+    return data;
+}

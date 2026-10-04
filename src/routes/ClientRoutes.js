@@ -16,6 +16,7 @@ import PaymentHistory from "../pages/client/PaymentHistory/index";
 import SavedTrips from "../pages/client/SavedTrips/index";
 import Itineraries from "../pages/client/Itineraries/index";
 import ItineraryDetail from "../pages/client/ItineraryDetail/index";
+import TripBooking from "../pages/client/TripBooking/index";
 import Invoices from "../pages/client/Invoices/index";
 import MyTrips from "../pages/client/MyTrips/index";
 import Cars from "../pages/client/Cars/index";
@@ -83,6 +84,7 @@ function ClientRoutes() {
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/payment/:paymentId" element={<Payment />} />
                     <Route path="/trip-payment/:paymentId" element={<TripPayment />} />
+                    <Route path="/trip-booking/:itineraryId" element={<TripBooking />} />
                     {/* Giỏ tour / xe / chuyến bay đã gộp vào /cart */}
                     <Route path="/trip-cart" element={<Navigate to="/cart" replace />} />
                     <Route path="/bookings/:bookingId" element={<BookingDetail />} />

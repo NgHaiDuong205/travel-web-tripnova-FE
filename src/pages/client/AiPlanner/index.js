@@ -25,6 +25,7 @@ const INTERESTS = [
 ];
 const BUDGETS = ["budget", "mid", "luxury"];
 const PACES = ["relaxed", "balanced", "packed"];
+const RADII = [2, 5, 10, 20, 0]; // km tính từ nơi ở; 0 = không giới hạn
 const KIND_ICONS = { hotel: "hotel", lunch: "lunch_dining", dinner: "dinner_dining" };
 const HOTEL_COLOR = "#0f172a";
 
@@ -38,6 +39,7 @@ function defaultForm() {
         pace: "balanced",
         interests: [],
         note: "",
+        radiusKm: 10,
     };
 }
 
@@ -172,6 +174,7 @@ function AiPlanner() {
                 pace: form.pace,
                 interests: form.interests,
                 note: form.note.trim() || null,
+                radiusKm: form.radiusKm || null,
                 locale: lang === "vi" ? "vi" : "en",
                 variant: nextVariant,
             });
@@ -192,12 +195,13 @@ function AiPlanner() {
         generate(0);
     };
 
-    const handleSave = async () => {
+    /** Lưu bản nháp; `thenBook` → sang trang đặt trọn gói (khách sạn + xe) thay vì trang chi tiết. */
+    const handleSave = async (thenBook = false) => {
         setSaving(true);
         setError("");
         try {
             const saved = await savePlannedItinerary(plan);
-            navigate(`/itineraries/${saved.id}`);
+            navigate(thenBook ? `/trip-booking/${saved.id}` : `/itineraries/${saved.id}`);
         } catch (err) {
             setError(err.message);
             setSaving(false);
@@ -299,6 +303,24 @@ function AiPlanner() {
                         </label>
 
                         <div className="lg:col-span-12">
+                            <span className={fieldLabel}>{t("planner.form.radius")}</span>
+                            <div className="flex flex-wrap items-center gap-2">
+                                {RADII.map((km) => (
+                                    <button
+                                        key={km}
+                                        type="button"
+                                        aria-pressed={form.radiusKm === km}
+                                        onClick={() => update({ radiusKm: km })}
+                                        className={`rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${form.radiusKm === km ? "border-primary bg-primary text-white" : "border-outline-variant/50 text-on-surface hover:border-primary"}`}
+                                    >
+                                        {km ? t("planner.form.radiusKm", { km }) : t("planner.form.radiusAny")}
+                                    </button>
+                                ))}
+                                <span className="text-xs text-on-surface-variant">{t("planner.form.radiusHint")}</span>
+                            </div>
+                        </div>
+
+                        <div className="lg:col-span-12">
                             <span className={fieldLabel}>{t("planner.form.interests")}</span>
                             <div className="flex flex-wrap gap-2">
                                 {INTERESTS.map(({ value, icon }) => {
@@ -357,7 +379,8 @@ function AiPlanner() {
                             plan={plan}
                             saving={saving}
                             isLoggedIn={isLoggedIn}
-                            onSave={handleSave}
+                            onSave={() => handleSave(false)}
+                            onBook={() => handleSave(true)}
                             onRegenerate={() => generate(variant + 1)}
                             onEdit={() => formRef.current?.scrollIntoView({ behavior: "smooth" })}
                         />
@@ -411,6 +434,7 @@ function AiPlanner() {
                                         center={plan.centerLatitude != null ? [plan.centerLatitude, plan.centerLongitude] : null}
                                         activeKey={activeKey}
                                         onSelect={selectStop}
+                                        radiusKm={plan.radiusKm}
                                         className="h-[420px] lg:h-[calc(100vh-8rem)]"
                                     />
                                 </Suspense>
@@ -423,7 +447,7 @@ function AiPlanner() {
     );
 }
 
-function PlanHeader({ plan, saving, isLoggedIn, onSave, onRegenerate, onEdit }) {
+function PlanHeader({ plan, saving, isLoggedIn, onSave, onBook, onRegenerate, onEdit }) {
     const { t } = useI18n();
     return (
         <div className="rounded-2xl bg-white p-6 md:p-8 shadow-lg border border-outline-variant/20">
@@ -438,6 +462,7 @@ function PlanHeader({ plan, saving, isLoggedIn, onSave, onRegenerate, onEdit }) 
                         <span className="inline-flex items-center gap-1"><span aria-hidden="true" className="material-symbols-outlined text-[18px]">location_on</span>{plan.destinationName}{plan.countryName ? `, ${plan.countryName}` : ""}</span>
                         <span className="inline-flex items-center gap-1"><span aria-hidden="true" className="material-symbols-outlined text-[18px]">calendar_month</span>{formatDate(plan.startDate)} – {formatDate(plan.endDate)}</span>
                         <span className="inline-flex items-center gap-1"><span aria-hidden="true" className="material-symbols-outlined text-[18px]">group</span>{t("planner.result.travellers", { count: plan.partySize })}</span>
+                        {plan.radiusKm && <span className="inline-flex items-center gap-1"><span aria-hidden="true" className="material-symbols-outlined text-[18px]">radar</span>{t("planner.result.withinRadius", { km: plan.radiusKm })}</span>}
                         <span className="inline-flex items-center gap-1 font-semibold text-on-surface"><span aria-hidden="true" className="material-symbols-outlined text-[18px]">payments</span>{t("planner.result.estimatedTotal", { amount: formatMoney(plan.estimatedTotal, "USD") })}</span>
                     </p>
                     {plan.summary && <p className="mt-4 text-on-surface leading-relaxed">{plan.summary}</p>}
@@ -452,8 +477,13 @@ function PlanHeader({ plan, saving, isLoggedIn, onSave, onRegenerate, onEdit }) 
                         </button>
                     )}
                     {isLoggedIn && (
-                        <button type="button" onClick={onSave} disabled={saving} className="primary-gradient text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-1.5 disabled:opacity-60">
+                        <button type="button" onClick={onSave} disabled={saving} className={`${plan.hotel ? "border border-primary text-primary hover:bg-primary/5" : "primary-gradient text-white"} px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-1.5 disabled:opacity-60`}>
                             <span aria-hidden="true" className="material-symbols-outlined text-[18px]">bookmark_add</span>{saving ? t("planner.result.saving") : t("planner.result.save")}
+                        </button>
+                    )}
+                    {isLoggedIn && plan.hotel && (
+                        <button type="button" onClick={onBook} disabled={saving} className="primary-gradient text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-1.5 disabled:opacity-60">
+                            <span aria-hidden="true" className="material-symbols-outlined text-[18px]">shopping_cart_checkout</span>{t("planner.result.bookThis")}
                         </button>
                     )}
                 </div>

@@ -45,7 +45,11 @@
     "submit": "Plan my trip",
     "generating": "Planning…",
     "loginToPlan": "Sign in to plan your trip",
-    "chooseDestination": "Please choose a destination from the list."
+    "chooseDestination": "Please choose a destination from the list.",
+    "radius": "How far are you willing to go?",
+    "radiusKm": "Within {{km}} km",
+    "radiusAny": "No limit",
+    "radiusHint": "Measured from where you stay — we'd rather repeat a favourite restaurant than send you further."
   },
   "loading": {
     "places": "Finding the best places at your destination…",
@@ -78,7 +82,9 @@
     "alternatives_one": "{{count}} other hotel nearby",
     "alternatives_other": "{{count}} other hotels nearby",
     "useHotel": "Choose",
-    "tips": "Travel tips"
+    "tips": "Travel tips",
+    "withinRadius": "Within {{km}} km of your stay",
+    "bookThis": "Book this itinerary"
   },
   "warnings": {
     "few_places": "There are only a few places for this destination in our data, so some days are lighter.",
@@ -86,7 +92,11 @@
     "no_hotel": "No hotel in this destination fits your group — the plan has no stay.",
     "no_restaurants": "No restaurants in our data here — meals are left as free choice.",
     "ai_unavailable": "The AI assistant is not responding, so this plan was built automatically without AI notes.",
-    "ai_quota": "The AI assistant has hit its usage limit for now, so this plan was built automatically. Try again in a few minutes."
+    "ai_quota": "The AI assistant has hit its usage limit for now, so this plan was built automatically. Try again in a few minutes.",
+    "radius_limited": "Only a few places fit inside your travel range, so some days are lighter. Widen the range for more choice.",
+    "hotel_outside_radius": "No suitable hotel inside your travel range — the closest one outside it was chosen.",
+    "meals_repeated": "There are few restaurants inside your range, so some meals return to a restaurant you already visit.",
+    "no_restaurants_in_radius": "No restaurants in our data inside your travel range — meals are left as free choice nearby."
   },
   "map": {
     "satellite": "Satellite",
@@ -94,5 +104,125 @@
     "labels": "Place names",
     "noCoordinates": "No places with map locations to show.",
     "title": "Trip map"
+  },
+  "booking": {
+    "backToItinerary": "Back to itinerary",
+    "eyebrow": "Book the whole trip",
+    "viewBooking": "View booking",
+    "bookHotelCar": "Book hotel & car",
+    "include": "Include",
+    "previousCancelled": "Your previous hold was cancelled or expired. You can book again below.",
+    "steps": {
+      "label": "Booking steps",
+      "select": "Choose services",
+      "pay": "Payment",
+      "done": "Confirmed"
+    },
+    "hotel": {
+      "title": "Hotel",
+      "unavailable": {
+        "day_trip": "Day trip — no overnight stay to book.",
+        "no_hotel_in_itinerary": "This itinerary has no hotel yet. Add one to book a room.",
+        "hotel_inactive": "This hotel is no longer accepting bookings.",
+        "sold_out": "No room type can host your group on these dates."
+      },
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "nights": "Stay",
+      "nightsValue_one": "{{count}} night",
+      "nightsValue_other": "{{count}} nights",
+      "breakfast": "Breakfast",
+      "breakfastYes": "Included",
+      "breakfastNo": "Not included",
+      "freeCancel": "Free cancellation until {{date}} ({{hours}}h before check-in). After that the booking is non-refundable.",
+      "noFreeCancel": "The free cancellation period has passed — this booking is non-refundable once paid.",
+      "roomType": "Room type",
+      "capacity_one": "up to {{count}} guest",
+      "capacity_other": "up to {{count}} guests",
+      "roomsLeft_one": "{{count}} room left",
+      "roomsLeft_other": "{{count}} rooms left",
+      "notEnough_one": "Needs {{needed}} rooms, only {{count}} left",
+      "notEnough_other": "Needs {{needed}} rooms, only {{count}} left",
+      "minRooms_one": "min. {{count}} room for your group",
+      "minRooms_other": "min. {{count}} rooms for your group",
+      "quantity": "Rooms",
+      "specialRequests": "Special requests (optional)",
+      "specialPlaceholder": "e.g. high floor, late check-in"
+    },
+    "car": {
+      "title": "Car rental",
+      "none": "No cars are available at this destination.",
+      "seats_one": "{{count}} seat",
+      "seats_other": "{{count}} seats",
+      "withDriver": "With driver",
+      "selfDrive": "Self-drive",
+      "perDay": "{{price}} / day",
+      "busy": "Already booked for these dates",
+      "tooSmall": "Not enough seats for your group",
+      "pickupAt": "Pick-up",
+      "returnAt": "Return",
+      "timeInvalid": "Pick-up and return must fall within the trip dates, and return must be after pick-up.",
+      "pickupPlace": "Pick-up & return location",
+      "atHotel": "Deliver to my hotel ({{hotel}})",
+      "atOffice": "Rental office: {{place}}",
+      "atCustom": "Another address",
+      "customPlaceholder": "Address for pick-up and return",
+      "license": "Driver licence number",
+      "freeCancel": "Free cancellation until {{date}} ({{hours}}h before pick-up).",
+      "noFreeCancel": "Pick-up is inside the free cancellation window — non-refundable once paid."
+    },
+    "customer": {
+      "title": "Contact & payment",
+      "name": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "edit": "Edit profile"
+    },
+    "payment": {
+      "method": "Payment method"
+    },
+    "summary": {
+      "title": "Price summary",
+      "roomCalc": "{{price}} × {{nights}} night(s) × {{rooms}} room(s)",
+      "carCalc": "{{price}} × {{days}} day(s)",
+      "nothing": "Choose at least a room or a car.",
+      "discount": "Discount",
+      "tax": "Taxes & fees",
+      "payNow": "Total due now",
+      "onSite": "Activities and meals in the itinerary (~{{amount}}) are paid on site and not charged now.",
+      "hold": "Rooms and car are held for {{minutes}} minutes while you pay.",
+      "terms": "I agree to the booking terms and the cancellation policies above.",
+      "holding": "Holding…",
+      "hold_button": "Hold & continue to payment"
+    },
+    "order": {
+      "hotel": "Hotel",
+      "car": "Car",
+      "method": "Method",
+      "payment": "Payment",
+      "transaction": "Transaction ID",
+      "amount": "Amount"
+    },
+    "pay": {
+      "expired": "The hold has expired. The bookings are being released.",
+      "holdFor": "Held for you — complete payment within {{time}}",
+      "title": "Payment",
+      "note_one": "One payment covers {{count}} order; each order gets its own invoice.",
+      "note_other": "One payment covers {{count}} orders; each order gets its own invoice.",
+      "processing": "Processing…",
+      "payAll": "Pay {{amount}}",
+      "simulateFail": "Simulate a failed payment",
+      "gatewayOff": "Online payment is not available right now.",
+      "confirmCancel": "Cancel this hold? The room and car will be released.",
+      "cancel": "Cancel hold"
+    },
+    "done": {
+      "title": "Your trip is booked!",
+      "text": "Payment received. The room and car are confirmed and invoices have been issued.",
+      "partialTitle": "Booking partly completed",
+      "partialText": "Some orders were not paid or were cancelled. Check the details below; you can book the missing services again later.",
+      "invoices": "View invoices",
+      "myTrips": "My trips"
+    }
   }
 }

@@ -44,7 +44,11 @@
     "submit": "Lên lịch trình",
     "generating": "Đang lên lịch trình…",
     "loginToPlan": "Đăng nhập để lên lịch trình",
-    "chooseDestination": "Vui lòng chọn một điểm đến trong danh sách."
+    "chooseDestination": "Vui lòng chọn một điểm đến trong danh sách.",
+    "radius": "Phạm vi di chuyển",
+    "radiusKm": "Trong {{km}} km",
+    "radiusAny": "Không giới hạn",
+    "radiusHint": "Tính từ nơi lưu trú — thà ăn lại quán quen chứ không đưa bạn đi xa hơn."
   },
   "loading": {
     "places": "Đang tìm những địa điểm hay nhất ở điểm đến…",
@@ -74,7 +78,9 @@
     "rating": "{{rating}}★ ({{count}})",
     "alternatives_other": "{{count}} khách sạn khác gần đó",
     "useHotel": "Chọn",
-    "tips": "Mẹo cho chuyến đi"
+    "tips": "Mẹo cho chuyến đi",
+    "withinRadius": "Trong {{km}} km quanh nơi ở",
+    "bookThis": "Chọn lịch trình này và đặt"
   },
   "warnings": {
     "few_places": "Điểm đến này còn ít địa điểm trong dữ liệu nên một số ngày khá nhẹ.",
@@ -82,7 +88,11 @@
     "no_hotel": "Không có khách sạn phù hợp với nhóm của bạn ở điểm đến này — lịch trình chưa có nơi lưu trú.",
     "no_restaurants": "Chưa có quán ăn trong dữ liệu ở đây — các bữa ăn để tự do.",
     "ai_unavailable": "Trợ lý AI chưa phản hồi nên lịch trình được sắp xếp tự động, chưa có ghi chú của AI.",
-    "ai_quota": "Trợ lý AI tạm hết hạn mức nên lịch trình được sắp xếp tự động. Hãy thử lại sau ít phút."
+    "ai_quota": "Trợ lý AI tạm hết hạn mức nên lịch trình được sắp xếp tự động. Hãy thử lại sau ít phút.",
+    "radius_limited": "Trong phạm vi đã chọn có ít địa điểm nên một số ngày khá nhẹ. Hãy nới rộng phạm vi để có thêm lựa chọn.",
+    "hotel_outside_radius": "Không có khách sạn phù hợp trong phạm vi đã chọn — đã chọn khách sạn gần nhất bên ngoài.",
+    "meals_repeated": "Trong phạm vi có ít quán ăn nên một số bữa quay lại quán bạn đã ăn.",
+    "no_restaurants_in_radius": "Không có quán ăn nào trong phạm vi đã chọn — các bữa để tự do quanh khu vực."
   },
   "map": {
     "satellite": "Vệ tinh",
@@ -90,5 +100,118 @@
     "labels": "Tên địa danh",
     "noCoordinates": "Không có địa điểm nào có vị trí để hiển thị.",
     "title": "Bản đồ chuyến đi"
+  },
+  "booking": {
+    "backToItinerary": "Về lịch trình",
+    "eyebrow": "Đặt trọn gói chuyến đi",
+    "viewBooking": "Xem đặt chỗ",
+    "bookHotelCar": "Đặt khách sạn & xe",
+    "include": "Đặt mục này",
+    "previousCancelled": "Lượt giữ chỗ trước đã bị huỷ hoặc hết hạn. Bạn có thể đặt lại bên dưới.",
+    "steps": {
+      "label": "Các bước đặt",
+      "select": "Chọn dịch vụ",
+      "pay": "Thanh toán",
+      "done": "Hoàn tất"
+    },
+    "hotel": {
+      "title": "Khách sạn",
+      "unavailable": {
+        "day_trip": "Chuyến đi trong ngày — không cần đặt phòng.",
+        "no_hotel_in_itinerary": "Lịch trình chưa có khách sạn. Hãy thêm khách sạn để đặt phòng.",
+        "hotel_inactive": "Khách sạn này hiện không nhận đặt phòng.",
+        "sold_out": "Không còn hạng phòng nào đủ chỗ cho đoàn trong những ngày này."
+      },
+      "checkIn": "Nhận phòng",
+      "checkOut": "Trả phòng",
+      "nights": "Lưu trú",
+      "nightsValue_other": "{{count}} đêm",
+      "breakfast": "Bữa sáng",
+      "breakfastYes": "Đã bao gồm",
+      "breakfastNo": "Không bao gồm",
+      "freeCancel": "Huỷ miễn phí trước {{date}} ({{hours}} giờ trước giờ nhận phòng). Sau thời điểm này không hoàn tiền.",
+      "noFreeCancel": "Đã quá hạn huỷ miễn phí — sau khi thanh toán sẽ không được hoàn tiền.",
+      "roomType": "Hạng phòng",
+      "capacity_other": "tối đa {{count}} khách",
+      "roomsLeft_other": "còn {{count}} phòng",
+      "notEnough_other": "Cần {{needed}} phòng, chỉ còn {{count}}",
+      "minRooms_other": "tối thiểu {{count}} phòng cho đoàn",
+      "quantity": "Số phòng",
+      "specialRequests": "Yêu cầu đặc biệt (tuỳ chọn)",
+      "specialPlaceholder": "VD: tầng cao, nhận phòng muộn"
+    },
+    "car": {
+      "title": "Thuê xe",
+      "none": "Điểm đến này chưa có xe cho thuê.",
+      "seats_other": "{{count}} chỗ",
+      "withDriver": "Có tài xế",
+      "selfDrive": "Tự lái",
+      "perDay": "{{price}} / ngày",
+      "busy": "Đã có người đặt trong thời gian này",
+      "tooSmall": "Không đủ chỗ cho đoàn",
+      "pickupAt": "Nhận xe",
+      "returnAt": "Trả xe",
+      "timeInvalid": "Thời gian nhận/trả xe phải nằm trong ngày của chuyến đi và giờ trả phải sau giờ nhận.",
+      "pickupPlace": "Nơi nhận & trả xe",
+      "atHotel": "Giao tại khách sạn ({{hotel}})",
+      "atOffice": "Tại điểm cho thuê: {{place}}",
+      "atCustom": "Địa chỉ khác",
+      "customPlaceholder": "Địa chỉ nhận và trả xe",
+      "license": "Số giấy phép lái xe",
+      "freeCancel": "Huỷ miễn phí trước {{date}} ({{hours}} giờ trước giờ nhận xe).",
+      "noFreeCancel": "Giờ nhận xe đã nằm trong hạn huỷ miễn phí — sau khi thanh toán sẽ không được hoàn tiền."
+    },
+    "customer": {
+      "title": "Thông tin liên hệ & thanh toán",
+      "name": "Họ tên",
+      "email": "Email",
+      "phone": "Số điện thoại",
+      "edit": "Sửa hồ sơ"
+    },
+    "payment": {
+      "method": "Phương thức thanh toán"
+    },
+    "summary": {
+      "title": "Chi tiết giá",
+      "roomCalc": "{{price}} × {{nights}} đêm × {{rooms}} phòng",
+      "carCalc": "{{price}} × {{days}} ngày",
+      "nothing": "Hãy chọn ít nhất phòng hoặc xe.",
+      "discount": "Giảm giá",
+      "tax": "Thuế & phí",
+      "payNow": "Thanh toán ngay",
+      "onSite": "Vé tham quan và ăn uống trong lịch trình (~{{amount}}) trả tại chỗ, không thu lúc này.",
+      "hold": "Phòng và xe được giữ trong {{minutes}} phút để bạn thanh toán.",
+      "terms": "Tôi đồng ý với điều khoản đặt chỗ và chính sách huỷ ở trên.",
+      "holding": "Đang giữ chỗ…",
+      "hold_button": "Giữ chỗ & thanh toán"
+    },
+    "order": {
+      "hotel": "Khách sạn",
+      "car": "Thuê xe",
+      "method": "Phương thức",
+      "payment": "Thanh toán",
+      "transaction": "Mã giao dịch",
+      "amount": "Số tiền"
+    },
+    "pay": {
+      "expired": "Đã hết thời gian giữ chỗ. Hệ thống đang giải phóng phòng và xe.",
+      "holdFor": "Đang giữ chỗ cho bạn — hoàn tất thanh toán trong {{time}}",
+      "title": "Thanh toán",
+      "note_other": "Một lần thanh toán cho {{count}} đơn; mỗi đơn có hoá đơn riêng.",
+      "processing": "Đang xử lý…",
+      "payAll": "Thanh toán {{amount}}",
+      "simulateFail": "Giả lập thanh toán thất bại",
+      "gatewayOff": "Hiện chưa hỗ trợ thanh toán trực tuyến.",
+      "confirmCancel": "Huỷ giữ chỗ? Phòng và xe sẽ được giải phóng.",
+      "cancel": "Huỷ giữ chỗ"
+    },
+    "done": {
+      "title": "Đặt chuyến đi thành công!",
+      "text": "Đã nhận thanh toán. Phòng và xe đã được xác nhận, hoá đơn đã được xuất.",
+      "partialTitle": "Đặt chỗ chưa hoàn tất",
+      "partialText": "Một số đơn chưa được thanh toán hoặc đã bị huỷ. Xem chi tiết bên dưới; bạn có thể đặt lại dịch vụ còn thiếu sau.",
+      "invoices": "Xem hoá đơn",
+      "myTrips": "Chuyến đi của tôi"
+    }
   }
 }

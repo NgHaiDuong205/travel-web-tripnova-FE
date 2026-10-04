@@ -351,7 +351,13 @@ function ItineraryDetail() {
                             })}
                         </p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
+                        {itinerary.destinationId && itinerary.startDate && (
+                            <Link to={`/trip-booking/${itinerary.id}`} className="primary-gradient text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-1.5">
+                                <span aria-hidden="true" className="material-symbols-outlined text-[18px]">shopping_cart_checkout</span>
+                                {t(itinerary.status === "booked" ? "planner.booking.viewBooking" : "planner.booking.bookHotelCar")}
+                            </Link>
+                        )}
                         <button type="button" onClick={() => { setForm(toForm(itinerary)); setEditing(true); }} className="px-4 py-2 rounded-lg text-sm font-bold border border-outline-variant/40 text-on-surface hover:bg-surface-container-low">
                             {t("trips.itineraryDetail.editTrip")}
                         </button>

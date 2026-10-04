@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { LayersControl, MapContainer, Marker, Polyline, TileLayer, Tooltip, useMap } from "react-leaflet";
+import { Circle, LayersControl, MapContainer, Marker, Polyline, TileLayer, Tooltip, useMap } from "react-leaflet";
 import { useT } from "../../i18n/I18nContext";
 import { dayColor } from "./dayColors";
 
@@ -58,9 +58,9 @@ function FlyToActive({ stop }) {
 /**
  * Bản đồ chuyến đi (nạp lười bằng React.lazy — Leaflet ~50 KB gzip chỉ tải khi trang có bản đồ): lớp ảnh vệ tinh (Esri World Imagery, kèm nhãn địa danh) mặc định, đổi được sang bản đồ đường phố (OSM).
  * stops: [{ key, lat, lng, day, label, kind: hotel|sight|lunch|dinner, title, subtitle }] — chỉ điểm có toạ độ được vẽ.
- * Các điểm cùng ngày được nối theo thứ tự (khách sạn không nối).
+ * Các điểm cùng ngày được nối theo thứ tự (khách sạn không nối). radiusKm + center: vẽ vòng phạm vi di chuyển.
  */
-function TripMap({ stops, center, activeKey, onSelect, className = "h-[520px]" }) {
+function TripMap({ stops, center, activeKey, onSelect, radiusKm, className = "h-[520px]" }) {
     const t = useT();
     const located = useMemo(() => stops.filter((s) => Number.isFinite(s.lat) && Number.isFinite(s.lng)), [stops]);
     const points = useMemo(() => located.map((s) => [s.lat, s.lng]), [located]);
@@ -102,6 +102,9 @@ function TripMap({ stops, center, activeKey, onSelect, className = "h-[520px]" }
                             />
                         </LayersControl.Overlay>
                     </LayersControl>
+                    {radiusKm && center && (
+                        <Circle center={center} radius={radiusKm * 1000} pathOptions={{ color: "#facc15", weight: 2, dashArray: "6 6", fillOpacity: 0.06 }} />
+                    )}
                     {routes.map(([day, line]) => (
                         <Polyline key={day} positions={line} pathOptions={{ color: dayColor(day), weight: 4, opacity: 0.9, dashArray: "8 8" }} />
                     ))}
