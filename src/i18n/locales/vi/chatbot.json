@@ -1,0 +1,51 @@
+{
+  "launcher": "Trò chuyện với trợ lý AI TripNova",
+  "title": "Trợ lý TripNova",
+  "subtitle": "AI · trả lời bằng dữ liệu thật của TripNova",
+  "newChat": "Cuộc trò chuyện mới",
+  "history": "Các cuộc trò chuyện",
+  "backToChat": "Quay lại khung chat",
+  "emptyHistory": "Chưa có cuộc trò chuyện nào.",
+  "untitled": "Cuộc trò chuyện mới",
+  "close": "Đóng",
+  "minimize": "Thu nhỏ",
+  "deleteChat": "Xoá cuộc trò chuyện",
+  "deleteConfirm": "Xoá cuộc trò chuyện này? Bạn sẽ không xem lại được nữa.",
+  "placeholder": "Hỏi về khách sạn, tour, thuê xe, chuyến bay…",
+  "send": "Gửi",
+  "thinking": "Đang tra cứu…",
+  "retry": "Thử lại",
+  "sources": "Nguồn",
+  "helpful": "Hữu ích",
+  "notHelpful": "Chưa hữu ích",
+  "loading": "Đang tải…",
+  "loginTitle": "Xin chào! Mình là trợ lý AI của TripNova.",
+  "loginText": "Đăng nhập để hỏi về khách sạn, tour, thuê xe, chuyến bay và chính sách du lịch. Cuộc trò chuyện được lưu lại.",
+  "loginButton": "Đăng nhập để trò chuyện",
+  "welcomeTitle": "Mình có thể giúp gì cho bạn?",
+  "welcomeText": "Hỏi về giá, hạng sao, tiện nghi, giờ bay hay chính sách huỷ.",
+  "disclaimer": "AI có thể nhầm lẫn. Hãy kiểm tra lại trước khi đặt.",
+  "contextNote": "Hỏi về {{type}} bạn đang xem.",
+  "contextTypes": {
+    "hotel": "khách sạn",
+    "tour": "tour",
+    "car": "xe",
+    "flight": "chuyến bay",
+    "destination": "điểm đến",
+    "landmark": "địa danh"
+  },
+  "suggestions": {
+    "s1": "Khách sạn 4 sao ở Đà Nẵng dưới 1,5 triệu",
+    "s2": "Tour Hạ Long rẻ nhất",
+    "s3": "Chuyến bay Hà Nội đi Sài Gòn ngày mai",
+    "s4": "Thuê xe 7 chỗ có tài xế"
+  },
+  "contextSuggestions": {
+    "hotel": "Chính sách huỷ phòng của khách sạn này thế nào?",
+    "tour": "Tour này bao gồm những gì?",
+    "car": "Xe này thuê bao nhiêu một ngày?",
+    "flight": "Chuyến bay này được mang bao nhiêu hành lý?",
+    "destination": "Khách sạn tốt ở điểm đến này?",
+    "landmark": "Khách sạn gần địa điểm này?"
+  }
+}

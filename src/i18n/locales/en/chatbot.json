@@ -1,0 +1,51 @@
+{
+  "launcher": "Chat with the TripNova AI assistant",
+  "title": "TripNova Assistant",
+  "subtitle": "AI · answers with live TripNova data",
+  "newChat": "New chat",
+  "history": "Conversations",
+  "backToChat": "Back to chat",
+  "emptyHistory": "No conversations yet.",
+  "untitled": "New conversation",
+  "close": "Close",
+  "minimize": "Minimize",
+  "deleteChat": "Delete conversation",
+  "deleteConfirm": "Delete this conversation? You will not be able to see it again.",
+  "placeholder": "Ask about hotels, tours, cars, flights…",
+  "send": "Send",
+  "thinking": "Looking it up…",
+  "retry": "Try again",
+  "sources": "Sources",
+  "helpful": "Helpful",
+  "notHelpful": "Not helpful",
+  "loading": "Loading…",
+  "loginTitle": "Hi! I am the TripNova AI assistant.",
+  "loginText": "Sign in to ask about hotels, tours, cars, flights and travel policies. Your conversations are saved.",
+  "loginButton": "Sign in to chat",
+  "welcomeTitle": "How can I help?",
+  "welcomeText": "Ask about prices, star ratings, amenities, flight times or cancellation policies.",
+  "disclaimer": "AI can make mistakes. Check details before booking.",
+  "contextNote": "Ask about the {{type}} you are viewing.",
+  "contextTypes": {
+    "hotel": "hotel",
+    "tour": "tour",
+    "car": "car",
+    "flight": "flight",
+    "destination": "destination",
+    "landmark": "landmark"
+  },
+  "suggestions": {
+    "s1": "4-star hotels in Da Nang under $60",
+    "s2": "Cheapest Ha Long Bay tour",
+    "s3": "Flights Hanoi to Ho Chi Minh City tomorrow",
+    "s4": "Rent a 7-seat car with a driver"
+  },
+  "contextSuggestions": {
+    "hotel": "What is the cancellation policy of this hotel?",
+    "tour": "What does this tour include?",
+    "car": "How much does this car cost per day?",
+    "flight": "What is the baggage allowance on this flight?",
+    "destination": "Best hotels at this destination?",
+    "landmark": "Hotels near this place?"
+  }
+}

@@ -17,7 +17,8 @@ function renderInline(text, onCitation, keyPrefix) {
         if (match.index > last) out.push(text.slice(last, match.index));
         const key = `${keyPrefix}-${match.index}`;
         if (match[1] !== undefined) {
-            const href = safeRedirect(match[2]);
+            // Trang chi tiết khách sạn là /hotel/:id (số ít); sửa link AI viết nhầm /hotels/:id.
+            const href = safeRedirect(match[2])?.replace(/^\/hotels\/([0-9a-f-]{36})/i, "/hotel/$1");
             out.push(
                 href ? (
                     <Link key={key} to={href} className="font-semibold text-primary underline underline-offset-2 hover:opacity-80">

@@ -11,6 +11,7 @@ import ForgotPassword from "../pages/auth/ForgotPassword";
 import ResetPassword from "../pages/auth/ResetPassword";
 import VerifyEmail from "../pages/auth/VerifyEmail";
 import OAuthCallback from "../pages/auth/OAuthCallback";
+import ChatWidget from "../components/ai/ChatWidget";
 
 function AppRouter() {
     return (
@@ -48,6 +49,8 @@ function AppRouter() {
                 element={
                     <HotelAccountGuard>
                         <ClientRoutes />
+                        {/* Trợ lý AI: nút tròn nổi trên mọi trang khách */}
+                        <ChatWidget />
                     </HotelAccountGuard>
                 }
             />

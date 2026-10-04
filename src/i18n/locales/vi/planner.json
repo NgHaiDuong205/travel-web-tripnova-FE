@@ -1,45 +1,9 @@
 {
   "hero": {
-    "eyebrow": "Trợ lý du lịch AI",
-    "title": "Hỏi bất cứ điều gì về chuyến đi.",
-    "subtitle": "Trợ lý AI tra cứu khách sạn, tour, xe và chuyến bay thật trên TripNova cùng các chính sách du lịch để trả lời bạn trong vài giây.",
-    "imageAlt": "Du khách lên kế hoạch chuyến đi bên tấm bản đồ"
-  },
-  "chat": {
-    "newChat": "Cuộc trò chuyện mới",
-    "history": "Cuộc trò chuyện của bạn",
-    "emptyHistory": "Chưa có cuộc trò chuyện nào.",
-    "untitled": "Cuộc trò chuyện mới",
-    "close": "Xoá cuộc trò chuyện",
-    "closeConfirm": "Xoá cuộc trò chuyện này? Bạn sẽ không xem lại được nữa.",
-    "placeholder": "Hỏi về khách sạn, tour, thuê xe, chuyến bay hoặc chính sách…",
-    "send": "Gửi",
-    "thinking": "Đang tra cứu…",
-    "retry": "Thử lại",
-    "sources": "Nguồn",
-    "helpful": "Hữu ích",
-    "notHelpful": "Chưa hữu ích",
-    "loading": "Đang tải…",
-    "loginTitle": "Đăng nhập để trò chuyện với trợ lý AI",
-    "loginText": "Trợ lý lưu lại các cuộc trò chuyện để bạn tiếp tục bất cứ lúc nào.",
-    "loginButton": "Đăng nhập",
-    "welcomeTitle": "Mình có thể giúp gì cho chuyến đi của bạn?",
-    "welcomeText": "Hỏi về giá, hạng sao, tiện nghi, giờ bay hay chính sách huỷ. Câu trả lời dùng dữ liệu thật của TripNova.",
-    "disclaimer": "AI có thể nhầm lẫn. Hãy kiểm tra giá và tình trạng trên trang chi tiết trước khi đặt.",
-    "contextNote": "Cuộc trò chuyện này về {{type}} bạn đang xem.",
-    "contextTypes": {
-      "hotel": "khách sạn",
-      "tour": "tour",
-      "car": "xe",
-      "flight": "chuyến bay",
-      "destination": "điểm đến",
-      "landmark": "địa danh"
-    },
-    "suggestions": {
-      "s1": "Khách sạn 4 sao ở Đà Nẵng dưới 1,5 triệu một đêm",
-      "s2": "Tour Hạ Long rẻ nhất",
-      "s3": "Chuyến bay Hà Nội đi Sài Gòn ngày mai",
-      "s4": "Thuê xe 7 chỗ có tài xế"
-    }
+    "eyebrow": "Lên kế hoạch bằng AI",
+    "title": "Lên kế hoạch chuyến đi cùng AI.",
+    "subtitle": "Cho chúng tôi biết bạn muốn đi đâu, khi nào và theo phong cách nào — trợ lý AI sẽ gợi ý lịch trình từng ngày kèm khách sạn, tour, xe và chuyến bay để đặt ngay tại một nơi.",
+    "imageAlt": "Du khách lên kế hoạch chuyến đi bên tấm bản đồ",
+    "comingSoon": "Sắp ra mắt"
   }
 }

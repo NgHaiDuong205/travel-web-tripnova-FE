@@ -24,11 +24,12 @@ export async function fetchChatMessages(sessionId) {
 }
 
 /** @returns {Promise<{userMessage, assistantMessage, session}>} — lỗi AI: assistantMessage.isError = true. */
-export async function sendChatMessage(sessionId, content, locale) {
+export async function sendChatMessage(sessionId, content, locale, context = null) {
     // AI có thể thử model dự phòng: chờ lâu hơn mặc định 30s (BE chờ dịch vụ AI tối đa 90s).
+    // context: { contextType, contextId } của trang đang xem — ghi đè ngữ cảnh của phiên cho câu hỏi này.
     const { data } = await apiClient.post(
         `/api/ai/chat/sessions/${sessionId}/messages/`,
-        { content, locale },
+        { content, locale, ...(context || {}) },
         { timeout: 100000 }
     );
     return data;

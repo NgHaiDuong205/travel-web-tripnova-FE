@@ -18,8 +18,9 @@ import account from "./account.json";
 import trips from "./trips.json";
 import reviews from "./reviews.json";
 import planner from "./planner.json";
+import chatbot from "./chatbot.json";
 import admin from "./admin.json";
 import manager from "./manager.json";
 
-const dictionary = { common, nav, auth, search, home, about, contact, destinations, hotels, catalog, cars, flights, tours, booking, account, trips, reviews, planner, admin, manager };
+const dictionary = { common, nav, auth, search, home, about, contact, destinations, hotels, catalog, cars, flights, tours, booking, account, trips, reviews, planner, chatbot, admin, manager };
 export default dictionary;
