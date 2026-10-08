@@ -192,7 +192,9 @@ html.dark .recharts-wrapper [stroke="#003580"] { stroke: #6f9bff; }
   transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) var(--tn-delay, 0ms),
               translate 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) var(--tn-delay, 0ms);
 }
-.tn-reveal.tn-revealed { opacity: 1; translate: 0 0; }
+/* `none` (không phải `0 0`): translate khác none tạo stacking context → ô lưới phía sau vẽ đè dropdown của ô trước
+   (VD gợi ý điểm đến ở AI Planner bị che chữ). Chuyển tiếp từ 26px về none vẫn mượt. */
+.tn-reveal.tn-revealed { opacity: 1; translate: none; }
 
 /* thanh tiến trình cuộn */
 .tn-scroll-progress {
