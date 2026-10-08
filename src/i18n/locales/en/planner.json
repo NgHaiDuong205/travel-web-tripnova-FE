@@ -84,7 +84,9 @@
     "useHotel": "Choose",
     "tips": "Travel tips",
     "withinRadius": "Within {{km}} km of your stay",
-    "bookThis": "Book this itinerary"
+    "bookThis": "Book this itinerary",
+    "travelWalk": "Walk ~{{minutes}} min · {{km}} km",
+    "travelDrive": "Drive ~{{minutes}} min · {{km}} km"
   },
   "warnings": {
     "few_places": "There are only a few places for this destination in our data, so some days are lighter.",
@@ -96,7 +98,8 @@
     "radius_limited": "Only a few places fit inside your travel range, so some days are lighter. Widen the range for more choice.",
     "hotel_outside_radius": "No suitable hotel inside your travel range — the closest one outside it was chosen.",
     "meals_repeated": "There are few restaurants inside your range, so some meals return to a restaurant you already visit.",
-    "no_restaurants_in_radius": "No restaurants in our data inside your travel range — meals are left as free choice nearby."
+    "no_restaurants_in_radius": "No restaurants in our data inside your travel range — meals are left as free choice nearby.",
+    "routing_estimated": "Road directions are unavailable right now, so travel times are estimated from distance."
   },
   "map": {
     "satellite": "Satellite",

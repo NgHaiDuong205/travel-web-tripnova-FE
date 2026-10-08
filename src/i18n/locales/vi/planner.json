@@ -80,7 +80,9 @@
     "useHotel": "Chọn",
     "tips": "Mẹo cho chuyến đi",
     "withinRadius": "Trong {{km}} km quanh nơi ở",
-    "bookThis": "Chọn lịch trình này và đặt"
+    "bookThis": "Chọn lịch trình này và đặt",
+    "travelWalk": "Đi bộ ~{{minutes}} phút · {{km}} km",
+    "travelDrive": "Đi xe ~{{minutes}} phút · {{km}} km"
   },
   "warnings": {
     "few_places": "Điểm đến này còn ít địa điểm trong dữ liệu nên một số ngày khá nhẹ.",
@@ -92,7 +94,8 @@
     "radius_limited": "Trong phạm vi đã chọn có ít địa điểm nên một số ngày khá nhẹ. Hãy nới rộng phạm vi để có thêm lựa chọn.",
     "hotel_outside_radius": "Không có khách sạn phù hợp trong phạm vi đã chọn — đã chọn khách sạn gần nhất bên ngoài.",
     "meals_repeated": "Trong phạm vi có ít quán ăn nên một số bữa quay lại quán bạn đã ăn.",
-    "no_restaurants_in_radius": "Không có quán ăn nào trong phạm vi đã chọn — các bữa để tự do quanh khu vực."
+    "no_restaurants_in_radius": "Không có quán ăn nào trong phạm vi đã chọn — các bữa để tự do quanh khu vực.",
+    "routing_estimated": "Chưa lấy được dữ liệu đường đi nên thời gian di chuyển đang ước lượng theo khoảng cách."
   },
   "map": {
     "satellite": "Vệ tinh",

@@ -117,12 +117,16 @@ function AiPlanner() {
     const [form, setForm] = useState(() => {
         const initial = { ...defaultForm(), ...(stored.form || {}) };
         const id = searchParams.get("destinationId");
-        if (id) initial.destination = { id, name: searchParams.get("name") || "", countryName: null };
+        // Cùng điểm đến với form đang nhớ thì giữ nguyên (đã có tên quốc gia).
+        if (id && initial.destination?.id !== id) initial.destination = { id, name: searchParams.get("name") || "", countryName: null };
         if (!initial.startDate || initial.startDate < isoDateFromToday(0)) initial.startDate = isoDateFromToday(14);
         return initial;
     });
-    const [plan, setPlan] = useState(stored.plan || null);
-    const [variant, setVariant] = useState(stored.variant || 0);
+    // Mở từ trang điểm đến (?destinationId=) mà bản nháp đang nhớ là nơi khác → bỏ bản nháp cũ, bắt đầu từ form.
+    const paramDestination = searchParams.get("destinationId");
+    const staleDraft = Boolean(paramDestination && stored.plan && stored.plan.destinationId !== paramDestination);
+    const [plan, setPlan] = useState(staleDraft ? null : stored.plan || null);
+    const [variant, setVariant] = useState(staleDraft ? 0 : stored.variant || 0);
     const [loading, setLoading] = useState(false);
     const [loadingStep, setLoadingStep] = useState(0);
     const [saving, setSaving] = useState(false);
@@ -435,6 +439,7 @@ function AiPlanner() {
                                         activeKey={activeKey}
                                         onSelect={selectStop}
                                         radiusKm={plan.radiusKm}
+                                        routed={isLoggedIn}
                                         className="h-[420px] lg:h-[calc(100vh-8rem)]"
                                     />
                                 </Suspense>
@@ -580,10 +585,10 @@ function DayTimeline({ day, plan, stops, activeKey, itemRefs, onSelect, onRemove
                         <li key={key} ref={(el) => { itemRefs.current[key] = el; }}>
                             {item.travelMinutes != null && index > 0 && (
                                 <p className="ml-4 border-l-2 border-dashed border-outline-variant/60 pl-6 py-1.5 text-xs text-on-surface-variant flex items-center gap-1">
-                                    <span aria-hidden="true" className="material-symbols-outlined text-[16px]">directions_car</span>
-                                    {item.distanceKm != null
-                                        ? t("planner.result.travel", { minutes: item.travelMinutes, km: item.distanceKm })
-                                        : t("planner.result.travelNoKm", { minutes: item.travelMinutes })}
+                                    <span aria-hidden="true" className="material-symbols-outlined text-[16px]">{item.travelMode === "walk" ? "directions_walk" : "directions_car"}</span>
+                                    {item.distanceKm == null
+                                        ? t("planner.result.travelNoKm", { minutes: item.travelMinutes })
+                                        : t(item.travelMode === "walk" ? "planner.result.travelWalk" : item.travelMode === "drive" ? "planner.result.travelDrive" : "planner.result.travel", { minutes: item.travelMinutes, km: item.distanceKm })}
                                 </p>
                             )}
                             <div

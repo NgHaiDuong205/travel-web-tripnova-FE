@@ -17,6 +17,21 @@ const CURATED_DB_NAMES = {
     fuji: "Mount Fuji",
 };
 
+/** Mở AI Planner với điểm đến điền sẵn. */
+function PlanWithAiButton({ destination }) {
+    const t = useT();
+    const params = new URLSearchParams({ destinationId: destination.id, name: destination.name });
+    return (
+        <Link
+            to={`/ai-planner?${params}`}
+            className="inline-flex items-center gap-2 bg-white text-primary hover:bg-primary hover:text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-lg transition-colors"
+        >
+            <span aria-hidden="true" className="material-symbols-outlined text-[18px]">auto_awesome</span>
+            {t("destinations.live.planWithAi")}
+        </Link>
+    );
+}
+
 /** Điểm đến thật khớp với trang biên tập: undefined = đang tìm, null = không có. */
 function useCuratedMatch(slug) {
     const [match, setMatch] = useState(undefined);
@@ -181,6 +196,7 @@ function LiveDestinationDetail({ id }) {
                                 {t("destinations.live.popular")}
                             </span>
                         )}
+                        <PlanWithAiButton destination={d} />
                     </div>
                 </div>
             </section>
@@ -259,6 +275,7 @@ function CuratedDestinationDetail({ id }) {
                             <span className="material-symbols-outlined">wb_sunny</span>
                             <span className="font-label text-sm font-bold">{t(`${contentKey}.bestTime`)}</span>
                         </div>
+                        {liveMatch && <PlanWithAiButton destination={liveMatch} />}
                     </div>
                 </div>
             </section>

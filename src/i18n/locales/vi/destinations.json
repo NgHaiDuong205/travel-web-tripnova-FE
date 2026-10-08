@@ -437,7 +437,8 @@
       "wellness": "Chăm sóc sức khoẻ",
       "sport": "Thể thao",
       "other": "Khác"
-    }
+    },
+    "planWithAi": "Lên lịch trình bằng AI"
   },
   "directory": {
     "title": "Tất cả điểm đến",

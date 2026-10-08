@@ -1,8 +1,9 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Circle, LayersControl, MapContainer, Marker, Polyline, TileLayer, Tooltip, useMap } from "react-leaflet";
 import { useT } from "../../i18n/I18nContext";
+import { fetchRoute } from "../../services/routingService";
 import { dayColor } from "./dayColors";
 
 // body có zoom 0.75 toàn site → bù zoom cho bản đồ (kích thước %, không bị nhân), giống Globe3D / LandmarkDetail.
@@ -46,6 +47,21 @@ function FitBounds({ points, center }) {
     return null;
 }
 
+/** Ghi nguồn dữ liệu đường đi (OSRM / OpenStreetMap) khi có đường vẽ theo phố. */
+function RoutingAttribution({ show }) {
+    const map = useMap();
+    useEffect(() => {
+        if (!show || !map.attributionControl) return undefined;
+        const text = 'Routes &copy; <a href="https://project-osrm.org" target="_blank" rel="noopener">OSRM</a> / OpenStreetMap';
+        map.attributionControl.addAttribution(text);
+        return () => map.attributionControl.removeAttribution(text);
+    }, [show, map]);
+    return null;
+}
+
+const MAX_ROUTE_POINTS = 25; // giới hạn của /api/routing/route/
+const lineKey = (points) => points.map((p) => p.join(",")).join(";");
+
 /** Bay tới điểm đang chọn (bấm trên dòng thời gian). */
 function FlyToActive({ stop }) {
     const map = useMap();
@@ -58,21 +74,48 @@ function FlyToActive({ stop }) {
 /**
  * Bản đồ chuyến đi (nạp lười bằng React.lazy — Leaflet ~50 KB gzip chỉ tải khi trang có bản đồ): lớp ảnh vệ tinh (Esri World Imagery, kèm nhãn địa danh) mặc định, đổi được sang bản đồ đường phố (OSM).
  * stops: [{ key, lat, lng, day, label, kind: hotel|sight|lunch|dinner, title, subtitle }] — chỉ điểm có toạ độ được vẽ.
- * Các điểm cùng ngày được nối theo thứ tự (khách sạn không nối). radiusKm + center: vẽ vòng phạm vi di chuyển.
+ * Mỗi ngày nối theo thứ tự, xuất phát từ khách sạn (của ngày đó, không có thì khách sạn đầu tiên): routed = true thì lấy
+ * đường đi theo phố từ BE (OSRM) — vẽ nét liền; đang tải / không lấy được thì nối thẳng nét đứt.
+ * radiusKm + center: vẽ vòng phạm vi di chuyển.
  */
-function TripMap({ stops, center, activeKey, onSelect, radiusKm, className = "h-[520px]" }) {
+function TripMap({ stops, center, activeKey, onSelect, radiusKm, routed = true, className = "h-[520px]" }) {
     const t = useT();
     const located = useMemo(() => stops.filter((s) => Number.isFinite(s.lat) && Number.isFinite(s.lng)), [stops]);
     const points = useMemo(() => located.map((s) => [s.lat, s.lng]), [located]);
     const routes = useMemo(() => {
+        const hotels = located.filter((s) => s.kind === "hotel");
         const byDay = new Map();
         located.forEach((s) => {
             if (s.kind === "hotel") return;
             if (!byDay.has(s.day)) byDay.set(s.day, []);
             byDay.get(s.day).push([s.lat, s.lng]);
         });
-        return [...byDay.entries()].filter(([, line]) => line.length > 1);
+        return [...byDay.entries()]
+            .map(([day, line]) => {
+                const hotel = hotels.find((h) => h.day === day) || hotels[0];
+                const points = (hotel ? [[hotel.lat, hotel.lng], ...line] : line).slice(0, MAX_ROUTE_POINTS);
+                return [day, points];
+            })
+            .filter(([, line]) => line.length > 1);
     }, [located]);
+    // Đường theo phố, khoá theo chuỗi toạ độ → bỏ điểm / đổi khách sạn thì tự tải lại, không dùng nhầm đường cũ.
+    const [geometries, setGeometries] = useState({});
+    const routesKey = routes.map(([, line]) => lineKey(line)).join("|");
+    useEffect(() => {
+        if (!routed) return undefined;
+        let cancelled = false;
+        routes.forEach(([, line]) => {
+            fetchRoute(line).then((r) => {
+                if (cancelled || r.source !== "osrm" || !(r.geometry?.length > 1)) return;
+                setGeometries((prev) => ({ ...prev, [lineKey(line)]: r.geometry }));
+            });
+        });
+        return () => {
+            cancelled = true;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [routesKey, routed]);
+    const hasRoadRoute = routes.some(([, line]) => geometries[lineKey(line)]);
     const active = located.find((s) => s.key === activeKey) || null;
     const initial = points[0] || center || [16.0, 106.0];
 
@@ -105,9 +148,14 @@ function TripMap({ stops, center, activeKey, onSelect, radiusKm, className = "h-
                     {radiusKm && center && (
                         <Circle center={center} radius={radiusKm * 1000} pathOptions={{ color: "#facc15", weight: 2, dashArray: "6 6", fillOpacity: 0.06 }} />
                     )}
-                    {routes.map(([day, line]) => (
-                        <Polyline key={day} positions={line} pathOptions={{ color: dayColor(day), weight: 4, opacity: 0.9, dashArray: "8 8" }} />
-                    ))}
+                    {routes.map(([day, line]) => {
+                        const road = geometries[lineKey(line)];
+                        return road ? (
+                            <Polyline key={`${day}-road`} positions={road} pathOptions={{ color: dayColor(day), weight: 5, opacity: 0.9 }} />
+                        ) : (
+                            <Polyline key={`${day}-line`} positions={line} pathOptions={{ color: dayColor(day), weight: 4, opacity: 0.9, dashArray: "8 8" }} />
+                        );
+                    })}
                     {located.map((s) => (
                         <Marker
                             key={s.key}
@@ -123,6 +171,7 @@ function TripMap({ stops, center, activeKey, onSelect, radiusKm, className = "h-
                         </Marker>
                     ))}
                     <FitBounds points={points} center={center} />
+                    <RoutingAttribution show={hasRoadRoute} />
                     <FlyToActive stop={active} />
                 </MapContainer>
             </div>
