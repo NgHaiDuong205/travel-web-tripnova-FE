@@ -57,7 +57,7 @@ function LanguageSwitcher({ tone = "light", compact = false, placement = "down" 
                 <ul
                     role="listbox"
                     aria-label={t("common.language.choose")}
-                    className={`absolute right-0 z-[60] w-48 py-1 rounded-xl border border-outline-variant/40 bg-white shadow-xl ${
+                    className={`tn-pop-in absolute right-0 z-[60] w-48 py-1 rounded-xl border border-outline-variant/40 bg-white shadow-xl ${
                         placement === "up" ? "bottom-full mb-2" : "top-full mt-2"
                     }`}
                 >

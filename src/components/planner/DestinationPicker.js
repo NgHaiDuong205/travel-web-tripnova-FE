@@ -95,7 +95,7 @@ function DestinationPicker({ value, onChange }) {
                 {value && <span className="material-symbols-outlined text-green-600" aria-hidden="true">check_circle</span>}
             </div>
             {open && query.trim() && !value && (
-                <ul className="absolute z-30 mt-1 w-full rounded-xl border border-outline-variant/30 bg-white shadow-xl max-h-72 overflow-auto">
+                <ul className="tn-pop-in absolute z-30 mt-1 w-full rounded-xl border border-outline-variant/30 bg-white shadow-xl max-h-72 overflow-auto">
                     {options === null ? (
                         <li className="px-4 py-3"><div className="h-4 w-1/2 rounded bg-surface-container-high animate-pulse" /></li>
                     ) : options.length === 0 ? (

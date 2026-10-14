@@ -35,7 +35,7 @@ function PhotoLightbox({ photos, index, onIndexChange, onClose, title }) {
             role="dialog"
             aria-modal="true"
             aria-label={title}
-            className="fixed inset-0 z-[70] bg-black/90 flex flex-col"
+            className="tn-fade-in fixed inset-0 z-[70] bg-black/90 flex flex-col"
             onClick={onClose}
         >
             <div className="flex items-center justify-between px-6 py-4 text-white" onClick={(e) => e.stopPropagation()}>
@@ -65,7 +65,7 @@ function PhotoLightbox({ photos, index, onIndexChange, onClose, title }) {
                     </button>
                 )}
                 <figure className="min-w-0 max-h-full flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
-                    <img src={photo.url} alt={photo.caption || title || ""} className="max-h-[75vh] max-w-full object-contain rounded-lg" />
+                    <img key={photo.url} src={photo.url} alt={photo.caption || title || ""} className="tn-zoom-in max-h-[75vh] max-w-full object-contain rounded-lg" />
                     {photo.caption && <figcaption className="mt-3 text-sm text-white/80 text-center">{photo.caption}</figcaption>}
                 </figure>
                 {count > 1 && (

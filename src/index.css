@@ -295,12 +295,127 @@ html.dark .recharts-wrapper [stroke="#003580"] { stroke: #6f9bff; }
 .tn-back-top-visible { opacity: 1; translate: 0 0; pointer-events: auto; }
 .tn-back-top:hover { box-shadow: 0 10px 24px rgba(0, 33, 85, 0.25); translate: 0 -2px; }
 
+/* ===== Hiệu ứng bổ sung (chỉ transform/opacity → chạy trên GPU, không gây reflow) ===== */
+
+/* hero: chữ lần lượt trượt lên khi vào trang */
+.tn-intro { animation: tn-intro 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--tn-i, 0ms) both; }
+@keyframes tn-intro {
+  from { opacity: 0; transform: translateY(28px); }
+}
+.tn-intro-line { display: inline-block; animation: tn-intro-line 1s cubic-bezier(0.16, 1, 0.3, 1) var(--tn-i, 0ms) both; }
+@keyframes tn-intro-line {
+  from { opacity: 0; transform: translateY(45%) scale(0.96); }
+}
+
+/* hero: ảnh nền trôi chậm hơn trang (parallax), nội dung mờ dần khi cuộn qua — CSS scroll-driven, không cần JS */
+@supports (animation-timeline: scroll()) {
+  .tn-parallax {
+    animation: tn-parallax linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 120vh;
+  }
+  @keyframes tn-parallax { to { translate: 0 28%; } }
+  .tn-scroll-fade {
+    animation: tn-scroll-fade linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 85vh;
+  }
+  @keyframes tn-scroll-fade { to { opacity: 0; translate: 0 -70px; } }
+  /* ảnh giữa trang: trôi ngược nhẹ khi khối đi qua màn hình (phóng to sẵn để không hở mép) */
+  .tn-parallax-view {
+    scale: 1.18;
+    animation: tn-parallax-view linear both;
+    animation-timeline: view();
+    animation-range: cover;
+  }
+  @keyframes tn-parallax-view {
+    from { translate: 0 -7%; }
+    to { translate: 0 7%; }
+  }
+}
+
+/* biểu tượng nảy lên khi khối được hiện, lắc nhẹ khi rê chuột */
+.tn-reveal .tn-icon-pop {
+  scale: 0.5;
+  opacity: 0;
+  transition: scale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--tn-delay, 0ms) + 180ms),
+              opacity 0.4s ease calc(var(--tn-delay, 0ms) + 180ms);
+}
+.tn-reveal.tn-revealed .tn-icon-pop { scale: 1; opacity: 1; }
+.tn-icon-pop:hover { animation: tn-wiggle 0.6s ease-in-out; }
+@keyframes tn-wiggle {
+  25% { rotate: -8deg; }
+  50% { rotate: 6deg; }
+  75% { rotate: -3deg; }
+}
+
+/* thẻ có ảnh nghiêng 3D theo con trỏ + vệt sáng (SiteEffects gắn .tn-tilt, đặt --tn-rx/--tn-ry/--tn-gx/--tn-gy) */
+.tn-tilt {
+  transform: perspective(1000px) rotateX(var(--tn-rx, 0deg)) rotateY(var(--tn-ry, 0deg));
+  transition: transform 0.18s ease-out, translate 0.25s ease, box-shadow 0.3s ease !important;
+}
+.tn-tilt-leave { transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), translate 0.25s ease, box-shadow 0.3s ease !important; }
+.tn-tilt-pos { position: relative; }
+.tn-tilt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: var(--tn-glare, 0);
+  background: radial-gradient(circle at var(--tn-gx, 50%) var(--tn-gy, 50%), rgba(255, 255, 255, 0.28), transparent 55%);
+  transition: opacity 0.3s ease;
+}
+
+/* ảnh hiện dần khi tải xong (chỉ ảnh chưa có sẵn lúc gắn vào trang) */
+.tn-img-in { animation: tn-img-in 0.6s ease-out both; }
+@keyframes tn-img-in {
+  from { opacity: 0; }
+}
+
+/* nút "nam châm" nhích theo con trỏ (data-magnetic) */
+[data-magnetic] { transition: translate 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease; }
+
+/* menu thả xuống, gợi ý tìm kiếm */
+.tn-pop-in { animation: tn-pop-in 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; transform-origin: top right; }
+@keyframes tn-pop-in {
+  from { opacity: 0; transform: translateY(-6px) scale(0.96); }
+}
+.tn-fade-in { animation: tn-fade-in 0.25s ease-out both; }
+@keyframes tn-fade-in {
+  from { opacity: 0; }
+}
+.tn-zoom-in { animation: tn-zoom-in 0.35s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+@keyframes tn-zoom-in {
+  from { opacity: 0; transform: scale(0.94); }
+}
+/* số trên chuông thông báo nảy khi xuất hiện */
+.tn-badge-pop { animation: tn-badge-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+@keyframes tn-badge-pop {
+  from { transform: scale(0); }
+}
+
+/* mũi tên trong nút/link nhích sang khi rê chuột */
+.tn-fx main a:hover .tn-arrow, .tn-fx main button:hover .tn-arrow { translate: 4px 0; }
+.tn-arrow { display: inline-block; transition: translate 0.25s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tn-intro, .tn-intro-line, .tn-parallax, .tn-parallax-view, .tn-scroll-fade, .tn-img-in, .tn-pop-in, .tn-fade-in, .tn-zoom-in,
+  .tn-badge-pop, .tn-icon-pop:hover { animation: none !important; }
+  .tn-reveal .tn-icon-pop { scale: 1 !important; opacity: 1 !important; transition: none !important; }
+  .tn-tilt { transform: none !important; }
+  .tn-tilt::after { display: none; }
+  [data-magnetic] { translate: none !important; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tn-page-in, .tn-click-ripple { animation: none !important; }
   .tn-reveal { opacity: 1 !important; translate: none !important; transition: none !important; }
   .tn-fx main .overflow-hidden:hover > img { transform: none; }
 }
 @media print {
+  .tn-reveal .tn-icon-pop { scale: 1 !important; opacity: 1 !important; }
   .tn-reveal { opacity: 1 !important; translate: none !important; }
   .tn-scroll-progress, .tn-back-top { display: none !important; }
 }

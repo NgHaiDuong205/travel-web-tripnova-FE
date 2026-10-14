@@ -7,13 +7,19 @@ const REVEAL_SELECTOR = "main section, main article, main .grid > *";
 const MAX_STAGGER = 6;
 const STAGGER_MS = 70;
 const LAUNCHER_KEY = "tripnova.chatLauncher";
+// Thẻ có ảnh nghiêng 3D theo con trỏ (chỉ chuột/bút, không áp cho khối quá lớn).
+const TILT_SELECTOR = "main article.rounded-xl, main article.rounded-2xl, main a.rounded-xl, main a.rounded-2xl, main a.rounded-3xl";
+const TILT_MAX_DEG = 6;
+const TILT_MAX_WIDTH = 720;
+const MAGNET_MAX_PX = 10;
 
 const prefersReducedMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
 /**
  * Hiệu ứng chung cho site khách (gắn cùng ChatWidget trong AppRouter, không chạy ở admin/manager):
  * chuyển trang mờ dần, hiện dần khi cuộn (kể cả nội dung tải sau), thanh tiến trình cuộn, header đổ bóng khi cuộn,
- * gợn sóng tại điểm bấm, nút lên đầu trang. CSS ở index.css (.tn-fx …). Tắt khi người dùng bật giảm chuyển động.
+ * gợn sóng tại điểm bấm, nút lên đầu trang, thẻ nghiêng 3D theo con trỏ, nút "nam châm" (data-magnetic),
+ * ảnh hiện dần khi tải xong. CSS ở index.css (.tn-fx …). Tắt khi người dùng bật giảm chuyển động.
  */
 function SiteEffects() {
     const t = useT();
@@ -54,7 +60,21 @@ function SiteEffects() {
         );
         ioRef.current = io;
 
+        // Ảnh chưa tải xong lúc gắn vào trang → hiện dần khi tải xong (ảnh có sẵn trong cache thì hiện ngay, không nháy).
+        const onImgLoad = (event) => {
+            const img = event.currentTarget;
+            img.classList.add("tn-img-in");
+            img.addEventListener("animationend", () => img.classList.remove("tn-img-in"), { once: true });
+        };
+        const scanImages = () => {
+            document.querySelectorAll("main img:not([data-tn-img])").forEach((img) => {
+                img.dataset.tnImg = "1";
+                if (!img.complete) img.addEventListener("load", onImgLoad, { once: true });
+            });
+        };
+
         const scan = () => {
+            scanImages();
             document.querySelectorAll(REVEAL_SELECTOR).forEach((el) => {
                 if (el.dataset.tnReveal || el.closest(".tn-no-reveal, [data-testid='chat-widget']")) return;
                 const style = window.getComputedStyle(el);
@@ -130,6 +150,98 @@ function SiteEffects() {
             setTopSide("left");
         }
     }, [showTop]);
+
+    // Thẻ nghiêng 3D + vệt sáng theo con trỏ; nút data-magnetic nhích theo con trỏ. Một listener, gộp theo khung hình.
+    useEffect(() => {
+        const finePointer = window.matchMedia?.("(hover: hover) and (pointer: fine)").matches;
+        if (prefersReducedMotion() || !finePointer) return undefined;
+        let card = null;
+        let magnet = null;
+        let frame = 0;
+        let last = null;
+
+        const canTilt = (el) => {
+            if (el.dataset.tnTilt) return el.dataset.tnTilt === "1";
+            const rect = el.getBoundingClientRect();
+            const style = window.getComputedStyle(el);
+            // transform sẵn có (VD hover:scale) → bỏ qua để không đè
+            const ok = Boolean(el.querySelector("img")) && rect.width <= TILT_MAX_WIDTH && rect.height > 120 && style.transform === "none";
+            el.dataset.tnTilt = ok ? "1" : "0";
+            if (ok && style.position === "static") el.classList.add("tn-tilt-pos");
+            return ok;
+        };
+        const releaseCard = () => {
+            if (!card) return;
+            const el = card;
+            card = null;
+            el.classList.add("tn-tilt-leave");
+            el.style.setProperty("--tn-rx", "0deg");
+            el.style.setProperty("--tn-ry", "0deg");
+            el.style.setProperty("--tn-glare", "0");
+            window.setTimeout(() => {
+                if (el !== card) el.classList.remove("tn-tilt", "tn-tilt-leave");
+            }, 600);
+        };
+        const releaseMagnet = () => {
+            if (magnet) magnet.style.translate = "";
+            magnet = null;
+        };
+
+        const update = () => {
+            frame = 0;
+            if (!last) return;
+            const { x, y, target } = last;
+            const nextCard = target.closest?.(TILT_SELECTOR) || null;
+            if (nextCard !== card) {
+                releaseCard();
+                if (nextCard && canTilt(nextCard)) {
+                    card = nextCard;
+                    card.classList.remove("tn-tilt-leave");
+                    card.classList.add("tn-tilt");
+                }
+            }
+            if (card) {
+                const rect = card.getBoundingClientRect();
+                const px = Math.min(1, Math.max(0, (x - rect.left) / rect.width));
+                const py = Math.min(1, Math.max(0, (y - rect.top) / rect.height));
+                card.style.setProperty("--tn-rx", `${((0.5 - py) * 2 * TILT_MAX_DEG).toFixed(2)}deg`);
+                card.style.setProperty("--tn-ry", `${((px - 0.5) * 2 * TILT_MAX_DEG).toFixed(2)}deg`);
+                card.style.setProperty("--tn-gx", `${(px * 100).toFixed(1)}%`);
+                card.style.setProperty("--tn-gy", `${(py * 100).toFixed(1)}%`);
+                card.style.setProperty("--tn-glare", "1");
+            }
+
+            const nextMagnet = target.closest?.("[data-magnetic]") || null;
+            if (nextMagnet !== magnet) releaseMagnet();
+            magnet = nextMagnet;
+            if (magnet) {
+                const rect = magnet.getBoundingClientRect();
+                const dx = ((x - rect.left) / rect.width - 0.5) * 2; // -1..1
+                const dy = ((y - rect.top) / rect.height - 0.5) * 2;
+                magnet.style.translate = `${(dx * MAGNET_MAX_PX).toFixed(1)}px ${(dy * MAGNET_MAX_PX * 0.7).toFixed(1)}px`;
+            }
+        };
+        const onMove = (event) => {
+            if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+            last = { x: event.clientX, y: event.clientY, target: event.target };
+            if (!frame) frame = window.requestAnimationFrame(update);
+        };
+        const onLeave = () => {
+            last = null;
+            releaseCard();
+            releaseMagnet();
+        };
+        document.addEventListener("pointermove", onMove, { passive: true });
+        document.documentElement.addEventListener("pointerleave", onLeave);
+        window.addEventListener("blur", onLeave);
+        return () => {
+            document.removeEventListener("pointermove", onMove);
+            document.documentElement.removeEventListener("pointerleave", onLeave);
+            window.removeEventListener("blur", onLeave);
+            if (frame) window.cancelAnimationFrame(frame);
+            onLeave();
+        };
+    }, []);
 
     // Gợn sóng tại điểm bấm nút / link (lớp phủ cố định, không đụng bố cục của nút).
     useEffect(() => {

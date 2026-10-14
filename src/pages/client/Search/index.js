@@ -108,7 +108,7 @@ function Search() {
                     </button>
                 </div>
                 {showSuggestions && suggestions.length > 0 && (
-                    <div className="absolute z-20 mt-1 w-full rounded-lg border border-outline-variant/40 bg-surface-container-lowest shadow-lg overflow-hidden">
+                    <div className="tn-pop-in absolute z-20 mt-1 w-full rounded-lg border border-outline-variant/40 bg-surface-container-lowest shadow-lg overflow-hidden">
                         {suggestions.map((item, index) => {
                             const icon =
                                 item.type === "city"

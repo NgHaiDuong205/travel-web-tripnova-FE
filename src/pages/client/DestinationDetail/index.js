@@ -167,8 +167,8 @@ function LiveDestinationDetail({ id }) {
     const location = [d.countryName, d.continentName].filter(Boolean).join(" · ");
     return (
         <div className="bg-surface text-on-surface font-body -mt-20">
-            <section className="relative h-[min(720px,85vh)] w-full overflow-hidden">
-                <img alt={d.name} className="absolute inset-0 w-full h-full object-cover" src={d.coverImageUrl || LIVE_HERO_PLACEHOLDER} />
+            <section className="tn-no-reveal relative h-[min(720px,85vh)] w-full overflow-hidden">
+                <img alt={d.name} className="tn-parallax absolute inset-0 w-full h-full object-cover" src={d.coverImageUrl || LIVE_HERO_PLACEHOLDER} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 <div className="absolute top-28 left-0 right-0 px-12 lg:px-24 max-w-7xl mx-auto z-10">
                     <Link
@@ -182,7 +182,7 @@ function LiveDestinationDetail({ id }) {
                     </Link>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-12 lg:p-24 max-w-7xl mx-auto">
-                    <h1 className="font-headline text-5xl md:text-7xl font-extrabold text-white tracking-tighter leading-[0.95] mb-6">{d.name}</h1>
+                    <h1 style={{ "--tn-i": "120ms" }} className="tn-intro font-headline text-5xl md:text-7xl font-extrabold text-white tracking-tighter leading-[0.95] mb-6">{d.name}</h1>
                     <div className="flex flex-wrap items-center gap-4">
                         {location && (
                             <span className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg text-white text-sm font-bold">
@@ -243,10 +243,10 @@ function CuratedDestinationDetail({ id }) {
     return (
         <div className="bg-surface text-on-surface font-body selection:bg-primary-fixed-dim selection:text-primary -mt-20">
             {/* Hero */}
-            <section className="relative h-[min(870px,100vh)] w-full overflow-hidden">
+            <section className="tn-no-reveal relative h-[min(870px,100vh)] w-full overflow-hidden">
                 <img
                     alt={t(`${contentKey}.heroAlt`)}
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="tn-parallax absolute inset-0 w-full h-full object-cover"
                     src={destination.heroImage}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />

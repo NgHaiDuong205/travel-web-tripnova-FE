@@ -9,8 +9,8 @@ function Home() {
     return (
         <main className="font-body text-on-surface bg-surface pt-20">
             {/* Hero Section */}
-            <section className="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden mt-[-80px]">
-                <div className="absolute inset-0 z-0">
+            <section className="tn-no-reveal relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden mt-[-80px]">
+                <div className="tn-parallax absolute inset-0 z-0">
                     <img 
                         className="w-full h-full object-cover animate-subtle-zoom" 
                         alt={t("home.hero.imageAlt")} 
@@ -18,21 +18,23 @@ function Home() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60"></div>
                 </div>
-                <div className="relative z-10 w-full max-w-5xl px-6 text-center">
+                <div className="tn-scroll-fade relative z-10 w-full max-w-5xl px-6 text-center">
                     <div className="mb-12">
-                        <span className="inline-block text-white/80 font-headline font-bold tracking-[0.3em] uppercase text-sm mb-6 drop-shadow-sm">{t("home.hero.eyebrow")}</span>
+                        <span style={{ "--tn-i": "100ms" }} className="tn-intro inline-block text-white/80 font-headline font-bold tracking-[0.3em] uppercase text-sm mb-6 drop-shadow-sm">{t("home.hero.eyebrow")}</span>
                         <h1 className="font-headline text-6xl md:text-8xl lg:text-9xl font-extrabold text-white mb-8 tracking-tighter drop-shadow-2xl">
-                            {t("home.hero.titleFirst")}<br/>{t("home.hero.titleSecond")}
+                            <span className="tn-intro-line" style={{ "--tn-i": "220ms" }}>{t("home.hero.titleFirst")}</span>
+                            <br />
+                            <span className="tn-intro-line" style={{ "--tn-i": "380ms" }}>{t("home.hero.titleSecond")}</span>
                         </h1>
-                        <p className="text-white/95 text-xl md:text-2xl font-medium max-w-3xl mx-auto leading-relaxed drop-shadow-xl">
+                        <p style={{ "--tn-i": "560ms" }} className="tn-intro text-white/95 text-xl md:text-2xl font-medium max-w-3xl mx-auto leading-relaxed drop-shadow-xl">
                             {t("home.hero.description")}
                         </p>
                     </div>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
-                        <Link to="/destinations" className="hero-gradient text-white px-10 py-5 rounded-full font-headline font-bold text-lg shadow-2xl hover:scale-105 transition-all duration-300">
-                            {t("home.hero.exploreDestinations")}
+                    <div style={{ "--tn-i": "720ms" }} className="tn-intro flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
+                        <Link to="/destinations" data-magnetic className="hero-gradient text-white px-10 py-5 rounded-full font-headline font-bold text-lg shadow-2xl hover:scale-105 transition-all duration-300">
+                            {t("home.hero.exploreDestinations")} <span className="tn-arrow material-symbols-outlined align-middle text-xl">arrow_forward</span>
                         </Link>
-                        <Link to="/abouts" className="bg-white/10 backdrop-blur-md border border-white/30 text-white px-10 py-5 rounded-full font-headline font-bold text-lg hover:bg-white/20 transition-all duration-300">
+                        <Link to="/abouts" data-magnetic className="bg-white/10 backdrop-blur-md border border-white/30 text-white px-10 py-5 rounded-full font-headline font-bold text-lg hover:bg-white/20 transition-all duration-300">
                             {t("home.hero.ourStory")}
                         </Link>
                     </div>
@@ -54,21 +56,21 @@ function Home() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                         <div className="space-y-6">
-                            <div className="w-16 h-16 bg-primary-fixed flex items-center justify-center rounded-xl">
+                            <div className="w-16 h-16 bg-primary-fixed flex items-center justify-center rounded-xl tn-icon-pop">
                                 <span className="material-symbols-outlined text-primary-container text-3xl">apartment</span>
                             </div>
                             <h3 className="text-2xl font-headline font-bold">{t("home.services.hotels.title")}</h3>
                             <p className="text-on-surface-variant leading-relaxed">{t("home.services.hotels.description")}</p>
                         </div>
                         <div className="space-y-6">
-                            <div className="w-16 h-16 bg-secondary-fixed flex items-center justify-center rounded-xl">
+                            <div className="w-16 h-16 bg-secondary-fixed flex items-center justify-center rounded-xl tn-icon-pop">
                                 <span className="material-symbols-outlined text-on-secondary-fixed-variant text-3xl">minor_crash</span>
                             </div>
                             <h3 className="text-2xl font-headline font-bold">{t("home.services.cars.title")}</h3>
                             <p className="text-on-surface-variant leading-relaxed">{t("home.services.cars.description")}</p>
                         </div>
                         <div className="space-y-6">
-                            <div className="w-16 h-16 bg-tertiary-fixed flex items-center justify-center rounded-xl">
+                            <div className="w-16 h-16 bg-tertiary-fixed flex items-center justify-center rounded-xl tn-icon-pop">
                                 <span className="material-symbols-outlined text-on-tertiary-fixed-variant text-3xl">travel_explore</span>
                             </div>
                             <h3 className="text-2xl font-headline font-bold">{t("home.services.flights.title")}</h3>
@@ -107,7 +109,7 @@ function Home() {
                 <div className="max-w-7xl mx-auto rounded-3xl overflow-hidden hero-gradient relative min-h-[400px] flex items-center">
                     <div className="absolute right-0 top-0 h-full w-1/2 hidden md:block opacity-40">
                         <img 
-                            className="w-full h-full object-cover grayscale mix-blend-overlay" 
+                            className="tn-parallax-view w-full h-full object-cover grayscale mix-blend-overlay" 
                             alt={t("home.newsletter.imageAlt")} 
                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGDSSibLHCGP3FH1NSC8Q6kCzc8Bn8FG4ZXD0C4B1rlNXp5sjcgHfiXb23AP_S_Tpr3-rlnrfzX8pv1KXEC1oKO32R0tKr8VIXkzI0dLF2_FWM9MA3cUQtKhZb63N5ht5M9U-leQyBCaCn6yCHM7Iyd_CUt9mtGC-vTBqOgzqHeFxR5b5Y4eoUw16dMBBV-TA0T2gB067b9tmqVqvUZOidof4DWHjtMy6TDiTzhyafccESrcQCV3K9KEsgdBwww8e5FyBezWFe5Es"
                         />
@@ -132,21 +134,21 @@ function Home() {
                 <div className="max-w-7xl mx-auto">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
                         <div className="flex flex-col items-center text-center space-y-4">
-                            <div className="w-12 h-12 flex items-center justify-center">
+                            <div className="w-12 h-12 flex items-center justify-center tn-icon-pop">
                                 <span className="material-symbols-outlined text-primary-container text-4xl">verified_user</span>
                             </div>
                             <h4 className="text-xl font-headline font-bold">{t("home.trust.curator.title")}</h4>
                             <p className="text-on-surface-variant text-sm max-w-xs">{t("home.trust.curator.description")}</p>
                         </div>
                         <div className="flex flex-col items-center text-center space-y-4">
-                            <div className="w-12 h-12 flex items-center justify-center">
+                            <div className="w-12 h-12 flex items-center justify-center tn-icon-pop">
                                 <span className="material-symbols-outlined text-primary-container text-4xl">support_agent</span>
                             </div>
                             <h4 className="text-xl font-headline font-bold">{t("home.trust.support.title")}</h4>
                             <p className="text-on-surface-variant text-sm max-w-xs">{t("home.trust.support.description")}</p>
                         </div>
                         <div className="flex flex-col items-center text-center space-y-4">
-                            <div className="w-12 h-12 flex items-center justify-center">
+                            <div className="w-12 h-12 flex items-center justify-center tn-icon-pop">
                                 <span className="material-symbols-outlined text-primary-container text-4xl">payments</span>
                             </div>
                             <h4 className="text-xl font-headline font-bold">{t("home.trust.pricing.title")}</h4>
