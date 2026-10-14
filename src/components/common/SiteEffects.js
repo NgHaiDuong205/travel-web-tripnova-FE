@@ -29,9 +29,9 @@ function SiteEffects() {
         return () => document.body.classList.remove("tn-fx", "tn-scrolled");
     }, []);
 
-    // Chuyển trang: nội dung mờ dần hiện lên.
+    // Chuyển trang: nội dung mờ dần hiện lên (bỏ qua khi PageTransitions đang chạy view transition — đã có hiệu ứng riêng).
     useEffect(() => {
-        if (prefersReducedMotion()) return;
+        if (prefersReducedMotion() || document.documentElement.classList.contains("tn-vt")) return;
         const main = document.querySelector("main");
         if (!main) return;
         main.classList.remove("tn-page-in");

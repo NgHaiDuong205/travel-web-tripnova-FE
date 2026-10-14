@@ -185,6 +185,30 @@ html.dark .recharts-wrapper [stroke="#003580"] { stroke: #6f9bff; }
   to { opacity: 1; }
 }
 
+/* chuyển cảnh View Transitions (components/common/PageTransitions): trang cũ mờ + thu nhẹ, trang mới trượt lên */
+::view-transition-old(root) { animation: tn-vt-out 0.26s cubic-bezier(0.4, 0, 1, 1) both; }
+::view-transition-new(root) { animation: tn-vt-in 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both; }
+@keyframes tn-vt-out {
+  to { opacity: 0; transform: scale(0.985); filter: blur(3px); }
+}
+@keyframes tn-vt-in {
+  from { opacity: 0; transform: translateY(22px); }
+}
+/* header đứng yên trong lúc chuyển cảnh */
+.tn-fx nav.fixed.top-0, .tn-fx header.fixed.top-0 { view-transition-name: tn-header; }
+.tn-launcher { view-transition-name: tn-launcher; }
+::view-transition-group(tn-header), ::view-transition-old(tn-header), ::view-transition-new(tn-header),
+::view-transition-group(tn-launcher), ::view-transition-old(tn-launcher), ::view-transition-new(tn-launcher) { animation: none; }
+::view-transition-old(tn-header), ::view-transition-old(tn-launcher) { display: none; }
+/* ảnh thẻ được bấm → ảnh lớn trang chi tiết */
+::view-transition-group(tn-hero) { animation-duration: 0.55s; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
+::view-transition-old(tn-hero), ::view-transition-new(tn-hero) {
+  height: 100%;
+  object-fit: cover;
+  overflow: clip;
+  animation-duration: 0.55s;
+}
+
 /* hiện dần khi cuộn — dùng `translate` riêng để không đè `transform` sẵn có của phần tử */
 .tn-reveal {
   opacity: 0;

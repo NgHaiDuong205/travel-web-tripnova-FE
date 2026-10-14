@@ -13,6 +13,7 @@ import VerifyEmail from "../pages/auth/VerifyEmail";
 import OAuthCallback from "../pages/auth/OAuthCallback";
 import ChatWidget from "../components/ai/ChatWidget";
 import SiteEffects from "../components/common/SiteEffects";
+import PageTransitions from "../components/common/PageTransitions";
 
 function AppRouter() {
     return (
@@ -53,6 +54,7 @@ function AppRouter() {
                         {/* Trợ lý AI: nút tròn nổi trên mọi trang khách */}
                         <ChatWidget />
                         <SiteEffects />
+                        <PageTransitions />
                     </HotelAccountGuard>
                 }
             />
