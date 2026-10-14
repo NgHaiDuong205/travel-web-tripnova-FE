@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import FormAlert from "../common/FormAlert";
 import { useHotelApi } from "../../context/HotelApiContext";
 import { IMAGE_ACCEPT, uploadImage, validateImageFile } from "../../services/accountService";
@@ -8,11 +8,25 @@ import { useT } from "../../i18n/I18nContext";
  * Thư viện ảnh của một khách sạn: thêm (tải file / URL), sửa chú thích, đổi thứ tự, đặt ảnh bìa, xoá.
  * Dùng chung cho admin (/admin/hotel-images) và quản lý khách sạn (API theo HotelApiContext).
  * onCoverChanged(url) báo cho trang cha cập nhật ảnh bìa đang hiển thị.
+ * `gallery` (tuỳ chọn, nên useMemo) thay bộ thao tác mặc định — VD ảnh hạng phòng (RoomTypeManager):
+ * { fetch(), add(payload), update(imageId, payload), setCover(imageId), remove(imageId) }; khi đó `hotel`
+ * chỉ cần { id, coverImageUrl } của đối tượng đang sửa.
  */
-function HotelGalleryManager({ hotel, onCoverChanged }) {
+function HotelGalleryManager({ hotel, onCoverChanged, gallery }) {
     const t = useT();
     const api = useHotelApi();
     const hotelId = hotel.id;
+    const ops = useMemo(
+        () =>
+            gallery ?? {
+                fetch: () => api.fetchHotelImages(hotelId),
+                add: (payload) => api.addHotelImage(hotelId, payload),
+                update: (imageId, payload) => api.updateHotelImage(hotelId, imageId, payload),
+                setCover: (imageId) => api.setHotelCover(hotelId, imageId),
+                remove: (imageId) => api.deleteHotelImage(hotelId, imageId),
+            },
+        [gallery, api, hotelId]
+    );
     const [images, setImages] = useState([]);
     const [url, setUrl] = useState("");
     const [caption, setCaption] = useState("");
@@ -25,13 +39,13 @@ function HotelGalleryManager({ hotel, onCoverChanged }) {
         setLoading(true);
         setError("");
         try {
-            setImages(await api.fetchHotelImages(hotelId));
+            setImages(await ops.fetch());
         } catch (err) {
             setError(err.message);
         } finally {
             setLoading(false);
         }
-    }, [api, hotelId]);
+    }, [ops]);
 
     useEffect(() => {
         setNotice("");
@@ -44,7 +58,7 @@ function HotelGalleryManager({ hotel, onCoverChanged }) {
         setError("");
         setNotice("");
         try {
-            await api.addHotelImage(hotelId, { url: imageUrl, caption: caption.trim() });
+            await ops.add({ url: imageUrl, caption: caption.trim() });
             setUrl("");
             setCaption("");
             setNotice(t("admin.gallery.imageAdded"));
@@ -79,7 +93,7 @@ function HotelGalleryManager({ hotel, onCoverChanged }) {
     const updateCover = async (image) => {
         setError("");
         try {
-            await api.setHotelCover(hotelId, image.id);
+            await ops.setCover(image.id);
             onCoverChanged?.(image.url);
             setNotice(t("admin.gallery.coverUpdated"));
         } catch (err) {
@@ -91,7 +105,7 @@ function HotelGalleryManager({ hotel, onCoverChanged }) {
         if (!window.confirm(t("admin.gallery.confirmDelete"))) return;
         setError("");
         try {
-            await api.deleteHotelImage(hotelId, image.id);
+            await ops.remove(image.id);
             setImages((prev) => prev.filter((item) => item.id !== image.id));
             setNotice(t("admin.gallery.imageDeleted"));
         } catch (err) {
@@ -109,7 +123,7 @@ function HotelGalleryManager({ hotel, onCoverChanged }) {
         try {
             for (const [position, image] of next.entries()) {
                 if (image.sortOrder !== position) {
-                    await api.updateHotelImage(hotelId, image.id, {
+                    await ops.update(image.id, {
                         url: image.url,
                         caption: image.caption || "",
                         sortOrder: position,
@@ -184,7 +198,7 @@ function HotelGalleryManager({ hotel, onCoverChanged }) {
                             onDelete={() => remove(image)}
                             onMoveUp={() => reorder(index, -1)}
                             onMoveDown={() => reorder(index, 1)}
-                            hotelId={hotelId}
+                            onUpdate={ops.update}
                             onSaved={loadImages}
                             onError={setError}
                         />
@@ -195,13 +209,12 @@ function HotelGalleryManager({ hotel, onCoverChanged }) {
     );
 }
 
-function ImageCard({ image, coverUrl, first, last, onCover, onDelete, onMoveUp, onMoveDown, hotelId, onSaved, onError }) {
+function ImageCard({ image, coverUrl, first, last, onCover, onDelete, onMoveUp, onMoveDown, onUpdate, onSaved, onError }) {
     const t = useT();
-    const api = useHotelApi();
     const [caption, setCaption] = useState(image.caption || "");
     const save = async () => {
         try {
-            await api.updateHotelImage(hotelId, image.id, { url: image.url, caption, sortOrder: image.sortOrder });
+            await onUpdate(image.id, { url: image.url, caption, sortOrder: image.sortOrder });
             await onSaved();
         } catch (err) {
             onError(err.message);

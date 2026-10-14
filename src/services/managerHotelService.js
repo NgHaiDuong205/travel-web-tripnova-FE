@@ -94,4 +94,23 @@ export const managerHotelApi = {
     async deleteHotelImage(hotelId, imageId) {
         await apiClient.delete(`/api/manager/hotels/${hotelId}/images/${imageId}/`);
     },
+    async fetchRoomTypeImages(hotelId, roomTypeId) {
+        const { data } = await apiClient.get(`/api/manager/hotels/${hotelId}/room-types/${roomTypeId}/images/`);
+        return data;
+    },
+    async addRoomTypeImage(hotelId, roomTypeId, payload) {
+        const { data } = await apiClient.post(`/api/manager/hotels/${hotelId}/room-types/${roomTypeId}/images/`, payload);
+        return data;
+    },
+    async updateRoomTypeImage(hotelId, roomTypeId, imageId, payload) {
+        const { data } = await apiClient.put(`/api/manager/hotels/${hotelId}/room-types/${roomTypeId}/images/${imageId}/`, payload);
+        return data;
+    },
+    async setRoomTypeCover(hotelId, roomTypeId, imageId) {
+        const { data } = await apiClient.post(`/api/manager/hotels/${hotelId}/room-types/${roomTypeId}/images/${imageId}/cover/`);
+        return data;
+    },
+    async deleteRoomTypeImage(hotelId, roomTypeId, imageId) {
+        await apiClient.delete(`/api/manager/hotels/${hotelId}/room-types/${roomTypeId}/images/${imageId}/`);
+    },
 };

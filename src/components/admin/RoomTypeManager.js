@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import FormAlert from "../common/FormAlert";
 import { AmenityPicker } from "./HotelForm";
+import HotelGalleryManager from "./HotelGalleryManager";
 import { fetchAmenities } from "../../services/lookupService";
 import { roomTypeToPayload } from "../../services/adminHotelService";
 import { useHotelApi } from "../../context/HotelApiContext";
@@ -96,6 +97,31 @@ function RoomTypeForm({ initial, amenities, onSave, onCancel }) {
     );
 }
 
+/** Thư viện ảnh của 1 hạng phòng — dùng lại HotelGalleryManager với bộ thao tác ảnh hạng phòng. */
+function RoomTypeGallery({ hotelId, roomType, onCoverChanged }) {
+    const api = useHotelApi();
+    const roomTypeId = roomType.id;
+    const gallery = useMemo(
+        () => ({
+            fetch: () => api.fetchRoomTypeImages(hotelId, roomTypeId),
+            add: (payload) => api.addRoomTypeImage(hotelId, roomTypeId, payload),
+            update: (imageId, payload) => api.updateRoomTypeImage(hotelId, roomTypeId, imageId, payload),
+            setCover: (imageId) => api.setRoomTypeCover(hotelId, roomTypeId, imageId),
+            remove: (imageId) => api.deleteRoomTypeImage(hotelId, roomTypeId, imageId),
+        }),
+        [api, hotelId, roomTypeId]
+    );
+    return (
+        <div className="w-full border-t border-gray-100 pt-4">
+            <HotelGalleryManager
+                hotel={{ id: roomTypeId, coverImageUrl: roomType.coverImageUrl }}
+                gallery={gallery}
+                onCoverChanged={onCoverChanged}
+            />
+        </div>
+    );
+}
+
 /** Danh sách + thêm/sửa/ẩn hạng phòng của 1 khách sạn. */
 function RoomTypeManager({ hotelId, roomTypes, onChanged }) {
     const t = useT();
@@ -103,6 +129,7 @@ function RoomTypeManager({ hotelId, roomTypes, onChanged }) {
     const [amenities, setAmenities] = useState([]);
     const [editing, setEditing] = useState(null); // null | "new" | roomTypeId
     const [busyId, setBusyId] = useState(null);
+    const [galleryId, setGalleryId] = useState(null); // hạng phòng đang mở thư viện ảnh
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -178,6 +205,13 @@ function RoomTypeManager({ hotelId, roomTypes, onChanged }) {
                             </div>
                             <p className="font-extrabold text-primary">{formatMoney(rt.pricePerNight)}<span className="text-xs font-semibold text-gray-500">{t("common.units.perNight")}</span></p>
                             <div className="flex gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setGalleryId(galleryId === rt.id ? null : rt.id)}
+                                    className="px-3 py-1 rounded-lg text-xs font-bold border border-blue-200 text-primary hover:bg-blue-50"
+                                >
+                                    {t(galleryId === rt.id ? "admin.roomTypes.closePhotos" : "admin.roomTypes.photos")}
+                                </button>
                                 <button type="button" onClick={() => setEditing(rt.id)} className="px-3 py-1 rounded-lg text-xs font-bold border border-blue-200 text-primary hover:bg-blue-50">{t("common.actions.edit")}</button>
                                 <button
                                     type="button"
@@ -190,6 +224,7 @@ function RoomTypeManager({ hotelId, roomTypes, onChanged }) {
                                     {t(rt.isActive ? "admin.roomTypes.hide" : "admin.roomTypes.restore")}
                                 </button>
                             </div>
+                            {galleryId === rt.id && <RoomTypeGallery hotelId={hotelId} roomType={rt} onCoverChanged={onChanged} />}
                         </div>
                     )
                 )}

@@ -93,6 +93,8 @@
     "setAsCover": "Đặt làm ảnh bìa"
   },
   "roomTypes": {
+    "photos": "Ảnh",
+    "closePhotos": "Đóng ảnh",
     "name": "Tên",
     "pricePerNight": "Giá / đêm (USD)",
     "maxGuests": "Số khách tối đa",

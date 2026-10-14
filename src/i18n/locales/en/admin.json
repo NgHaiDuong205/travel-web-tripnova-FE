@@ -93,6 +93,8 @@
     "setAsCover": "Set as cover"
   },
   "roomTypes": {
+    "photos": "Photos",
+    "closePhotos": "Close photos",
     "name": "Name",
     "pricePerNight": "Price / night (USD)",
     "maxGuests": "Max guests",

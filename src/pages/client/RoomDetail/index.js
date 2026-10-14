@@ -5,6 +5,7 @@ import { fetchHotelById } from "../../../services/hotelService";
 import { formatMoney, isoDateFromToday, nightsBetween } from "../../../utils/formatters";
 import { useT } from "../../../i18n/I18nContext";
 import HotelPendingNotice from "../../../components/client/HotelPendingNotice";
+import PhotoLightbox from "../../../components/common/PhotoLightbox";
 
 const PLACEHOLDER_IMAGE =
     "https://images.unsplash.com/photo-1631049301164-da64c29e0a5a?w=1200&q=80";
@@ -39,6 +40,7 @@ function RoomDetail() {
     const [checkIn, setCheckIn] = useState(() => isoDateFromToday(7));
     const [checkOut, setCheckOut] = useState(() => isoDateFromToday(10));
     const [guests, setGuests] = useState(2);
+    const [lightboxIndex, setLightboxIndex] = useState(null);
 
     const loadData = useCallback(async () => {
         setLoading(true);
@@ -64,6 +66,13 @@ function RoomDetail() {
     }, [hotelId, roomId, loadData]);
 
     const nights = useMemo(() => nightsBetween(checkIn, checkOut), [checkIn, checkOut]);
+
+    // Ảnh hạng phòng (thư viện), không có thì ảnh bìa hạng phòng
+    const photos = useMemo(() => {
+        const list = room?.images?.length ? room.images : room?.image ? [{ url: room.image }] : [];
+        const seen = new Set();
+        return list.filter((p) => !seen.has(p.url) && seen.add(p.url));
+    }, [room]);
 
     // Tổng tiền tạm tính; giá chính thức do backend tính ở bước Checkout.
     const total = useMemo(() => (room?.price ?? 0) * nights, [room, nights]);
@@ -142,11 +151,14 @@ function RoomDetail() {
 
             {/* Hero Section & Immersive Gallery */}
             <div className="grid grid-cols-12 gap-4 mb-20 h-[500px] lg:h-[716px]">
-                <div className="col-span-12 md:col-span-8 relative overflow-hidden rounded-xl h-full">
+                <div
+                    className={`col-span-12 md:col-span-8 relative overflow-hidden rounded-xl h-full ${photos.length ? "cursor-zoom-in" : ""}`}
+                    onClick={photos.length ? () => setLightboxIndex(0) : undefined}
+                >
                     <img
                         className="absolute inset-0 w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                         alt={roomName}
-                        src={room.image || PLACEHOLDER_IMAGE}
+                        src={photos[0]?.url || PLACEHOLDER_IMAGE}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
                     <div className="absolute bottom-8 left-8 text-white">
@@ -166,23 +178,38 @@ function RoomDetail() {
                         <img
                             className="absolute inset-0 w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                             alt={t("hotels.detail.suiteTerraceAlt")}
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdUcXyMliIbDDnGpjWnCKl60Cywwj38LOCl4Pb6G82hiPmYk_4bxwMgt1LKN3bU43K5jwmWfyrBZeBojbl3C-Dq7bw8pkC1cUzEqZSzlYUh8ASy_Se7J60FBxqrz858_P43E6yDnmsnksmWp5mn4-yWY3cONZUeejUWzey_pWqWat2MqC89dYV1wtnZbeKQCy1eIleLVsu6vLfoQXbx2DEQqstKvgMSc_8PoEKO725nWHd0PUyPFWSG0bvDygSPT7pCCw2xqhVWXg"
+                            src={photos[1]?.url || photos[0]?.url || PLACEHOLDER_IMAGE}
                         />
                     </div>
                     <div className="h-1/2 overflow-hidden rounded-xl relative">
                         <img
                             className="absolute inset-0 w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                             alt={t("hotels.detail.suiteBathroomAlt")}
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMdJt3Q4_NbWaTNYR0NrxCrbFe0fs0mdAZjxoo3A7I9_9bgUEkpjQGqkp9k6Ho7I-kPp-o0maN61c0ZeWcwoywOU2IO-yqjyRzux2JIrJ6QZqu2DpyUqVY2xMDHPbbiTpzTUpOX4ViXWwHt9oh2MzU1AUmb5g-QMwOcBQQdowqfVBiWfKIlvXDF6JShP3Oe0yWNlZlD2Tl21Js5v3v0V6WrQRQGPJ6osXVvGRSKbWaF7t4NjyTC0yapdTG_drCwH-znbPH-wT78V0"
+                            src={photos[2]?.url || photos[1]?.url || photos[0]?.url || PLACEHOLDER_IMAGE}
                         />
-                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center cursor-pointer group">
+                        <div
+                            className="absolute inset-0 bg-black/20 flex items-center justify-center cursor-pointer group"
+                            onClick={photos.length ? () => setLightboxIndex(Math.min(2, photos.length - 1)) : undefined}
+                        >
                             <span className="px-6 py-3 bg-white/90 backdrop-blur text-primary font-bold rounded-lg group-hover:bg-white transition-all">
-                                {t("hotels.actions.viewGallery")}
+                                {photos.length > 1
+                                    ? t("hotels.detail.viewAllPhotos", { count: photos.length })
+                                    : t("hotels.actions.viewGallery")}
                             </span>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {lightboxIndex !== null && (
+                <PhotoLightbox
+                    photos={photos}
+                    index={lightboxIndex}
+                    onIndexChange={setLightboxIndex}
+                    onClose={() => setLightboxIndex(null)}
+                    title={roomName}
+                />
+            )}
 
             {/* Main Content Area with Sticky Booking Card */}
             <div className="grid grid-cols-12 gap-16 relative">

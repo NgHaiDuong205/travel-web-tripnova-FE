@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useT } from "../../i18n/I18nContext";
 
 /**
@@ -28,7 +29,8 @@ function PhotoLightbox({ photos, index, onIndexChange, onClose, title }) {
     const photo = photos[index];
     if (!photo) return null;
 
-    return (
+    // Portal ra body: phần tử cha trong <main> có thể tạo stacking context (hiệu ứng hiện dần) làm header đè lên.
+    return createPortal(
         <div
             role="dialog"
             aria-modal="true"
@@ -94,7 +96,8 @@ function PhotoLightbox({ photos, index, onIndexChange, onClose, title }) {
                     ))}
                 </div>
             )}
-        </div>
+        </div>,
+        document.body
     );
 }
 

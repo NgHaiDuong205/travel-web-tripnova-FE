@@ -46,6 +46,12 @@ export function normalizeRoom(raw) {
         price: price != null ? Number(price) : undefined,
         currency: pickField(raw, "currency", "currencyCode", "currency_code") || "USD",
         image,
+        // Thư viện ảnh hạng phòng [{url, caption}] (chỉ API chi tiết phòng trả về)
+        images: Array.isArray(raw.images)
+            ? raw.images
+                  .map((img) => (typeof img === "string" ? { url: img } : { url: img?.url, caption: img?.caption }))
+                  .filter((img) => img.url)
+            : [],
         description: pickField(raw, "description", "shortDescription", "short_description"),
         highlights: Array.isArray(raw.highlights)
             ? raw.highlights

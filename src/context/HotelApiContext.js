@@ -8,7 +8,18 @@ import {
     saveAdminRoomType,
     updateRoomAvailability,
 } from "../services/adminHotelService";
-import { addHotelImage, deleteHotelImage, fetchHotelImages, setHotelCover, updateHotelImage } from "../services/adminLogService";
+import {
+    addHotelImage,
+    addRoomTypeImage,
+    deleteHotelImage,
+    deleteRoomTypeImage,
+    fetchHotelImages,
+    fetchRoomTypeImages,
+    setHotelCover,
+    setRoomTypeCover,
+    updateHotelImage,
+    updateRoomTypeImage,
+} from "../services/adminLogService";
 
 /** API admin (mặc định) cho các component quản lý hạng phòng / phòng / lịch / ảnh. */
 export const adminHotelApi = {
@@ -24,6 +35,11 @@ export const adminHotelApi = {
     updateHotelImage,
     setHotelCover,
     deleteHotelImage,
+    fetchRoomTypeImages,
+    addRoomTypeImage,
+    updateRoomTypeImage,
+    setRoomTypeCover,
+    deleteRoomTypeImage,
 };
 
 /**

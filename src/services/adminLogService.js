@@ -72,3 +72,30 @@ export async function setHotelCover(hotelId, imageId) {
 export async function deleteHotelImage(hotelId, imageId) {
     await apiClient.delete(`/api/admin/hotels/${hotelId}/images/${imageId}/`);
 }
+
+/* Ảnh hạng phòng (các phòng cùng hạng dùng chung) */
+const roomTypeImagesPath = (hotelId, roomTypeId) => `/api/admin/hotels/${hotelId}/room-types/${roomTypeId}/images/`;
+
+export async function fetchRoomTypeImages(hotelId, roomTypeId) {
+    const { data } = await apiClient.get(roomTypeImagesPath(hotelId, roomTypeId));
+    return data;
+}
+
+export async function addRoomTypeImage(hotelId, roomTypeId, payload) {
+    const { data } = await apiClient.post(roomTypeImagesPath(hotelId, roomTypeId), payload);
+    return data;
+}
+
+export async function updateRoomTypeImage(hotelId, roomTypeId, imageId, payload) {
+    const { data } = await apiClient.put(`${roomTypeImagesPath(hotelId, roomTypeId)}${imageId}/`, payload);
+    return data;
+}
+
+export async function setRoomTypeCover(hotelId, roomTypeId, imageId) {
+    const { data } = await apiClient.post(`${roomTypeImagesPath(hotelId, roomTypeId)}${imageId}/cover/`);
+    return data;
+}
+
+export async function deleteRoomTypeImage(hotelId, roomTypeId, imageId) {
+    await apiClient.delete(`${roomTypeImagesPath(hotelId, roomTypeId)}${imageId}/`);
+}
