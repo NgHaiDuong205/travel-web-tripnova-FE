@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import FormInput from "../../../components/common/FormInput";
 import FormAlert from "../../../components/common/FormAlert";
+import ResendVerificationButton from "../../../components/auth/ResendVerificationButton";
 import { useT } from "../../../i18n/I18nContext";
 import { safeRedirect, withRedirect } from "../../../utils/authRedirect";
 
@@ -35,6 +36,8 @@ function Register() {
     const [errors, setErrors] = useState({});
     const [serverError, setServerError] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    // Đăng ký xong nhưng phải xác thực email: hiện màn "Kiểm tra hộp thư" thay cho form.
+    const [pendingEmail, setPendingEmail] = useState("");
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -51,12 +54,16 @@ function Register() {
 
         setSubmitting(true);
         try {
-            await register({
+            const result = await register({
                 fullName: form.fullName.trim(),
                 email: form.email.trim(),
                 phone: form.phone.trim() || undefined,
                 password: form.password,
             });
+            if (result?.verificationRequired) {
+                setPendingEmail(result.email);
+                return;
+            }
             navigate(redirect || "/", { replace: true });
         } catch (err) {
             setServerError(err.message || t("auth.register.errors.failed"));
@@ -64,6 +71,25 @@ function Register() {
             setSubmitting(false);
         }
     };
+
+    if (pendingEmail) {
+        return (
+            <section className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-gray-50 py-12 px-4">
+                <div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md border border-gray-100 my-8 text-center" data-testid="check-email">
+                    <span className="material-symbols-outlined text-5xl text-[#003580] mb-4">mark_email_unread</span>
+                    <h1 className="text-3xl font-black text-[#003580] tracking-tight mb-4">{t("auth.verification.checkInbox")}</h1>
+                    <p className="text-gray-600 mb-2">{t("auth.verification.sentTo", { email: pendingEmail })}</p>
+                    <p className="text-sm text-gray-500 mb-8">{t("auth.verification.spamHint")}</p>
+                    <ResendVerificationButton email={pendingEmail} initialCooldown={60} />
+                    <div className="mt-8 text-sm font-medium">
+                        <Link to={withRedirect("/login", redirect)} className="font-bold text-[#003580] hover:underline">
+                            {t("auth.verification.goToLogin")}
+                        </Link>
+                    </div>
+                </div>
+            </section>
+        );
+    }
 
     return (
         /* Section Register — đã có Header/Footer từ AuthLayout */

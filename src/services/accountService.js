@@ -20,6 +20,11 @@ export async function resendVerification() {
     await apiClient.post("/api/auth/resend-verification/");
 }
 
+/** Chưa đăng nhập được vì chưa xác thực: gửi lại theo email (BE luôn trả 204, không lộ email nào đã đăng ký). */
+export async function resendVerificationEmail(email) {
+    await apiClient.post("/api/auth/resend-verification/", { email });
+}
+
 export async function changeEmail(newEmail, currentPassword) {
     const { data } = await apiClient.put("/api/account/email/", { newEmail, currentPassword });
     return data;

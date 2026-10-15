@@ -37,8 +37,12 @@ export const AuthProvider = ({ children }) => {
         return data.user;
     }, []);
 
+    /** Trả user (đã đăng nhập) hoặc { verificationRequired: true, email } (phải xác thực email trước). */
     const register = useCallback(async (payload) => {
         const data = await authService.register(payload);
+        if (data.verificationRequired) {
+            return { verificationRequired: true, email: data.email };
+        }
         setUser(data.user);
         return data.user;
     }, []);

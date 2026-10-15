@@ -4,6 +4,7 @@ import { useAuth } from "../../../context/AuthContext";
 import FormInput from "../../../components/common/FormInput";
 import FormAlert from "../../../components/common/FormAlert";
 import SocialLoginButtons from "../../../components/auth/SocialLoginButtons";
+import ResendVerificationButton from "../../../components/auth/ResendVerificationButton";
 import { useT } from "../../../i18n/I18nContext";
 import { safeRedirect, withRedirect } from "../../../utils/authRedirect";
 
@@ -18,6 +19,8 @@ function Login() {
         password: "",
     });
     const [error, setError] = useState("");
+    // Tài khoản mới chưa xác thực email -> không đăng nhập được, cho gửi lại link.
+    const [unverifiedEmail, setUnverifiedEmail] = useState("");
     const [submitting, setSubmitting] = useState(false);
 
     const handleLogin = async (e) => {
@@ -27,6 +30,7 @@ function Login() {
             return;
         }
         setSubmitting(true);
+        setUnverifiedEmail("");
         try {
             const user = await login(account.email.trim(), account.password);
             const roles = user?.roles || [];
@@ -35,6 +39,11 @@ function Login() {
                 replace: true,
             });
         } catch (err) {
+            if (err.code === "email_not_verified") {
+                setUnverifiedEmail(account.email.trim());
+                setError(t("auth.verification.notVerified", { email: account.email.trim() }));
+                return;
+            }
             setError(err.message || t("auth.login.errors.failed"));
         } finally {
             setSubmitting(false);
@@ -48,6 +57,7 @@ function Login() {
             [name]: value,
         }));
         setError(""); // Xóa thông báo lỗi khi người dùng bắt đầu nhập lại
+        if (name === "email") setUnverifiedEmail("");
     };
 
     return (
@@ -64,6 +74,7 @@ function Login() {
                 {/* Form điền thông tin */}
                 <form className="space-y-6" onSubmit={handleLogin} noValidate>
                     <FormAlert>{error}</FormAlert>
+                    {unverifiedEmail && <ResendVerificationButton email={unverifiedEmail} />}
 
                     <FormInput
                         label={t("auth.fields.emailAddress")}

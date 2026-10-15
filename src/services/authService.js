@@ -8,10 +8,14 @@ export async function login(email, password) {
     return data;
 }
 
-/** @param {{email: string, password: string, fullName: string, phone?: string}} payload */
+/**
+ * @param {{email: string, password: string, fullName: string, phone?: string}} payload
+ * @returns {Promise<{accessToken, refreshToken, user} | {verificationRequired: true, email: string}>}
+ *   tài khoản mới phải xác thực email trước khi đăng nhập -> không có token.
+ */
 export async function register(payload) {
     const { data } = await apiClient.post("/api/auth/register/", payload);
-    tokenStorage.save(data);
+    if (data.accessToken) tokenStorage.save(data);
     return data;
 }
 

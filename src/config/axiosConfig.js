@@ -53,6 +53,7 @@ function toApiError(error) {
         "Request failed";
     const apiError = new Error(message);
     apiError.status = error.response?.status;
+    apiError.code = data?.code; // VD "email_not_verified"
     apiError.details = Array.isArray(data?.detail) ? data.detail : [];
     return apiError;
 }

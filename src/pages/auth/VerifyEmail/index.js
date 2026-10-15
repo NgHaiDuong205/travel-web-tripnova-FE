@@ -5,7 +5,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { verifyEmail } from "../../../services/accountService";
 import { useT } from "../../../i18n/I18nContext";
 
-/** Mở từ link trong email: /verify-email?token=... (link hiện được in ra log BE). */
+/** Mở từ link trong email chào mừng / đổi email: /verify-email?token=... Xác thực xong mới đăng nhập được (tài khoản mới). */
 function VerifyEmail() {
     const t = useT();
     const [searchParams] = useSearchParams();
