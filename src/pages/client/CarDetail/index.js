@@ -9,6 +9,7 @@ import FormAlert from "../../../components/common/FormAlert";
 import FavoriteButton from "../../../components/common/FavoriteButton";
 import AddToTripCartButton from "../../../components/catalog/AddToTripCartButton";
 import ReviewSection from "../../../components/client/ReviewSection";
+import useTrackView from "../../../hooks/useTrackView";
 import PendingOrderNotice, { usePendingOrders } from "../../../components/catalog/PendingOrderNotice";
 import { PAYMENT_METHODS } from "../../../services/bookingService";
 import {
@@ -31,6 +32,7 @@ const inputClass =
 function CarDetail() {
     const t = useT();
     const { id } = useParams();
+    useTrackView("car", id);
     const [params] = useSearchParams();
     const navigate = useNavigate();
     const location = useLocation();

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import HotelListCard from "./HotelListCard";
 import ReviewSection from "./ReviewSection";
+import useTrackView from "../../hooks/useTrackView";
 import { fetchHotels } from "../../services/hotelService";
 import { fetchTours } from "../../services/tourService";
 import { fetchDestinationLandmarks } from "../../services/destinationService";
@@ -203,6 +204,7 @@ function LandmarkGrid({ items }) {
  */
 function DestinationLiveSections({ destination, showLandmarks = true }) {
     const t = useT();
+    useTrackView("destination", destination?.id);
     const id = destination.id;
     const name = destination.name;
 

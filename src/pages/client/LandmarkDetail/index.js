@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import HotelListCard from "../../../components/client/HotelListCard";
 import ReviewSection from "../../../components/client/ReviewSection";
+import useTrackView from "../../../hooks/useTrackView";
 import { fetchDestination, fetchDestinationLandmarks, fetchLandmark } from "../../../services/destinationService";
 import { fetchHotels, fetchNearbyHotels } from "../../../services/hotelService";
 import { useT } from "../../../i18n/I18nContext";
@@ -37,6 +38,7 @@ function InfoRow({ icon, label, children }) {
 function LandmarkDetail() {
     const t = useT();
     const { id: destinationId, landmarkId } = useParams();
+    useTrackView("landmark", landmarkId);
     const [state, setState] = useState({ loading: true, error: false, landmark: null, destination: null, siblings: [] });
     const [hotels, setHotels] = useState({ loading: true, items: [], nearby: false });
 

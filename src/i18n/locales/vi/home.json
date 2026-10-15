@@ -170,5 +170,36 @@
       "title": "Giá minh bạch",
       "description": "Không phí ẩn, không phụ thu bất ngờ. Giá bạn thấy là giá cuối cùng."
     }
+  },
+  "forYou": {
+    "eyebrow": "Gợi ý cá nhân",
+    "title": "Dành cho bạn",
+    "description": "Chọn theo những nơi bạn đã lưu, đặt chỗ, lên lịch trình và xem gần đây.",
+    "titlePopular": "Gợi ý nổi bật cho bạn",
+    "descriptionPopular": "Lưu, xem và đặt chỗ vài nơi bạn thích — mục này sẽ dần thành gợi ý riêng cho bạn.",
+    "types": {
+      "hotel": "Khách sạn",
+      "tour": "Tour",
+      "destination": "Điểm đến",
+      "landmark": "Địa điểm",
+      "car": "Thuê xe"
+    },
+    "reasons": {
+      "upcomingTrip": "Cho chuyến đi {{destination}} sắp tới",
+      "likedDestination": "Vì bạn quan tâm {{destination}}",
+      "similarDestination": "Giống nơi bạn thích",
+      "popular": "Phổ biến"
+    },
+    "price": {
+      "perNight": "{{price}} / đêm",
+      "perDay": "{{price}} / ngày",
+      "perPerson": "{{price}} / người"
+    },
+    "days_other": "{{count}} ngày",
+    "distance": "cách {{km}} km",
+    "similarHotels": {
+      "title": "Khách sạn tương tự",
+      "description": "Cùng khu vực, mức giá, hạng sao và tiện nghi gần giống khách sạn này."
+    }
   }
 }

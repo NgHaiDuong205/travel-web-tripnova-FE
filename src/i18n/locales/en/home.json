@@ -170,5 +170,37 @@
       "title": "Transparent Pricing",
       "description": "No hidden fees, no dynamic surcharges. The price you see is the final editorial value."
     }
+  },
+  "forYou": {
+    "eyebrow": "Picked for you",
+    "title": "Recommended for you",
+    "description": "Based on places you saved, booked, planned and viewed recently.",
+    "titlePopular": "Popular picks for you",
+    "descriptionPopular": "Save, view and book a few places you like — this section will become personal to you.",
+    "types": {
+      "hotel": "Hotel",
+      "tour": "Tour",
+      "destination": "Destination",
+      "landmark": "Attraction",
+      "car": "Car rental"
+    },
+    "reasons": {
+      "upcomingTrip": "For your upcoming {{destination}} trip",
+      "likedDestination": "Because you like {{destination}}",
+      "similarDestination": "Like places you love",
+      "popular": "Popular"
+    },
+    "price": {
+      "perNight": "{{price}} / night",
+      "perDay": "{{price}} / day",
+      "perPerson": "{{price}} / person"
+    },
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "distance": "{{km}} km away",
+    "similarHotels": {
+      "title": "Similar hotels",
+      "description": "Same area, with a similar price, star rating and amenities."
+    }
   }
 }

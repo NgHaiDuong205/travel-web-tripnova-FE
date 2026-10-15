@@ -4,6 +4,8 @@ import RoomSearchPanel from "../../../components/client/RoomSearchPanel";
 import RoomCard from "../../../components/client/RoomCard";
 import FavoriteButton from "../../../components/common/FavoriteButton";
 import ReviewSection from "../../../components/client/ReviewSection";
+import SimilarHotels from "../../../components/recommendation/SimilarHotels";
+import useTrackView from "../../../hooks/useTrackView";
 import PhotoLightbox from "../../../components/common/PhotoLightbox";
 import HotelPendingNotice from "../../../components/client/HotelPendingNotice";
 import { filterRooms, roomTypeOptionsFrom } from "../../../constants/rooms";
@@ -41,6 +43,7 @@ const getAmenityIcon = (name) => {
 function HotelDetail() {
     const t = useT();
     const { id: hotelId } = useParams();
+    useTrackView("hotel", hotelId);
     const [hotel, setHotel] = useState(null);
     const [rooms, setRooms] = useState([]);
     const roomTypeOptions = useMemo(() => roomTypeOptionsFrom(rooms), [rooms]);
@@ -322,6 +325,7 @@ function HotelDetail() {
             
             {/* Guest reviews */}
             <ReviewSection entityType="hotel" entityId={hotelId} title={t("hotels.detail.guestChronicles")} />
+            <SimilarHotels hotelId={hotelId} />
         </main>
     );
 }

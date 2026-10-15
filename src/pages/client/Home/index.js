@@ -2,6 +2,7 @@ import GlobeExplorer from '../../../components/home/GlobeExplorer';
 import WorldClocks from '../../../components/common/WorldClocks';
 import { Link } from "react-router-dom";
 import HomeTopDestinations from '../../../components/home/HomeTopDestinations';
+import ForYouSection from '../../../components/recommendation/ForYouSection';
 import { useT } from "../../../i18n/I18nContext";
 
 function Home() {
@@ -79,6 +80,8 @@ function Home() {
                     </div>
                 </div>
             </section>
+
+            <ForYouSection />
 
             {/* Top Destinations */}
             <section className="py-24 bg-surface-container-low px-8">

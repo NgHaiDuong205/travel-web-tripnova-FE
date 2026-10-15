@@ -6,6 +6,7 @@ import FormAlert from "../../../components/common/FormAlert";
 import FavoriteButton from "../../../components/common/FavoriteButton";
 import AddToTripCartButton from "../../../components/catalog/AddToTripCartButton";
 import ReviewSection from "../../../components/client/ReviewSection";
+import useTrackView from "../../../hooks/useTrackView";
 import PendingOrderNotice, { usePendingOrders } from "../../../components/catalog/PendingOrderNotice";
 import { PAYMENT_METHODS } from "../../../services/bookingService";
 import {
@@ -75,6 +76,7 @@ function Counter({ label, value, min, max, onChange, t }) {
 function TourDetail() {
     const t = useT();
     const { id } = useParams();
+    useTrackView("tour", id);
     const navigate = useNavigate();
     const location = useLocation();
     const { user, isLoggedIn } = useAuth();
