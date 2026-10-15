@@ -22,7 +22,8 @@
     "signOut": "Sign out",
     "aiKnowledge": "AI Knowledge",
     "aiChats": "AI Chats",
-    "aiJobs": "AI Jobs"
+    "aiJobs": "AI Jobs",
+    "fraud": "Fraud risk"
   },
   "hotelForm": {
     "saved": "Hotel saved.",
@@ -1203,5 +1204,60 @@
       "bestFor": "Great for",
       "meta": "Based on {{based}} reviews (now {{current}}) · {{model}} · {{date}}"
     }
+  },
+  "fraud": {
+    "title": "Fraud risk",
+    "subtitle": "Every new order is scored with explainable rules (new account, large amount, sudden spike, rapid ordering, failed payments, many cancellations, unverified email, shared IP). Orders are never blocked automatically — review the flagged ones and mark them.",
+    "backfill": "Score older payments",
+    "backfillDone_one": "Scored {{count}} payment.",
+    "backfillDone_other": "Scored {{count}} payments.",
+    "toReview": "To review",
+    "empty": "No scored payments match.",
+    "levels": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "actions": {
+      "review": "To review",
+      "allow": "Allowed",
+      "cleared": "Legitimate",
+      "confirmed_fraud": "Fraud"
+    },
+    "filters": {
+      "level": "Risk",
+      "action": "Status",
+      "search": "Order code, email or name",
+      "apply": "Filter",
+      "all": "All"
+    },
+    "columns": {
+      "created": "Scored",
+      "order": "Order",
+      "customer": "Customer",
+      "amount": "Amount",
+      "risk": "Risk",
+      "reasons": "Reasons",
+      "action": "Status"
+    },
+    "paymentStatus": {
+      "pending": "Payment pending",
+      "success": "Paid",
+      "failed": "Payment failed",
+      "refunded": "Refunded"
+    },
+    "reasons": {
+      "new_account": "New account",
+      "high_amount": "Large amount",
+      "amount_spike": "Unusually large vs. history",
+      "order_velocity": "Many orders in an hour",
+      "failed_payments": "Failed payments",
+      "cancellations": "Many cancellations",
+      "unverified_email": "Email not verified",
+      "shared_ip": "IP shared by many accounts"
+    },
+    "markCleared": "Legitimate",
+    "markFraud": "Fraud",
+    "markReview": "Review again"
   }
 }

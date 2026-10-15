@@ -96,3 +96,28 @@ export async function backfillAiSummaries() {
     const { data } = await apiClient.post("/api/admin/ai/summaries/backfill/");
     return data;
 }
+
+/* ---------- Rủi ro gian lận (fraud_scores) ---------- */
+
+export async function fetchFraudScores({ level, action, q, page = 1, limit = 20 } = {}) {
+    const response = await apiClient.get("/api/admin/ai/fraud-scores/", { params: clean({ level, action, q, page, limit }) });
+    return withTotal(response);
+}
+
+/** → { low, medium, high, toReview } */
+export async function fetchFraudStats() {
+    const { data } = await apiClient.get("/api/admin/ai/fraud-scores/stats/");
+    return data;
+}
+
+/** actionTaken: review | cleared | confirmed_fraud */
+export async function updateFraudAction(id, actionTaken) {
+    const { data } = await apiClient.put(`/api/admin/ai/fraud-scores/${id}/`, { actionTaken });
+    return data;
+}
+
+/** → { scored } */
+export async function backfillFraudScores() {
+    const { data } = await apiClient.post("/api/admin/ai/fraud-scores/backfill/");
+    return data;
+}

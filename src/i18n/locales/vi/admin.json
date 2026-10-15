@@ -22,7 +22,8 @@
     "signOut": "Đăng xuất",
     "aiKnowledge": "Tài liệu AI",
     "aiChats": "Hội thoại AI",
-    "aiJobs": "Job AI"
+    "aiJobs": "Job AI",
+    "fraud": "Rủi ro gian lận"
   },
   "hotelForm": {
     "saved": "Đã lưu khách sạn.",
@@ -1185,5 +1186,59 @@
       "bestFor": "Phù hợp với",
       "meta": "Dựa trên {{based}} đánh giá (hiện có {{current}}) · {{model}} · {{date}}"
     }
+  },
+  "fraud": {
+    "title": "Rủi ro gian lận",
+    "subtitle": "Mỗi đơn mới được chấm điểm bằng các quy tắc giải thích được (tài khoản mới, số tiền lớn, tăng đột biến, đặt dồn dập, thanh toán lỗi, huỷ nhiều, email chưa xác thực, dùng chung IP). Hệ thống không tự chặn đơn — hãy xem các đơn bị gắn cờ và đánh dấu.",
+    "backfill": "Chấm điểm giao dịch cũ",
+    "backfillDone_other": "Đã chấm điểm {{count}} giao dịch.",
+    "toReview": "Chờ xem xét",
+    "empty": "Không có giao dịch nào phù hợp.",
+    "levels": {
+      "high": "Cao",
+      "medium": "Trung bình",
+      "low": "Thấp"
+    },
+    "actions": {
+      "review": "Chờ xem xét",
+      "allow": "Cho qua",
+      "cleared": "Hợp lệ",
+      "confirmed_fraud": "Gian lận"
+    },
+    "filters": {
+      "level": "Mức rủi ro",
+      "action": "Trạng thái",
+      "search": "Mã đơn, email hoặc tên",
+      "apply": "Lọc",
+      "all": "Tất cả"
+    },
+    "columns": {
+      "created": "Chấm lúc",
+      "order": "Đơn hàng",
+      "customer": "Khách hàng",
+      "amount": "Số tiền",
+      "risk": "Rủi ro",
+      "reasons": "Lý do",
+      "action": "Trạng thái"
+    },
+    "paymentStatus": {
+      "pending": "Chờ thanh toán",
+      "success": "Đã thanh toán",
+      "failed": "Thanh toán lỗi",
+      "refunded": "Đã hoàn tiền"
+    },
+    "reasons": {
+      "new_account": "Tài khoản mới",
+      "high_amount": "Số tiền lớn",
+      "amount_spike": "Lớn bất thường so với trước",
+      "order_velocity": "Đặt nhiều đơn trong 1 giờ",
+      "failed_payments": "Thanh toán lỗi",
+      "cancellations": "Huỷ nhiều đơn",
+      "unverified_email": "Email chưa xác thực",
+      "shared_ip": "IP dùng chung nhiều tài khoản"
+    },
+    "markCleared": "Hợp lệ",
+    "markFraud": "Gian lận",
+    "markReview": "Xem lại"
   }
 }
