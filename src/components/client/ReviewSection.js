@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import FormAlert from "../common/FormAlert";
 import Pagination from "../common/Pagination";
 import StarRating from "../common/StarRating";
+import AiReviewSummary from "./AiReviewSummary";
 import PostCard from "./PostCard";
 import PostForm from "./PostForm";
 import { POST_SORTS, createPost, fetchPosts, fetchRatingSummary } from "../../services/postService";
@@ -129,6 +130,7 @@ function ReviewSection({ entityType, entityId, title }) {
                 <div className="lg:col-span-8 space-y-6">
                     <FormAlert type="success">{notice}</FormAlert>
                     <FormAlert>{error}</FormAlert>
+                    <AiReviewSummary entityType={entityType} entityId={entityId} reloadKey={summary?.totalReviews} />
                     {writing && (
                         <div className="bg-surface-container-lowest rounded-xl p-6 border border-primary/30">
                             <PostForm entityType={entityType} entityId={entityId} onSubmit={handleCreate} onCancel={() => setWriting(false)} />

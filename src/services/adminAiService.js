@@ -56,3 +56,43 @@ export async function fetchAdminChatMessages(sessionId) {
     const { data } = await apiClient.get(`/api/admin/ai/chat-sessions/${sessionId}/messages/`);
     return data;
 }
+
+/* ---------- Hàng đợi job AI (ai_jobs) + bản tóm tắt review (ai_summaries) ---------- */
+
+export async function fetchAiJobs({ status, type, entityId, page = 1, limit = 20 } = {}) {
+    const response = await apiClient.get("/api/admin/ai/jobs/", { params: clean({ status, type, entityId, page, limit }) });
+    return withTotal(response);
+}
+
+/** { counts: {pending, running, done, failed, cancelled}, workerEnabled, aiConfigured, pausedUntil, pauseReason } */
+export async function fetchAiJobStats() {
+    const { data } = await apiClient.get("/api/admin/ai/jobs/stats/");
+    return data;
+}
+
+export async function retryAiJob(id) {
+    const { data } = await apiClient.post(`/api/admin/ai/jobs/${id}/retry/`);
+    return data;
+}
+
+export async function cancelAiJob(id) {
+    const { data } = await apiClient.post(`/api/admin/ai/jobs/${id}/cancel/`);
+    return data;
+}
+
+export async function fetchAiSummaries({ entityType, lang, page = 1, limit = 20 } = {}) {
+    const response = await apiClient.get("/api/admin/ai/summaries/", { params: clean({ entityType, lang, page, limit }) });
+    return withTotal(response);
+}
+
+/** → { jobId } */
+export async function regenerateAiSummary(entityType, entityId) {
+    const { data } = await apiClient.post("/api/admin/ai/summaries/regenerate/", { entityType, entityId });
+    return data;
+}
+
+/** → { queued } */
+export async function backfillAiSummaries() {
+    const { data } = await apiClient.post("/api/admin/ai/summaries/backfill/");
+    return data;
+}

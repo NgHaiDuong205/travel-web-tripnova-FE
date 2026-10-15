@@ -21,7 +21,8 @@
     "viewSite": "Xem trang web",
     "signOut": "Đăng xuất",
     "aiKnowledge": "Tài liệu AI",
-    "aiChats": "Hội thoại AI"
+    "aiChats": "Hội thoại AI",
+    "aiJobs": "Job AI"
   },
   "hotelForm": {
     "saved": "Đã lưu khách sạn.",
@@ -1116,5 +1117,73 @@
     "rows_other": "{{count}} dòng",
     "sqlFailed": "truy vấn lỗi",
     "sources_other": "{{count}} nguồn tài liệu"
+  },
+  "aiJobs": {
+    "title": "Job AI chạy nền",
+    "refresh": "Tải lại",
+    "tabs": {
+      "jobs": "Job",
+      "summaries": "Tóm tắt đánh giá"
+    },
+    "status": {
+      "pending": "Đang chờ",
+      "running": "Đang chạy",
+      "done": "Hoàn tất",
+      "failed": "Lỗi",
+      "cancelled": "Đã huỷ"
+    },
+    "worker": {
+      "disabled": "Bộ chạy job AI đang tắt (app.ai.jobs.enabled=false). Job vẫn nằm trong hàng đợi.",
+      "notConfigured": "Dịch vụ AI chưa được cấu hình (app.ai.internal-key). Job sẽ chờ tới khi cấu hình xong.",
+      "paused": "Bộ chạy job tạm dừng tới {{time}} ({{reason}}). Job đang chờ sẽ tự chạy tiếp."
+    },
+    "filters": {
+      "status": "Trạng thái",
+      "type": "Loại",
+      "entityType": "Loại đối tượng",
+      "language": "Ngôn ngữ",
+      "all": "Tất cả"
+    },
+    "types": {
+      "summarize_reviews": "Tóm tắt đánh giá"
+    },
+    "entityTypes": {
+      "hotel": "Khách sạn",
+      "tour": "Tour",
+      "car": "Xe",
+      "flight": "Chuyến bay",
+      "destination": "Điểm đến",
+      "landmark": "Địa danh"
+    },
+    "languages": {
+      "vi": "Tiếng Việt",
+      "en": "Tiếng Anh"
+    },
+    "columns": {
+      "created": "Tạo lúc",
+      "type": "Loại",
+      "target": "Đối tượng",
+      "status": "Trạng thái",
+      "attempts": "Số lần thử",
+      "error": "Lỗi gần nhất",
+      "finished": "Kết thúc"
+    },
+    "actions": {
+      "retry": "Chạy lại",
+      "cancel": "Huỷ",
+      "regenerate": "Tạo lại",
+      "backfill": "Xếp job cho tóm tắt thiếu / cũ"
+    },
+    "emptyJobs": "Không có job nào.",
+    "emptySummaries": "Chưa có bản tóm tắt. Bản tóm tắt được tạo khi đối tượng có từ 3 đánh giá đã duyệt.",
+    "stale": "Đã cũ",
+    "backfillDone_other": "Đã xếp {{count}} job.",
+    "regenerateQueued": "Đã xếp job tạo lại.",
+    "summary": {
+      "pros": "Được khen",
+      "cons": "Cần lưu ý",
+      "bestFor": "Phù hợp với",
+      "meta": "Dựa trên {{based}} đánh giá (hiện có {{current}}) · {{model}} · {{date}}"
+    }
   }
 }

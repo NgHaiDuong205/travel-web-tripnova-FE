@@ -72,5 +72,14 @@
     "empty": "Bạn chưa viết đánh giá nào.",
     "emptyFiltered": "Bạn chưa có đánh giá nào ở trạng thái này.",
     "findHotel": "Tìm khách sạn bạn đã ở"
+  },
+  "aiSummary": {
+    "title": "Tóm tắt từ AI",
+    "basedOn_other": "Dựa trên {{count}} đánh giá",
+    "pros": "Khách khen",
+    "cons": "Cần lưu ý",
+    "bestFor": "Phù hợp với",
+    "disclaimer": "Do AI tổng hợp từ các đánh giá đã duyệt, có thể chưa hoàn toàn chính xác. Cập nhật {{date}}",
+    "updating": "Đang cập nhật theo đánh giá mới"
   }
 }

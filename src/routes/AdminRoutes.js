@@ -21,6 +21,7 @@ import AdminHotelImages from "../pages/admin/HotelImages";
 import AdminHotelManagers from "../pages/admin/HotelManagers";
 import AdminAiKnowledge from "../pages/admin/AiKnowledge";
 import AdminAiChats from "../pages/admin/AiChats";
+import AdminAiJobs from "../pages/admin/AiJobs";
 
 /** Đã được bọc bởi <PrivateRoute role="ADMIN"> trong AppRouter. */
 function AdminRoutes() {
@@ -49,6 +50,7 @@ function AdminRoutes() {
                 <Route path="/search-queries" element={<AdminSearchQueries />} />
                 <Route path="/ai-knowledge" element={<AdminAiKnowledge />} />
                 <Route path="/ai-chats" element={<AdminAiChats />} />
+                <Route path="/ai-jobs" element={<AdminAiJobs />} />
                 <Route path="*" element={<h2 className="text-xl font-bold text-gray-500">404 - Admin không có trang này</h2>} />
             </Route>
         </Routes>

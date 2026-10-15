@@ -23,6 +23,7 @@ const NAV_ITEMS = [
     { to: "/admin/posts", labelKey: "admin.layout.reviews", icon: "reviews" },
     { to: "/admin/ai-knowledge", labelKey: "admin.layout.aiKnowledge", icon: "menu_book" },
     { to: "/admin/ai-chats", labelKey: "admin.layout.aiChats", icon: "smart_toy" },
+    { to: "/admin/ai-jobs", labelKey: "admin.layout.aiJobs", icon: "pending_actions" },
     { to: "/admin/search-queries", labelKey: "admin.layout.searchQueries", icon: "query_stats" },
     { to: "/admin/audit-logs", labelKey: "admin.layout.auditLogs", icon: "history_edu" },
 ];
