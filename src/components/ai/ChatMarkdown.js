@@ -3,10 +3,10 @@ import { safeRedirect } from "../../utils/authRedirect";
 
 /**
  * Markdown tối giản cho câu trả lời của trợ lý AI, dựng thành phần tử React (không dùng innerHTML):
- * đoạn văn, gạch đầu dòng (- * •), danh sách số, **đậm**, *nghiêng*, [chữ](/đường-dẫn-nội-bộ), nhãn nguồn [DB] / [TL1].
+ * đoạn văn, gạch đầu dòng (- * •), danh sách số, **đậm**, *nghiêng*, [chữ](/đường-dẫn-nội-bộ), nhãn nguồn [DB] / [TL1] / [LIVE] (tình trạng trống tra trực tiếp).
  * Link chỉ nhận đường dẫn nội bộ (bắt đầu "/") — link ngoài hiển thị như chữ thường.
  */
-const INLINE = /\[([^\]]+)\]\(([^)\s]+)\)|\*\*([^*]+)\*\*|\*([^*\s][^*]*)\*|\[(DB|TL\d+)\]/g;
+const INLINE = /\[([^\]]+)\]\(([^)\s]+)\)|\*\*([^*]+)\*\*|\*([^*\s][^*]*)\*|\[(DB|LIVE|TL\d+)\]/g;
 
 function renderInline(text, onCitation, keyPrefix) {
     const out = [];
@@ -34,7 +34,7 @@ function renderInline(text, onCitation, keyPrefix) {
             out.push(<em key={key}>{match[4]}</em>);
         } else {
             const tag = match[5];
-            const isDoc = tag !== "DB";
+            const isDoc = tag.startsWith("TL");
             out.push(
                 <button
                     key={key}
@@ -44,7 +44,9 @@ function renderInline(text, onCitation, keyPrefix) {
                     className={`mx-0.5 inline-flex items-center rounded px-1 py-px align-baseline text-[10px] font-bold ${
                         isDoc
                             ? "bg-amber-100 text-amber-800 hover:bg-amber-200"
-                            : "bg-blue-50 text-blue-700 cursor-default"
+                            : tag === "LIVE"
+                              ? "bg-green-50 text-green-700 cursor-default"
+                              : "bg-blue-50 text-blue-700 cursor-default"
                     }`}
                 >
                     {tag}
