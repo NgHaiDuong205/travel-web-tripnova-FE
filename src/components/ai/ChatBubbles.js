@@ -35,6 +35,18 @@ export function AssistantBubble({ message, t, onRetry, onRate, busy, onLinkClick
     const sources = message.sources || [];
     const showSource = (citation) => setOpenSource((current) => (current === citation ? null : citation));
 
+    if (message.streaming) {
+        return (
+            <div className="flex gap-2" data-testid="assistant-streaming" aria-live="polite">
+                <BotAvatar />
+                <div className="max-w-[85%] min-w-0 rounded-2xl rounded-bl-sm bg-surface-container-low px-3 py-2 text-on-surface break-words">
+                    <ChatMarkdown text={message.content} />
+                    <span className="ml-0.5 inline-block h-3.5 w-1.5 animate-pulse rounded-sm bg-primary/60 align-middle" aria-hidden="true" />
+                </div>
+            </div>
+        );
+    }
+
     if (message.isError) {
         return (
             <div className="flex gap-2 tn-msg-in">

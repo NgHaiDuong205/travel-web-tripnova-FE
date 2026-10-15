@@ -15,6 +15,7 @@
   "send": "Send",
   "thinking": "Looking it up…",
   "retry": "Try again",
+  "streamInterrupted": "The connection dropped while answering — the conversation was reloaded.",
   "sources": "Sources",
   "helpful": "Helpful",
   "notHelpful": "Not helpful",

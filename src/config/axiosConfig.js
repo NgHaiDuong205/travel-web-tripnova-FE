@@ -26,8 +26,8 @@ const AUTH_PATHS_WITHOUT_REFRESH = [
 
 let refreshPromise = null;
 
-/** Gọi refresh-token một lần duy nhất dù nhiều request cùng bị 401. */
-function refreshAccessToken() {
+/** Gọi refresh-token một lần duy nhất dù nhiều request cùng bị 401 (dùng chung cho fetch stream). */
+export function refreshAccessToken() {
     if (!refreshPromise) {
         const refreshToken = tokenStorage.getRefreshToken();
         if (!refreshToken) return Promise.reject(new Error("No refresh token"));

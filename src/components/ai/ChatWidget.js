@@ -9,6 +9,7 @@ import {
     fetchChatSessions,
     sendChatFeedback,
     sendChatMessage,
+    streamChatMessage,
 } from "../../services/aiService";
 import { withRedirect } from "../../utils/authRedirect";
 import { formatDateTime } from "../../utils/formatters";
@@ -75,6 +76,7 @@ function ChatWidget() {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
     const [sending, setSending] = useState(false);
+    const [streamText, setStreamText] = useState(null); // câu trả lời đang chạy dần (null = không stream)
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [launcherPos, setLauncherPos] = useState(null);
@@ -151,7 +153,7 @@ function ChatWidget() {
 
     useEffect(() => {
         if (open && view === "chat") bottomRef.current?.scrollIntoView({ block: "end" });
-    }, [messages, sending, open, view]);
+    }, [messages, sending, streamText, open, view]);
 
     useEffect(() => {
         if (open && view === "chat" && isLoggedIn) inputRef.current?.focus();
@@ -181,7 +183,28 @@ function ChatWidget() {
                 skipLoadRef.current = sessionId;
                 setActiveId(sessionId);
             }
-            const reply = await sendChatMessage(sessionId, content, lang === "vi" ? "vi" : "en", context);
+            const locale = lang === "vi" ? "vi" : "en";
+            let streamed = false;
+            const onDelta = (piece) => {
+                streamed = true;
+                setStreamText((prev) => (prev || "") + piece);
+            };
+            let reply;
+            try {
+                reply = await streamChatMessage(sessionId, content, locale, context, { onDelta });
+            } catch (err) {
+                if (err.fallback && !streamed) {
+                    reply = await sendChatMessage(sessionId, content, locale, context);
+                } else if (err.streamBroken) {
+                    // Câu hỏi đã lưu, máy chủ vẫn lưu đủ câu trả lời → tải lại cuộc trò chuyện.
+                    const saved = await fetchChatMessages(sessionId).catch(() => null);
+                    setMessages((prev) => saved || prev.filter((m) => m.id !== pending.id));
+                    setError(t("chatbot.streamInterrupted"));
+                    return;
+                } else {
+                    throw err;
+                }
+            }
             setMessages((prev) => [...prev.filter((m) => m.id !== pending.id), reply.userMessage, reply.assistantMessage]);
             setSessions((prev) => [reply.session, ...prev.filter((s) => s.id !== reply.session.id)]);
         } catch (err) {
@@ -189,6 +212,7 @@ function ChatWidget() {
             setInput(content);
             setError(err.message);
         } finally {
+            setStreamText(null);
             setSending(false);
         }
     };
@@ -369,7 +393,11 @@ function ChatWidget() {
                                         )
                                     )
                                 )}
-                                {sending && <Thinking t={t} />}
+                                {streamText ? (
+                                    <AssistantBubble message={{ id: "streaming", content: streamText, streaming: true }} t={t} />
+                                ) : (
+                                    sending && <Thinking t={t} />
+                                )}
                                 <div ref={bottomRef} />
                             </div>
 

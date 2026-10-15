@@ -15,6 +15,7 @@
   "send": "Gửi",
   "thinking": "Đang tra cứu…",
   "retry": "Thử lại",
+  "streamInterrupted": "Kết nối bị ngắt khi đang trả lời — đã tải lại cuộc trò chuyện.",
   "sources": "Nguồn",
   "helpful": "Hữu ích",
   "notHelpful": "Chưa hữu ích",
